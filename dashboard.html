@@ -36,9 +36,13 @@
                 <span class="text-sm font-bold text-gray-900">Honningstatus</span>
                 <span id="honey_status_badge" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-800">Ikke klar</span>
             </div>
-            <div class="mt-3 flex space-x-2">
+            <div class="mt-3 flex flex-wrap gap-2">
                 <button onclick="setHoneyStatus(true)" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold px-3 py-1 rounded">Sett Klar</button>
                 <button onclick="setHoneyStatus(false)" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold px-3 py-1 rounded">Sett Ikke klar</button>
+                <button onclick="testDatabase()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-3 py-1 rounded flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
+                    Test DB
+                </button>
             </div>
         </div>
 

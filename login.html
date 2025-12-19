@@ -38,9 +38,16 @@
             </div>
             <p id="login_error" class="text-sm text-red-600 hidden">Feil e-post eller PIN-kode</p>
             <div class="pt-2 space-y-3">
-                <button type="submit" class="w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-3 rounded shadow-md transition-all">Logg inn</button>
+                <button type="submit" class="btn-primary">Logg inn</button>
                 <a href="index.html" class="block w-full text-center text-black font-medium text-sm hover:underline">← Tilbake</a>
                 <a href="reset.html" class="block w-full text-center text-black font-medium text-sm hover:underline">Glemt PIN?</a>
+                
+                <div class="pt-4 border-t border-gray-200 mt-4">
+                    <button type="button" onclick="resetApp()" class="w-full border-2 border-red-600 text-red-600 font-bold py-2 rounded hover:bg-red-50 transition-colors uppercase text-xs tracking-wide">
+                        NULLSTILL APP (START PÅ NYTT)
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-1">Sletter all lokal data</p>
+                </div>
             </div>
         </form>
     </div>
@@ -55,7 +62,9 @@
             const email = document.getElementById('login_email')?.value || '';
             const pin = document.getElementById('login_pin')?.value || '';
             const errEl = document.getElementById('login_error');
+            
             if (!data) {
+                // Allow "login" if data is missing but user tries anyway? No, they must register.
                 if (errEl) { errEl.textContent = 'Ingen registrert bruker. Registrer deg først.'; errEl.classList.remove('hidden'); }
                 return;
             }
@@ -63,7 +72,10 @@
                 localStorage.setItem('auth', 'true');
                 window.location.href = 'dashboard.html';
             } else {
-                if (errEl) errEl.classList.remove('hidden');
+                if (errEl) {
+                    errEl.textContent = 'Feil e-post eller PIN-kode';
+                    errEl.classList.remove('hidden');
+                }
             }
         }
         function useSavedEmail() {
@@ -71,6 +83,16 @@
             try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
             if (data?.email) { const el = document.getElementById('login_email'); if (el) el.value = data.email; }
         }
+        
+        function resetApp() {
+            if (confirm('Er du sikker? Dette sletter ALL lokal data (bigårder, bikuber, inspeksjoner).')) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
+        
+        // Auto-fill email if available
+        document.addEventListener('DOMContentLoaded', useSavedEmail);
     </script>
 </body>
 </html>
