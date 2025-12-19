@@ -42,7 +42,6 @@
                 <button type="submit" class="w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-3 rounded shadow-md transition-all">Logg inn</button>
                 <a href="index.html" class="block w-full text-center text-black font-medium text-sm hover:underline">← Tilbake</a>
                 <a href="reset.html" class="block w-full text-center text-black font-medium text-sm hover:underline">Glemt PIN?</a>
-                <button type="button" onclick="resetApp()" class="w-full text-center text-red-600 font-bold text-xs uppercase hover:text-red-800 mt-4">Nullstill App (Start på nytt)</button>
             </div>
         </form>
     </div>
@@ -50,13 +49,6 @@
     <script src="header.js"></script>
     <link rel="manifest" href="manifest.json">
     <script>
-        function resetApp() {
-            if(confirm('Er du sikker? Dette sletter ALLE data (bigårder, inspeksjoner, bruker) og lar deg registrere deg på nytt.')) {
-                localStorage.clear();
-                window.location.href = 'index.html';
-            }
-        }
-
         function login(e) {
             e.preventDefault();
             let data = null;

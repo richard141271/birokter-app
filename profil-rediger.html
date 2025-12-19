@@ -76,14 +76,16 @@
           </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-4 pt-6">
-        <a href="profil.html" class="flex items-center justify-center w-full bg-white border-2 border-black text-black font-bold py-3 rounded shadow-sm hover:bg-gray-50 transition-colors">Avbryt</a>
-        <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 rounded shadow-md transition-all">Lagre</button>
-      </div>
+      <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all mt-6">
+        Lagre Endringer
+      </button>
+      <button type="button" onclick="window.location.href='profil.html'" class="w-full text-center text-gray-500 font-medium text-sm hover:underline mt-2">
+        Avbryt
+      </button>
     </form>
     </div>
   </div>
-  <div id="app-footer"></div>
+
   <script src="header.js"></script>
   <script>
     function toggleBusinessFields() {
