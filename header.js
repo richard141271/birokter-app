@@ -56,11 +56,14 @@ function injectHeader() {
     logout.onclick = () => { localStorage.removeItem('auth'); window.location.href = 'index.html'; };
     right.appendChild(logout);
   } else {
-    const login = document.createElement('button');
-    login.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
-    login.textContent = 'Logg inn';
-    login.onclick = () => { window.location.href = 'login.html'; };
-    right.appendChild(login);
+    // Only show Login button if NOT on login page
+    if (!window.location.href.includes('login.html')) {
+        const login = document.createElement('button');
+        login.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
+        login.textContent = 'Logg inn';
+        login.onclick = () => { window.location.href = 'login.html'; };
+        right.appendChild(login);
+    }
   }
 
   container.appendChild(right);
