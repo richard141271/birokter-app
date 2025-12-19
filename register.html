@@ -26,7 +26,7 @@
     <!-- Main Card -->
     <div class="bg-white rounded-lg shadow-md w-full max-w-md p-6 flex flex-col border border-gray-200">
         
-        <form id="registerForm" onsubmit="event.preventDefault(); window.location.href='dashboard.html';" class="space-y-4">
+        <form id="registerForm" onsubmit="saveRegistration(event)" class="space-y-4">
             
             <!-- Fullt navn -->
             <div>
@@ -77,15 +77,31 @@
             </div>
 
             <!-- Hobbyrøkt / Næringsrøkt Radio -->
-            <div class="flex flex-col items-end space-y-2 mt-2">
-                <label class="inline-flex items-center">
-                    <input type="radio" class="form-radio text-blue-600 h-4 w-4" name="rokt_type" value="hobby" checked>
-                    <span class="ml-2 text-sm font-medium text-gray-900">Hobbyrøkt</span>
+            <div class="flex flex-col items-start space-y-2 mt-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" class="form-radio text-blue-600 h-5 w-5" name="rokt_type" value="hobby" checked>
+                    <span class="ml-2 text-base text-gray-900">Hobbyrøkt</span>
                 </label>
-                <label class="inline-flex items-center">
-                    <input type="radio" class="form-radio text-blue-600 h-4 w-4" name="rokt_type" value="naering">
-                    <span class="ml-2 text-sm font-medium text-gray-900">Næringsrøkt</span>
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" class="form-radio text-blue-600 h-5 w-5" name="rokt_type" value="naering">
+                    <span class="ml-2 text-base text-gray-900">Næringsrøkt</span>
                 </label>
+            </div>
+
+            <!-- Næringsrøkt felter (Hidden by default) -->
+            <div id="business_fields" class="hidden space-y-4 mt-4">
+                <div>
+                    <label for="company_name" class="block text-sm font-bold text-gray-900 mb-1">Firmanavn</label>
+                    <input type="text" id="company_name" name="company_name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="org_number" class="block text-sm font-bold text-gray-900 mb-1">Organisasjonsnummer</label>
+                    <input type="text" id="org_number" name="org_number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="company_account" class="block text-sm font-bold text-gray-900 mb-1">Kontonummer (firma)</label>
+                    <input type="text" id="company_account" name="company_account" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
             </div>
 
             <!-- Kontonummer -->
@@ -99,9 +115,9 @@
             <div class="space-y-4 mt-6">
                 
                 <!-- Norges Birøkterlag -->
-                <div class="flex items-center justify-end">
-                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-2">
-                    <label class="text-sm font-medium text-gray-900 text-right">Medlem av Norges<br>Birøkterlag</label>
+                <div class="flex items-center">
+                    <input id="is_nbl_member" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <label class="text-sm font-medium text-gray-900">Medlem av Norges Birøkterlag</label>
                 </div>
 
                 <!-- Medlemsnummer NBL -->
@@ -117,15 +133,15 @@
                 </div>
 
                  <!-- LEK-Honning -->
-                 <div class="flex items-center justify-end mt-2">
-                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-2">
-                    <label class="text-sm font-medium text-gray-900 text-right">Medlem av LEK-<br>Honning™</label>
+                 <div class="flex items-center mt-2">
+                    <input id="is_lek_member" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <label class="text-sm font-medium text-gray-900">Medlem av LEK-Honning™</label>
                 </div>
 
                 <!-- HC -->
-                <div class="flex items-center justify-end mt-2">
-                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-2">
-                    <label class="text-sm font-medium text-gray-900 text-right">Leverer honning<br>til HC</label>
+                <div class="flex items-center mt-2">
+                    <input id="is_hc_supplier" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <label class="text-sm font-medium text-gray-900">Leverer honning til HC</label>
                 </div>
 
             </div>
@@ -134,33 +150,33 @@
             <div class="mt-6">
                 <h3 class="block text-sm font-bold text-gray-900 mb-3">Interessert i:</h3>
                 <div class="space-y-2">
-                    <div class="flex items-center justify-end">
-                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-2">
+                    <div class="flex items-center">
+                        <input id="interest_salg" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
                         <label class="text-sm font-medium text-gray-900">Salg</label>
                     </div>
-                    <div class="flex items-center justify-end">
-                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-2">
+                    <div class="flex items-center">
+                        <input id="interest_rekruttering" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
                         <label class="text-sm font-medium text-gray-900">Rekruttering</label>
                     </div>
-                    <div class="flex items-center justify-end">
-                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-2">
+                    <div class="flex items-center">
+                        <input id="interest_kurs" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
                         <label class="text-sm font-medium text-gray-900">Kurs</label>
                     </div>
-                    <div class="flex items-center justify-end">
-                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-2">
+                    <div class="flex items-center">
+                        <input id="interest_samarbeid" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
                         <label class="text-sm font-medium text-gray-900">Samarbeid</label>
                     </div>
                 </div>
             </div>
 
             <!-- Buttons -->
-            <div class="pt-6 space-y-3">
-                <button type="submit" class="w-full bg-[#1e4b75] hover:bg-[#163a5c] text-white font-bold py-3 px-4 rounded shadow-md transition-all">
-                    Fullfør registrering
-                </button>
-                <a href="index.html" class="block w-full text-center text-[#1e4b75] font-semibold text-sm hover:underline">
-                    ← Tilbake til innlogging
+            <div class="grid grid-cols-2 gap-4 pt-8">
+                <a href="index.html" class="flex items-center justify-center w-full bg-white border-2 border-[#1e4b75] text-[#1e4b75] font-bold py-3 rounded shadow-sm hover:bg-blue-50 transition-colors">
+                    Avbryt
                 </a>
+                <button type="submit" class="w-full bg-[#1e4b75] hover:bg-[#163a5c] text-white font-bold py-3 rounded shadow-md transition-all">
+                    Registrer
+                </button>
             </div>
 
         </form>
@@ -170,7 +186,6 @@
         const hobbyRadio = document.querySelector('input[value="hobby"]');
         const naeringRadio = document.querySelector('input[value="naering"]');
         const businessFields = document.getElementById('business_fields');
-
         function toggleBusinessFields() {
             if (naeringRadio.checked) {
                 businessFields.classList.remove('hidden');
@@ -178,9 +193,40 @@
                 businessFields.classList.add('hidden');
             }
         }
-
         hobbyRadio.addEventListener('change', toggleBusinessFields);
         naeringRadio.addEventListener('change', toggleBusinessFields);
+        function saveRegistration(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name')?.value || '',
+                address: document.getElementById('address')?.value || '',
+                zip: document.getElementById('zip')?.value || '',
+                municipality: document.getElementById('municipality')?.value || '',
+                phone: document.getElementById('phone')?.value || '',
+                email: document.getElementById('email')?.value || '',
+                pin: document.getElementById('pin')?.value || '',
+                account: document.getElementById('account')?.value || '',
+                rokt_type: naeringRadio.checked ? 'naering' : 'hobby',
+                company_name: document.getElementById('company_name')?.value || '',
+                org_number: document.getElementById('org_number')?.value || '',
+                company_account: document.getElementById('company_account')?.value || '',
+                is_nbl_member: document.getElementById('is_nbl_member')?.checked || false,
+                nbl_id: document.getElementById('nbl_id')?.value || '',
+                lokallag: document.getElementById('lokallag')?.value || '',
+                is_lek_member: document.getElementById('is_lek_member')?.checked || false,
+                is_hc_supplier: document.getElementById('is_hc_supplier')?.checked || false,
+                interests: {
+                    salg: document.getElementById('interest_salg')?.checked || false,
+                    rekruttering: document.getElementById('interest_rekruttering')?.checked || false,
+                    kurs: document.getElementById('interest_kurs')?.checked || false,
+                    samarbeid: document.getElementById('interest_samarbeid')?.checked || false
+                }
+            };
+            try {
+                localStorage.setItem('beekeeper', JSON.stringify(data));
+            } catch (e) {}
+            window.location.href = 'index.html';
+        }
     </script>
 
 </body>

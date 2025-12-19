@@ -26,12 +26,9 @@
 
         <!-- User Info -->
         <div class="mb-8">
-            <p class="text-sm text-gray-600 mb-1">Birøkter</p>
-            <h1 class="text-xl font-extrabold text-black mb-2 uppercase tracking-wide">Vidar Thoresen</h1>
-            <div class="text-sm text-gray-800 font-medium space-y-0.5">
-                <p>med Norges Birøkterforbund</p>
-                <p>med LEK-Honning Norge</p>
-            </div>
+            <p class="text-sm text-gray-600 mb-1">Birøkter registrert</p>
+            <h1 id="user_name" class="text-xl font-extrabold text-black mb-2 uppercase tracking-wide"></h1>
+            <div id="user_memberships" class="text-sm text-gray-800 font-medium space-y-0.5"></div>
         </div>
 
         <!-- Action Buttons -->
@@ -51,4 +48,29 @@
     </div>
 
 </body>
+</html>
+<script>
+  function render() {
+    const isAuth = localStorage.getItem('auth') === 'true';
+    let data = null;
+    try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
+    if (!isAuth || !data) {
+      window.location.href = 'login.html';
+      return;
+    }
+    const nameEl = document.getElementById('user_name');
+    const memEl = document.getElementById('user_memberships');
+    if (nameEl) nameEl.textContent = (data.name || '').toUpperCase();
+    if (memEl) {
+      memEl.innerHTML = '';
+      if (data.is_nbl_member) {
+        const p = document.createElement('p'); p.textContent = 'med Norges Birøkterlag'; memEl.appendChild(p);
+      }
+      if (data.is_lek_member) {
+        const p = document.createElement('p'); p.textContent = 'med LEK-Honning Norge'; memEl.appendChild(p);
+      }
+    }
+  }
+  render();
+</script>
 </html>

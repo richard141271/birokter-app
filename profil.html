@@ -37,9 +37,9 @@
             
             <!-- User Info -->
             <div class="space-y-1">
-                <h2 class="text-xl font-bold text-gray-900">Jørn Richard Thoresen</h2>
-                <p class="text-gray-700">Rasch Pram 7, 1787 Halden</p>
-                <p class="text-gray-700">4737406 • 1441271@email.com</p>
+                <h2 id="profile_name" class="text-xl font-bold text-gray-900"></h2>
+                <p id="profile_address" class="text-gray-700"></p>
+                <p id="profile_contact" class="text-gray-700"></p>
             </div>
 
             <!-- Big Number (Balance / Honey kg?) -->
@@ -48,14 +48,10 @@
             </div>
 
             <!-- Account Info -->
-            <p class="text-gray-700 text-sm">Konto: 1003.38.39066 (Privat)</p>
+            <p id="profile_account" class="text-gray-700 text-sm"></p>
 
             <!-- Badges / Certifications -->
-            <div class="bg-gray-50 p-4 rounded-lg w-full text-left space-y-2 text-sm text-gray-800 border border-gray-100">
-                <p>• LEK-Honning™ gold member</p>
-                <p>• Hobby Birøkter LEK-Sertifisert</p>
-                <p>• Leverer ikke Honning til HC</p>
-            </div>
+            <div id="profile_badges" class="bg-gray-50 p-4 rounded-lg w-full text-left space-y-2 text-sm text-gray-800 border border-gray-100"></div>
 
             <!-- Update Button -->
             <button class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all mt-4">
@@ -74,3 +70,28 @@
 
 </body>
 </html>
+<script>
+  function renderProfile() {
+    let data = null;
+    try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
+    if (!data) { window.location.href = 'index.html'; return; }
+    const n = document.getElementById('profile_name');
+    const a = document.getElementById('profile_address');
+    const c = document.getElementById('profile_contact');
+    const acc = document.getElementById('profile_account');
+    const badges = document.getElementById('profile_badges');
+    if (n) n.textContent = data.name || '';
+    if (a) a.textContent = [data.address, data.zip, data.municipality].filter(Boolean).join(', ');
+    if (c) c.textContent = [data.phone, data.email].filter(Boolean).join(' • ');
+    if (acc) acc.textContent = data.account ? `Konto: ${data.account}` : '';
+    if (badges) {
+      badges.innerHTML = '';
+      if (data.is_lek_member) { const p = document.createElement('p'); p.textContent = '• LEK-Honning™ medlem'; badges.appendChild(p); }
+      if (data.is_nbl_member) { const p = document.createElement('p'); p.textContent = '• Medlem av Norges Birøkterlag'; badges.appendChild(p); }
+      const hcText = data.is_hc_supplier ? '• Leverer honning til HC' : '• Leverer ikke honning til HC';
+      const p = document.createElement('p'); p.textContent = hcText; badges.appendChild(p);
+      if (data.rokt_type === 'naering') { const p2 = document.createElement('p'); p2.textContent = '• Næringsbirøkter'; badges.appendChild(p2); }
+    }
+  }
+  renderProfile();
+  </script>

@@ -30,37 +30,46 @@
 
         <!-- Action Buttons -->
         <div class="w-full space-y-3 mb-6 flex flex-col items-center">
-            <button onclick="window.location.href='register.html'" class="w-48 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
+            <button id="registerBtn" onclick="window.location.href='register.html'" class="w-48 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
                 Registrer deg
             </button>
-            <button onclick="window.location.href='dashboard.html'" class="w-32 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
+            <button id="loginBtn" onclick="window.location.href='login.html'" class="w-32 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
                 Logg inn
             </button>
         </div>
 
         <!-- Links -->
         <div class="w-full space-y-3 flex flex-col items-center mb-8">
-            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
-                LEK-Honning Norge
+            <a href="https://richard141271.github.io/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                LEK-Honning™️
             </a>
-            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+            <a href="https://honning.no/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
                 Honningcentralen
             </a>
-            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
-                Norges birøkter-lag
+            <a href="https://norbi.no/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                Norges birøkterlag
             </a>
-            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
-                Honning relaterte
+            <a href="https://honninglandet.no/nyheter/nm-i-honning-2025/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                NM i Honning
             </a>
         </div>
 
         <!-- Bottom Button -->
         <div class="w-full flex justify-center">
-            <button class="w-full border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded uppercase tracking-wide hover:bg-blue-50 transition-colors">
+            <a href="https://mattilsynet.no/" target="_blank" rel="noopener" class="w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded uppercase tracking-wide hover:bg-blue-50 transition-colors">
                 MATTILSYNET
-            </button>
+            </a>
         </div>
 
     </div>
+<script>
+  try {
+    const data = localStorage.getItem('beekeeper');
+    if (data) {
+      const btn = document.getElementById('registerBtn');
+      if (btn) btn.style.display = 'none';
+    }
+  } catch (e) {}
+</script>
 </body>
 </html>

@@ -30,33 +30,9 @@
 
         <div class="p-6 flex flex-col items-center w-full">
             
-            <!-- Title -->
-            <h2 class="text-2xl font-bold text-black mb-6">Bigård</h2>
-
-            <!-- Subtitle / ID -->
-            <div class="w-full text-left mb-2">
-                <p class="text-gray-500 font-medium">BG02-raschepen...</p>
-            </div>
-
-            <!-- Hive Grid -->
-            <div class="grid grid-cols-2 gap-4 w-full mb-4">
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK006</button>
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK007</button>
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK008</button>
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK001</button>
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK010</button>
-                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK011</button>
-            </div>
-
-            <!-- "Fler kuber" button -->
-            <button class="bg-[#dbeafe] text-[#1e3a5f] font-semibold py-1.5 px-6 rounded mb-2 hover:bg-blue-200 transition-colors text-sm">
-                Fler kuber
-            </button>
-            
-            <!-- Arrow down -->
-            <div class="text-[#1e3a5f] mb-6">
-                ↓
-            </div>
+            <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
+            <div id="apiary_empty" class="w-full text-center text-gray-600 mb-4"></div>
+            <div id="apiary_list" class="w-full space-y-3 mb-6"></div>
 
             <!-- Action Buttons Stack -->
             <div class="w-full space-y-3">
@@ -66,11 +42,8 @@
                 <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
                     Registrer Ny Bikube
                 </button>
-                <button class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
-                    Mine Bigårder
-                </button>
-                <button class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
-                    Mine Bikuber
+                <button disabled class="w-full bg-[#2c4b70] text-white font-bold py-3 px-4 rounded opacity-60 text-left pl-6">
+                    Mine Bikuber (kommer)
                 </button>
             </div>
             
@@ -85,4 +58,29 @@
     </div>
 
 </body>
+</html>
+<script>
+  function renderApiaries() {
+    let apiaries = [];
+    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+    const emptyEl = document.getElementById('apiary_empty');
+    const listEl = document.getElementById('apiary_list');
+    if (!apiaries.length) {
+      if (emptyEl) emptyEl.textContent = 'Du har ingen registrerte bigårder ennå.';
+      if (listEl) listEl.innerHTML = '';
+      return;
+    }
+    if (emptyEl) emptyEl.textContent = '';
+    if (listEl) {
+      listEl.innerHTML = '';
+      apiaries.forEach(a => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6';
+        btn.textContent = `${a.id} — ${a.name}`;
+        listEl.appendChild(btn);
+      });
+    }
+  }
+  renderApiaries();
+</script>
 </html>

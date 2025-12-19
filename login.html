@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Logg inn - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-20 pb-10 px-4">
+    <h1 class="text-3xl font-bold mb-8 text-black">Logg inn</h1>
+    <div class="bg-white rounded-lg shadow-md w-full max-w-xs p-6 flex flex-col items-center border border-gray-200">
+        <div class="flex flex-col items-center mb-6">
+            <img src="logo.png" alt="Logo" class="h-16 w-auto mb-2">
+            <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+        </div>
+        <form onsubmit="login(event)" class="w-full space-y-4">
+            <div>
+                <label for="login_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
+                <input type="email" id="login_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="login_pin" class="block text-sm font-bold text-gray-900 mb-1">PIN-kode</label>
+                <input type="password" id="login_pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            <p id="login_error" class="text-sm text-red-600 hidden">Feil e-post eller PIN-kode</p>
+            <div class="pt-2 space-y-3">
+                <button type="submit" class="w-full bg-[#1e73be] hover:bg-[#165ba1] text-white font-bold py-2.5 rounded shadow-sm transition-all">Logg inn</button>
+                <a href="index.html" class="block w-full text-center text-[#1e73be] font-medium text-sm hover:underline">← Tilbake</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        function login(e) {
+            e.preventDefault();
+            let data = null;
+            try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (err) {}
+            const email = document.getElementById('login_email')?.value || '';
+            const pin = document.getElementById('login_pin')?.value || '';
+            const errEl = document.getElementById('login_error');
+            if (!data) {
+                if (errEl) { errEl.textContent = 'Ingen registrert bruker. Registrer deg først.'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (data.email === email && data.pin === pin) {
+                localStorage.setItem('auth', 'true');
+                window.location.href = 'dashboard.html';
+            } else {
+                if (errEl) errEl.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

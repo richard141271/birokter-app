@@ -27,7 +27,7 @@
         
         <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bigård</h1>
 
-        <form onsubmit="event.preventDefault(); alert('Bigård lagret!'); window.location.href='bigard.html';" class="space-y-5">
+        <form onsubmit="saveApiary(event)" class="space-y-5">
             
             <!-- Bigård-navn -->
             <div>
@@ -58,4 +58,20 @@
     </div>
 
 </body>
+</html>
+<script>
+  function saveApiary(e) {
+    e.preventDefault();
+    const name = document.getElementById('apiary_name')?.value || '';
+    const address = document.getElementById('address')?.value || '';
+    let apiaries = [];
+    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (err) {}
+    const nextNumber = apiaries.length + 1;
+    const id = `BG-${String(nextNumber).padStart(2, '0')}`;
+    const apiary = { id, name, address };
+    apiaries.push(apiary);
+    try { localStorage.setItem('apiaries', JSON.stringify(apiaries)); } catch (err) {}
+    window.location.href = 'bigard.html';
+  }
+</script>
 </html>
