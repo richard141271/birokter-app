@@ -12,49 +12,58 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen pt-20 pb-10 px-4">
-  <h1 class="text-3xl font-bold mb-8 text-black">Glemt PIN</h1>
-  <div class="bg-white rounded-lg shadow-md w-full max-w-xs p-6 flex flex-col items-center border border-gray-200">
-    <div class="flex flex-col items-center mb-6">
-      <img src="logo.png" alt="Logo" class="h-16 w-auto mb-2">
-      <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
+  
+  <div id="app-header"></div>
+
+  <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col mt-0">
+    <div class="p-6 flex flex-col items-center w-full">
+      <div class="flex flex-col items-center mb-6">
+          <img src="assets/logo.png" alt="Logo" class="h-24 w-auto mb-2 object-contain">
+          <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+      </div>
+      
+      <h1 class="text-xl font-bold mb-6 text-black">Glemt PIN</h1>
+
+      <form onsubmit="requestCode(event)" class="w-full space-y-4" id="step_request">
+        <div>
+          <label for="reset_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
+          <input type="email" id="reset_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
+        </div>
+        <div>
+          <label for="method" class="block text-sm font-bold text-gray-900 mb-1">Levering</label>
+          <select id="method" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
+            <option value="email">E-post</option>
+            <option value="sms">SMS</option>
+          </select>
+        </div>
+        <p id="reset_msg" class="text-sm text-gray-700 hidden bg-yellow-50 p-2 rounded border border-yellow-200"></p>
+        <div class="pt-2 space-y-3">
+          <button type="submit" class="btn-primary">Send kode</button>
+          <a href="login.html" class="block w-full text-center text-black font-medium text-sm hover:underline">← Tilbake</a>
+        </div>
+      </form>
+
+      <form onsubmit="verifyCode(event)" class="w-full space-y-4 hidden" id="step_verify">
+        <div>
+          <label for="reset_code" class="block text-sm font-bold text-gray-900 mb-1">Kode</label>
+          <input type="text" id="reset_code" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500" placeholder="6 siffer">
+        </div>
+        <div class="pt-2 space-y-3">
+          <button type="submit" class="btn-primary">Bekreft kode</button>
+        </div>
+      </form>
+
+      <form onsubmit="setNewPin(event)" class="w-full space-y-4 hidden" id="step_setpin">
+        <div>
+          <label for="new_pin" class="block text-sm font-bold text-gray-900 mb-1">Ny PIN (4 siffer)</label>
+          <input type="password" id="new_pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
+        </div>
+        <div class="pt-2 space-y-3">
+          <button type="submit" class="btn-primary">Lagre ny PIN</button>
+        </div>
+      </form>
     </div>
-    <form onsubmit="requestCode(event)" class="w-full space-y-4" id="step_request">
-      <div>
-        <label for="reset_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
-        <input type="email" id="reset_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-      </div>
-      <div>
-        <label for="method" class="block text-sm font-bold text-gray-900 mb-1">Levering</label>
-        <select id="method" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          <option value="email">E-post</option>
-          <option value="sms">SMS</option>
-        </select>
-      </div>
-      <p id="reset_msg" class="text-sm text-gray-700 hidden"></p>
-      <div class="pt-2 space-y-3">
-        <button type="submit" class="w-full bg-[#1e73be] hover:bg-[#165ba1] text-white font-bold py-2.5 rounded shadow-sm transition-all">Send kode</button>
-        <a href="login.html" class="block w-full text-center text-[#1e73be] font-medium text-sm hover:underline">← Tilbake</a>
-      </div>
-    </form>
-    <form onsubmit="verifyCode(event)" class="w-full space-y-4 hidden" id="step_verify">
-      <div>
-        <label for="reset_code" class="block text-sm font-bold text-gray-900 mb-1">Kode</label>
-        <input type="text" id="reset_code" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-      </div>
-      <div class="pt-2 space-y-3">
-        <button type="submit" class="w-full bg-[#1e73be] hover:bg-[#165ba1] text-white font-bold py-2.5 rounded shadow-sm transition-all">Bekreft kode</button>
-      </div>
-    </form>
-    <form onsubmit="setNewPin(event)" class="w-full space-y-4 hidden" id="step_setpin">
-      <div>
-        <label for="new_pin" class="block text-sm font-bold text-gray-900 mb-1">Ny PIN (4 siffer)</label>
-        <input type="password" id="new_pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-      </div>
-      <div class="pt-2 space-y-3">
-        <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">Lagre ny PIN</button>
-      </div>
-    </form>
   </div>
   <script src="header.js"></script>
   <script>
@@ -64,18 +73,41 @@
       try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (err) {}
       const email = document.getElementById('reset_email')?.value || '';
       const msg = document.getElementById('reset_msg');
+      
+      // For testing purposes, we allow any email if no user is registered, 
+      // but in a real app we check if email matches.
+      // Since user might have lost data, we'll be lenient if local storage is empty,
+      // but strictly speaking we can't reset a password for a non-existent local user.
+      
       if (!data || data.email !== email) {
-        if (msg) { msg.textContent = 'E-post ikke funnet. Registrer deg først.'; msg.classList.remove('hidden'); }
-        return;
+         // If we are in "demo" mode or data was lost, we might want to just let them proceed 
+         // so they can see the flow? No, that's confusing.
+         // Let's stick to the logic: if email doesn't match local storage, we can't reset LOCAL pin.
+         if (msg) { 
+             msg.textContent = 'E-post ikke funnet i denne nettleseren. Har du slettet data? Registrer deg på nytt.'; 
+             msg.classList.remove('hidden'); 
+         }
+         return;
       }
+
       const code = String(Math.floor(100000 + Math.random() * 900000));
       try {
         localStorage.setItem('reset_code', code);
         localStorage.setItem('reset_email', email);
       } catch (err) {}
-      if (msg) { msg.textContent = 'Kode er sendt. Skriv inn koden for å fortsette.'; msg.classList.remove('hidden'); }
+      
+      if (msg) { 
+          // SIMULATION: Show code directly since we can't send email
+          msg.innerHTML = `Kode sendt (Simulert): <strong>${code}</strong><br>Skriv inn koden under.`; 
+          msg.classList.remove('hidden'); 
+      }
+      
+      // Show verify step immediately for better UX in this demo
       document.getElementById('step_request').classList.add('hidden');
       document.getElementById('step_verify').classList.remove('hidden');
+      
+      // Pre-fill code for convenience in testing? No, let them type it.
+      alert(`Din engangskode er: ${code}`);
     }
     function verifyCode(e) {
       e.preventDefault();

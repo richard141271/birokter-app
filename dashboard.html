@@ -90,6 +90,20 @@
     renderReminders();
   }
   function setHoneyStatus(val) { localStorage.setItem('honey_ready', val ? 'true' : 'false'); render(); }
+
+  async function testDatabase() {
+      if (!window.supabaseClient) {
+          alert('Supabase klient ikke lastet ennå!');
+          return;
+      }
+      const { data, error } = await window.supabaseClient.from('inspections').select('count', { count: 'exact', head: true });
+      if (error) {
+          alert('Feil ved kobling: ' + error.message + '\n\nSjekk at tabellen "inspections" finnes i Supabase.');
+      } else {
+          alert('Suksess! Koblet til database.\nAntall inspeksjoner i DB: ' + (data || 'Ukjent') + '\n(Merk: Dette henter ikke data fra din lokale nettleser, men fra skyen.)');
+      }
+  }
+
   function renderReminders() {
     // Simple local reminders based on last inspection and "TRENGER FÔR"
     let inspections = [];
