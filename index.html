@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFF8F0; /* Soft Beige */
+        }
+    </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="flex flex-col items-center min-h-screen pt-20 pb-10 px-4">
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-lg shadow-md w-full max-w-xs p-6 flex flex-col items-center border border-gray-200">
+        
+        <!-- Logo Area -->
+        <div class="flex flex-col items-center mb-6">
+            <!-- Logo -->
+            <img src="logo.png" alt="Logo" class="h-20 w-auto mb-2">
+            <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="w-full space-y-3 mb-6 flex flex-col items-center">
+            <button id="registerBtn" onclick="window.location.href='register.html'" class="w-48 bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-3 px-4 rounded shadow-md transition-all">
+                Registrer deg
+            </button>
+            <button id="loginBtn" onclick="window.location.href='login.html'" class="w-32 bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-4 rounded shadow-sm transition-all">
+                Logg inn
+            </button>
+        </div>
+
+        <!-- Links -->
+        <div class="w-full space-y-3 flex flex-col items-center mb-8">
+            <a href="https://richard141271.github.io/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-black text-black font-medium py-1.5 rounded hover:bg-yellow-50 transition-colors">
+                LEK-Honning™️
+            </a>
+            <a href="https://honning.no/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-black text-black font-medium py-1.5 rounded hover:bg-yellow-50 transition-colors">
+                Honningcentralen
+            </a>
+            <a href="https://norbi.no/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-black text-black font-medium py-1.5 rounded hover:bg-yellow-50 transition-colors">
+                Norges birøkterlag
+            </a>
+            <a href="https://honninglandet.no/nyheter/nm-i-honning-2025/" target="_blank" rel="noopener" class="block w-full text-center border-2 border-black text-black font-medium py-1.5 rounded hover:bg-yellow-50 transition-colors">
+                NM i Honning
+            </a>
+        </div>
+
+        <!-- Bottom Button -->
+        <div class="w-full flex justify-center mb-6">
+            <a href="https://mattilsynet.no/" target="_blank" rel="noopener" class="w-full text-center border-2 border-black text-black font-medium py-1.5 rounded uppercase tracking-wide hover:bg-yellow-50 transition-colors">
+                MATTILSYNET
+            </a>
+        </div>
+        
+        <div id="app-footer"></div>
+
+    </div>
+    <link rel="manifest" href="manifest.json">
+<script src="header.js"></script>
+<script>
+  try {
+    const dataStr = localStorage.getItem('beekeeper');
+    if (dataStr) {
+      const data = JSON.parse(dataStr);
+      // Only hide if we actually have a registered user with a name
+      if (data && data.name && data.name.trim().length > 0) {
+        const btn = document.getElementById('registerBtn');
+        if (btn) btn.style.display = 'none';
+      }
+    }
+  } catch (e) {
+    console.error('Error checking registration status:', e);
+    // If error, we assume not registered, so button stays visible
+  }
+</script>
+</body>
+</html>

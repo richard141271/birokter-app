@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rediger profil - Birøkter App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+  </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="flex flex-col items-center min-h-screen pt-0 pb-10 px-4">
+  
+  <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm mb-6"></div>
+
+  <div class="bg-white rounded-xl shadow-md w-full max-w-md p-6 border border-gray-200 mt-0">
+    <h2 class="text-2xl font-bold text-black mb-6 text-center">Rediger profil</h2>
+    <form onsubmit="saveProfile(event)" class="space-y-4">
+      <!-- Basic Info -->
+      <div><label class="block text-sm font-bold text-gray-900 mb-1">Fullt navn</label><input id="name" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+      <div><label class="block text-sm font-bold text-gray-900 mb-1">Adresse</label><input id="address" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-sm font-bold text-gray-900 mb-1">Postnummer</label><input id="zip" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+        <div><label class="block text-sm font-bold text-gray-900 mb-1">Kommune</label><input id="municipality" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-sm font-bold text-gray-900 mb-1">Telefon</label><input id="phone" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+        <div><label class="block text-sm font-bold text-gray-900 mb-1">E-post</label><input id="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+      </div>
+
+      <!-- Rokt Type -->
+      <div class="flex flex-col items-start space-y-2 mt-4">
+          <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" class="form-radio text-black focus:ring-[#FFD700] h-5 w-5" name="rokt_type" value="hobby" onchange="toggleBusinessFields()">
+              <span class="ml-2 text-base text-gray-900">Hobbyrøkt</span>
+          </label>
+          <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" class="form-radio text-black focus:ring-[#FFD700] h-5 w-5" name="rokt_type" value="naering" onchange="toggleBusinessFields()">
+              <span class="ml-2 text-base text-gray-900">Næringsrøkt</span>
+          </label>
+      </div>
+
+      <!-- Business Fields -->
+      <div id="business_fields" class="hidden space-y-4 mt-4 bg-yellow-50 p-4 rounded border border-yellow-200">
+          <div><label class="block text-sm font-bold text-gray-900 mb-1">Firmanavn</label><input id="company_name" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+          <div><label class="block text-sm font-bold text-gray-900 mb-1">Organisasjonsnummer</label><input id="org_number" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+          <div><label class="block text-sm font-bold text-gray-900 mb-1">Kontonummer (firma)</label><input id="company_account" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+      </div>
+
+      <!-- Personal Account -->
+      <div>
+        <label class="block text-sm font-bold text-gray-900 mb-1">Kontonummer (utbetaling)</label>
+        <input id="account" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none">
+      </div>
+
+      <!-- Memberships -->
+      <div class="space-y-4 mt-6">
+          <div class="flex items-center"><input id="is_nbl_member" type="checkbox" class="form-checkbox h-5 w-5 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Medlem av Norges Birøkterlag</label></div>
+          <div><label class="block text-sm font-bold text-gray-900 mb-1">Medlemsnummer NBL</label><input id="nbl_id" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+          <div><label class="block text-sm font-bold text-gray-900 mb-1">Lokallag</label><input id="lokallag" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-[#FFD700] focus:border-transparent outline-none"></div>
+          <div class="flex items-center mt-2"><input id="is_lek_member" type="checkbox" class="form-checkbox h-5 w-5 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Medlem av LEK-Honning™</label></div>
+          <div class="flex items-center mt-2"><input id="is_hc_supplier" type="checkbox" class="form-checkbox h-5 w-5 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Leverer honning til HC</label></div>
+      </div>
+
+      <!-- Interests -->
+      <div class="mt-6">
+          <h3 class="block text-sm font-bold text-gray-900 mb-3">Interessert i:</h3>
+          <div class="space-y-2">
+              <div class="flex items-center"><input id="interest_salg" type="checkbox" class="form-checkbox h-4 w-4 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Salg</label></div>
+              <div class="flex items-center"><input id="interest_rekruttering" type="checkbox" class="form-checkbox h-4 w-4 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Rekruttering</label></div>
+              <div class="flex items-center"><input id="interest_kurs" type="checkbox" class="form-checkbox h-4 w-4 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Kurs</label></div>
+              <div class="flex items-center"><input id="interest_samarbeid" type="checkbox" class="form-checkbox h-4 w-4 text-black focus:ring-[#FFD700] rounded mr-3"><label class="text-sm font-medium text-gray-900">Samarbeid</label></div>
+          </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 pt-6">
+        <a href="profil.html" class="flex items-center justify-center w-full bg-white border-2 border-black text-black font-bold py-3 rounded shadow-sm hover:bg-gray-50 transition-colors">Avbryt</a>
+        <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 rounded shadow-md transition-all">Lagre</button>
+      </div>
+    </form>
+    </div>
+  </div>
+  <div id="app-footer"></div>
+  <script src="header.js"></script>
+  <script>
+    function toggleBusinessFields() {
+        const isNaering = document.querySelector('input[name="rokt_type"][value="naering"]').checked;
+        const fields = document.getElementById('business_fields');
+        if (isNaering) fields.classList.remove('hidden'); else fields.classList.add('hidden');
+    }
+
+    function loadProfile() {
+      let data = null;
+      try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
+      if (!data) return;
+      
+      // Text inputs
+      ['name','address','zip','municipality','phone','email','account', 'company_name', 'org_number', 'company_account', 'nbl_id', 'lokallag'].forEach(k => {
+        const el = document.getElementById(k); if (el) el.value = data[k] || '';
+      });
+
+      // Radio
+      if (data.rokt_type === 'naering') document.querySelector('input[value="naering"]').checked = true;
+      else document.querySelector('input[value="hobby"]').checked = true;
+      toggleBusinessFields();
+
+      // Checkboxes
+      ['is_nbl_member', 'is_lek_member', 'is_hc_supplier'].forEach(k => {
+          const el = document.getElementById(k); if (el) el.checked = !!data[k];
+      });
+
+      // Interests
+      if (data.interests) {
+          ['salg', 'rekruttering', 'kurs', 'samarbeid'].forEach(k => {
+              const el = document.getElementById('interest_' + k);
+              if (el) el.checked = !!data.interests[k];
+          });
+      }
+    }
+
+    function saveProfile(e) {
+      e.preventDefault();
+      let data = null;
+      try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
+      if (!data) data = {};
+      
+      // Text inputs
+      ['name','address','zip','municipality','phone','email','account', 'company_name', 'org_number', 'company_account', 'nbl_id', 'lokallag'].forEach(k => {
+        const el = document.getElementById(k); if (el) data[k] = el.value || '';
+      });
+
+      // Radio
+      data.rokt_type = document.querySelector('input[name="rokt_type"]:checked').value;
+
+      // Checkboxes
+      ['is_nbl_member', 'is_lek_member', 'is_hc_supplier'].forEach(k => {
+          const el = document.getElementById(k); if (el) data[k] = el.checked;
+      });
+
+      // Interests
+      data.interests = {};
+      ['salg', 'rekruttering', 'kurs', 'samarbeid'].forEach(k => {
+          const el = document.getElementById('interest_' + k);
+          if (el) data.interests[k] = el.checked;
+      });
+
+      try { localStorage.setItem('beekeeper', JSON.stringify(data)); } catch (e) {}
+      window.location.href = 'profil.html';
+    }
+    loadProfile();
+  </script>
+</body>
+</html>

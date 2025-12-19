@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mine inspeksjoner - Birøkter App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+  </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
+  <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
+    <div class="p-6">
+      <h1 class="text-2xl font-bold mb-6 text-black text-center">Mine inspeksjoner</h1>
+      <div class="space-y-2 mb-4">
+        <input id="search_general" type="text" placeholder="Søk (Kube, Bigård, Dato, Notat...)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+        <div class="flex items-center justify-between">
+          <label class="flex items-center space-x-2 text-sm">
+            <input id="filter_last30" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
+            <span>Siste 30 dager</span>
+          </label>
+          <label class="flex items-center space-x-2 text-sm">
+            <input id="filter_severity" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
+            <span>Bare røde/gule statuser</span>
+          </label>
+        </div>
+      </div>
+      <div id="insp_empty" class="text-gray-600 text-center mb-4"></div>
+      <div id="insp_list" class="space-y-3"></div>
+      <div class="mt-6">
+        <a href="bikuber.html" class="block text-black font-semibold text-sm hover:underline">← Mine bikuber</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    function statusColor(s) {
+      const n = (s || '').toUpperCase();
+      if (n === 'OK') return 'bg-green-500';
+      if (n === 'DØD') return 'bg-red-600';
+      if (n === 'SYKDOM' || n === 'VARROA MISTANKE') return 'bg-orange-500';
+      if (n === 'BYTT DRONNING') return 'bg-purple-500';
+      if (n === 'TRENGER FÔR' || n === 'FOR LITE MAT') return 'bg-amber-500';
+      if (n === 'MOTTATT FÔR' || n === 'SKIFTET RAMMER' || n === 'DRONNING SETT') return 'bg-blue-500';
+      if (n === 'SVARMING') return 'bg-red-500';
+      return 'bg-gray-400';
+    }
+    function statusIcon(s) {
+      const n = (s || '').toUpperCase();
+      if (n === 'OK') return '✅';
+      if (n === 'DØD') return '⛔';
+      if (n === 'SYKDOM' || n === 'VARROA MISTANKE') return '⚠️';
+      if (n === 'BYTT DRONNING') return '👑';
+      if (n === 'TRENGER FÔR' || n === 'FOR LITE MAT') return '🍯';
+      if (n === 'MOTTATT FÔR') return '📦';
+      if (n === 'SKIFTET RAMMER') return '🪵';
+      if (n === 'DRONNING SETT') return '👀';
+      if (n === 'SVARMING') return '🐝';
+      return 'ℹ️';
+    }
+    function severeStatus(s) {
+      const n = (s || '').toUpperCase();
+      return n === 'DØD' || n === 'SYKDOM' || n === 'VARROA MISTANKE' || n === 'TRENGER FÔR' || n === 'FOR LITE MAT' || n === 'SVARMING' || n === 'BYTT DRONNING';
+    }
+    function applyFilters() {
+      let inspections = []; let hives = []; let apiaries = [];
+      try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+      try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+      try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+      
+      const params = new URLSearchParams(window.location.search);
+      const filterHiveId = params.get('hive');
+
+      const q = (document.getElementById('search_general')?.value || '').toLowerCase();
+      const last30 = document.getElementById('filter_last30')?.checked || false;
+      const onlySevere = document.getElementById('filter_severity')?.checked || false;
+      const now = Date.now();
+      const hiveToApiary = Object.fromEntries(hives.map(h => [h.id, h.apiaryId]));
+      const apiaryName = Object.fromEntries(apiaries.map(a => [a.id, a.name || a.id]));
+      
+      const filtered = inspections.filter(i => {
+        if (filterHiveId && i.hiveId !== filterHiveId) return false;
+        
+        const apiaryId = hiveToApiary[i.hiveId] || '';
+        const apiaryNameStr = (apiaryName[apiaryId] || '').toLowerCase();
+        const hiveIdStr = (i.hiveId || '').toLowerCase();
+        const noteStr = (i.note || '').toLowerCase();
+        const dateStr = new Date(i.ts || 0).toLocaleString('no-NO').toLowerCase();
+
+        if (q) {
+            const match = 
+                apiaryNameStr.includes(q) ||
+                apiaryId.toLowerCase().includes(q) ||
+                hiveIdStr.includes(q) ||
+                noteStr.includes(q) ||
+                dateStr.includes(q);
+            if (!match) return false;
+        }
+
+        if (last30 && now - (i.ts || 0) > 30 * 24 * 3600 * 1000) return false;
+        if (onlySevere && !severeStatus(i.status)) return false;
+        return true;
+      }).sort((a,b)=> (b.ts||0)-(a.ts||0));
+      const emptyEl = document.getElementById('insp_empty');
+      const listEl = document.getElementById('insp_list');
+      if (!filtered.length) { if (emptyEl) emptyEl.textContent = 'Ingen inspeksjoner funnet.'; if (listEl) listEl.innerHTML = ''; return; }
+      if (emptyEl) emptyEl.textContent = '';
+      listEl.innerHTML = '';
+      filtered.forEach(i => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between border border-gray-200 rounded p-3 text-sm';
+        const d = new Date(i.ts || Date.now());
+        const apiaryId = hiveToApiary[i.hiveId] || '';
+        const name = apiaryName[apiaryId] || apiaryId;
+        const left = document.createElement('div');
+        left.className = 'flex items-center space-x-2';
+        const icon = document.createElement('span'); icon.textContent = statusIcon(i.status);
+        const text = document.createElement('div');
+        text.className = 'flex flex-col';
+        
+        const mainLine = document.createElement('span');
+        mainLine.className = 'font-semibold';
+        mainLine.textContent = `${i.hiveId} • ${name}`;
+        
+        const subLine = document.createElement('span');
+        subLine.className = 'text-xs text-gray-500';
+        const note = (i.note || '').trim();
+        subLine.textContent = `${d.toLocaleString('no-NO')} • ${i.status}${note ? ' • ' + note : ''}`;
+        
+        text.appendChild(mainLine);
+        text.appendChild(subLine);
+        
+        left.appendChild(icon);
+        left.appendChild(text);
+        const dot = document.createElement('span');
+        dot.className = `ml-3 inline-block w-2.5 h-2.5 rounded-full ${statusColor(i.status)}`;
+        row.appendChild(left);
+        row.appendChild(dot);
+        listEl.appendChild(row);
+      });
+    }
+    document.getElementById('search_general')?.addEventListener('input', applyFilters);
+    document.getElementById('filter_last30')?.addEventListener('change', applyFilters);
+    document.getElementById('filter_severity')?.addEventListener('change', applyFilters);
+    applyFilters();
+  </script>
+  <script src="header.js"></script>
+  <link rel="manifest" href="manifest.json">
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Inspeksjon - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+        /* Hide scrollbar for button grid */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+        
+        <!-- Header Container -->
+        <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
+        <div class="p-6">
+            <h1 id="insp_header" class="text-xl font-bold text-black text-center mb-4"></h1>
+
+            <!-- INSPEKSJON Header -->
+            <div class="w-full bg-black text-[#FFD700] font-bold text-center py-2.5 rounded mb-6 uppercase tracking-wider">
+                INSPEKSJON
+            </div>
+
+            <form onsubmit="saveInspection(event)" class="space-y-4">
+                
+                <input type="hidden" id="status_input" value="OK">
+                
+                <div class="text-sm text-gray-600 text-center">Dato: <span id="date_display"></span> • Klokkeslett: <span id="time_display"></span></div>
+                
+                <!-- TEMP & WEATHER -->
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" name="temp" placeholder="TEMP" class="w-full border border-gray-300 rounded px-3 py-3 focus:outline-none focus:ring-2 focus:ring-[#FFD700] placeholder-gray-500 uppercase text-center">
+                    <input type="text" name="weather" placeholder="VÆRET" class="w-full border border-gray-300 rounded px-3 py-3 focus:outline-none focus:ring-2 focus:ring-[#FFD700] placeholder-gray-500 uppercase text-center">
+                </div>
+
+                <!-- NOTAT -->
+                <div>
+                    <input type="text" name="note" placeholder="NOTAT" class="w-full border border-gray-300 rounded px-3 py-3 focus:outline-none focus:ring-2 focus:ring-[#FFD700] placeholder-gray-500 uppercase">
+                </div>
+
+                <!-- BILDE -->
+                <div class="relative">
+                    <button type="button" onclick="document.getElementById('fileInput').click()" class="w-full border border-gray-300 rounded px-3 py-3 text-gray-500 uppercase text-left hover:bg-gray-50 flex justify-between items-center focus:ring-2 focus:ring-[#FFD700]">
+                        <span id="fileLabel">TA BILDE / VELG FIL</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*,application/pdf" capture="environment" onchange="handleFile(this)">
+                </div>
+
+                <!-- STATUS GRID -->
+                <div>
+                    <label class="block text-gray-500 text-sm font-bold mb-2 uppercase">STATUS</label>
+                    <div class="grid grid-cols-2 gap-2" id="status_grid">
+                        <!-- Buttons injected by JS -->
+                    </div>
+                </div>
+
+                <!-- SAVE BUTTON -->
+                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all mt-4 uppercase">Lagre inspeksjon</button>
+
+
+                <!-- Bottom Buttons Grid -->
+                <div class="grid grid-cols-2 gap-3 mt-6">
+                    
+                    <!-- Left Column Buttons -->
+                    <div class="space-y-3">
+                        <button type="button" onclick="const h=getParam('hive'); if(h) window.location.href='inspeksjoner.html?hive='+encodeURIComponent(h)" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
+                            Tidligere Logg
+                        </button>
+                        <button type="button" onclick="window.location.href='bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
+                            Mine Bigårder
+                        </button>
+                        <button type="button" onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
+                            Mine Bikuber
+                        </button>
+                    </div>
+
+                    <!-- Right Column: Mattilsynet -->
+                    <div class="flex flex-col justify-end">
+                        <button type="button" onclick="window.location.href='https://www.mattilsynet.no/om_mattilsynet/kontakt_oss/'" class="w-full bg-white border-2 border-black text-black font-bold py-2 px-2 rounded text-sm shadow-sm hover:bg-yellow-50 h-full flex flex-col items-center justify-center">
+                            <span class="block text-xs mb-1">MATTILSYNET</span>
+                            <span class="text-lg">KONTAKT</span>
+                        </button>
+                    </div>
+
+                </div>
+                
+                <div id="app-footer"></div>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+<script>
+  function getParam(name) {
+    const p = new URLSearchParams(window.location.search); return p.get(name);
+  }
+
+  // Define Status Options with Colors
+  const statusOptions = [
+    { val: 'OK', color: 'bg-green-500 text-white', label: 'OK' },
+    { val: 'DØD', color: 'bg-red-600 text-white', label: 'DØD' },
+    { val: 'SYKDOM', color: 'bg-orange-500 text-white', label: 'SYKDOM' },
+    { val: 'BYTT DRONNING', color: 'bg-purple-500 text-white', label: 'BYTT DRONNING' },
+    { val: 'TRENGER FÔR', color: 'bg-amber-500 text-white', label: 'TRENGER FÔR' },
+    { val: 'MOTTATT FÔR', color: 'bg-blue-500 text-white', label: 'MOTTATT FÔR' },
+    { val: 'SKIFTET RAMMER', color: 'bg-blue-500 text-white', label: 'SKIFTET RAMMER' },
+    { val: 'DRONNING SETT', color: 'bg-blue-500 text-white', label: 'DRONNING SETT' },
+    { val: 'SVARMING', color: 'bg-red-500 text-white', label: 'SVARMING' },
+    { val: 'VARROA MISTANKE', color: 'bg-orange-500 text-white', label: 'VARROA MISTANKE' },
+    { val: 'FOR LITE MAT', color: 'bg-amber-500 text-white', label: 'FOR LITE MAT' }
+  ];
+
+  function renderStatusGrid() {
+      const grid = document.getElementById('status_grid');
+      const input = document.getElementById('status_input');
+      if (!grid) return;
+      grid.innerHTML = '';
+      
+      statusOptions.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          // Check if selected
+          const isSelected = input.value === opt.val;
+          
+          btn.className = `w-full py-2 px-1 rounded font-bold text-xs uppercase shadow-sm transition-all border-2 ${
+              isSelected ? 'border-black ring-2 ring-offset-1 ring-black scale-[1.02]' : 'border-transparent opacity-90 hover:opacity-100'
+          } ${opt.color}`;
+          
+          btn.textContent = opt.label;
+          btn.onclick = () => {
+              input.value = opt.val;
+              renderStatusGrid(); // Re-render to update selection
+          };
+          grid.appendChild(btn);
+      });
+  }
+
+  function handleFile(input) {
+      const label = document.getElementById('fileLabel');
+      if (input.files && input.files.length > 0) {
+          label.textContent = `Fil valgt: ${input.files[0].name}`;
+      } else {
+          label.textContent = 'TA BILDE / VELG FIL';
+      }
+  }
+
+  function saveInspection(e) {
+    e.preventDefault();
+    const hiveId = getParam('hive') || '';
+    const temp = document.querySelector('input[name="temp"]')?.value || '';
+    const weather = document.querySelector('input[name="weather"]')?.value || '';
+    const note = document.querySelector('input[name="note"]')?.value || '';
+    const status = document.getElementById('status_input')?.value || 'OK';
+    
+    // In a real app, handle image upload here
+    
+    let inspections = [];
+    try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+    const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
+    inspections.push({ id, hiveId, status, temp, weather, note, ts: Date.now() });
+    try { localStorage.setItem('inspections', JSON.stringify(inspections)); } catch (e) {}
+    window.location.href = 'bikuber.html';
+  }
+  
+  // Init
+  const hiveId = getParam('hive');
+  if (hiveId) document.getElementById('page_title').textContent = `Ny Inspeksjon: ${hiveId}`; // Assuming page_title exists, or insp_header
+  
+  // Actually the header id is insp_header
+  if (hiveId) document.getElementById('insp_header').textContent = `Ny Inspeksjon: ${hiveId}`;
+  
+  // Display Date/Time
+  const now = new Date();
+  document.getElementById('date_display').textContent = now.toLocaleDateString('no-NO');
+  document.getElementById('time_display').textContent = now.toLocaleTimeString('no-NO', {hour: '2-digit', minute:'2-digit'});
+
+  renderStatusGrid();
+</script>
+<script src="header.js"></script>
+</html>
