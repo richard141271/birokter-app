@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Profil - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,38 +13,29 @@
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
-
-    <!-- Page Title outside card -->
-    <h1 class="text-3xl font-bold mb-6 text-black uppercase tracking-wide">Profil</h1>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
 
     <!-- Main Card -->
     <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
-        <!-- Top Blue Header with Logo -->
-        <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-3">
-             <!-- Bee Icon / Logo -->
-             <img src="logo.png" alt="Logo" class="h-10 w-auto">
-             <span class="text-white font-bold text-xl">Birøkter Registeret</span>
-        </div>
-
-        <!-- Grey Sub-header -->
-        <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
-            <span class="text-gray-600 font-medium">Profil</span>
-        </div>
+        <!-- Header Container -->
+        <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
 
         <div class="p-6 flex flex-col items-center w-full text-center space-y-4">
             
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Min Profil</h2>
+
             <!-- User Info -->
             <div class="space-y-1">
-                <h2 id="profile_name" class="text-xl font-bold text-gray-900"></h2>
+                <h3 id="profile_name" class="text-lg font-bold text-gray-900"></h3>
                 <p id="profile_address" class="text-gray-700"></p>
                 <p id="profile_contact" class="text-gray-700"></p>
             </div>
 
-            <!-- Big Number (Balance / Honey kg?) -->
-            <div class="bg-gray-100 px-8 py-2 rounded border border-gray-300 my-4">
-                <span class="text-3xl font-bold text-black">126.70</span>
+            <!-- Member ID -->
+            <div class="bg-yellow-50 px-8 py-3 rounded border border-yellow-200 my-4 flex flex-col items-center">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Medlemsnummer</span>
+                <span id="member_id_display" class="text-3xl font-extrabold text-black"></span>
             </div>
 
             <!-- Account Info -->
@@ -54,22 +45,21 @@
             <div id="profile_badges" class="bg-gray-50 p-4 rounded-lg w-full text-left space-y-2 text-sm text-gray-800 border border-gray-100"></div>
 
             <!-- Update Button -->
-            <button class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all mt-4">
+            <button onclick="window.location.href='profil-rediger.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all mt-4">
                 Endre/oppdatere profil
+            </button>
+
+            <!-- Settings Button (Moved inside) -->
+            <button onclick="window.location.href='innstillinger.html'" class="w-full bg-white border-2 border-black text-black font-bold py-3 rounded hover:bg-yellow-50 transition-colors shadow-sm uppercase tracking-wide mt-2">
+                Innstillinger
             </button>
 
         </div>
     </div>
     
-    <!-- Bottom Navigation Button -->
-    <div class="mt-8 w-full max-w-sm">
-        <button onclick="window.location.href='innstillinger.html'" class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-3 rounded hover:bg-blue-50 transition-colors shadow-sm uppercase tracking-wide">
-            Innstillinger
-        </button>
-    </div>
-
 </body>
-</html>
+<script src="header.js"></script>
+<link rel="manifest" href="manifest.json">
 <script>
   function renderProfile() {
     let data = null;
@@ -84,6 +74,8 @@
     if (a) a.textContent = [data.address, data.zip, data.municipality].filter(Boolean).join(', ');
     if (c) c.textContent = [data.phone, data.email].filter(Boolean).join(' • ');
     if (acc) acc.textContent = data.account ? `Konto: ${data.account}` : '';
+    const memId = document.getElementById('member_id_display');
+    if (memId) memId.textContent = data.memberId || '1001'; // Fallback for existing users
     if (badges) {
       badges.innerHTML = '';
       if (data.is_lek_member) { const p = document.createElement('p'); p.textContent = '• LEK-Honning™ medlem'; badges.appendChild(p); }
@@ -95,3 +87,4 @@
   }
   renderProfile();
   </script>
+</html>

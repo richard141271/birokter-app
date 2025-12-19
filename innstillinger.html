@@ -15,64 +15,98 @@
 </head>
 <body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
 
-    <!-- Page Title outside card -->
-    <h1 class="text-3xl font-bold mb-6 text-black uppercase tracking-wide">INNSTILLINGER</h1>
-
     <!-- Main Card -->
     <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
-        <!-- Top Blue Header with Logo -->
-        <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-3">
-             <!-- Bee Icon / Logo -->
-             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.352-.272-2.636-.759-3.808a.75.75 0 00-.722-.515 11.209 11.209 0 01-7.877-3.08zM12 4.69c2.11 0 4.08.66 5.728 1.81.229.16.486.32.754.468.273.15.556.28.845.396-.58 3.525-2.63 6.636-5.46 8.583a.75.75 0 01-.86 0 10.46 10.46 0 01-5.46-8.583c.29-.116.572-.246.845-.396.268-.148.525-.308.754-.468A9.709 9.709 0 0112 4.69z" clip-rule="evenodd" />
-              </svg>
-             <span class="text-white font-bold text-xl">Birøkter Registeret</span>
-        </div>
+        <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
 
-        <!-- Grey Sub-header -->
-        <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
-            <span class="text-gray-600 font-medium">Innstillinger</span>
-        </div>
-
-        <div class="p-6 flex flex-col items-center w-full space-y-3">
-            
-            <!-- Menu Items -->
-            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
-                Mine Bikuber
-            </button>
-            
-            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
-                Mine Inspekjoner
-            </button>
-            
-            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
-                Mine Bigårder
-            </button>
-            
-            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
-                Selg Honning
-            </button>
-            
-            <!-- Highlighted Button -->
-            <button class="w-full bg-[#0f2a4a] border-2 border-[#0f2a4a] text-white font-bold py-2.5 rounded hover:bg-[#1a3d66] transition-colors shadow-sm">
-                Kjøp Honning
-            </button>
-
-            <!-- Spacer -->
-            <div class="h-4"></div>
-
-            <!-- Profile Button -->
-            <button onclick="window.location.href='profil.html'" class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
-                Profil
-            </button>
-
-        </div>
+    <!-- Grey Sub-header -->
+    <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
+        <span class="text-gray-600 font-medium">Innstillinger</span>
     </div>
-    
-    <div class="mt-8">
-        <a href="dashboard.html" class="text-[#0f2a4a] font-semibold text-sm hover:underline">← Tilbake til oversikt</a>
+
+    <div class="p-6 flex flex-col items-center w-full space-y-3">
+        
+        <!-- Menu Items -->
+        <button onclick="window.location.href='bikuber.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+            Mine Bikuber
+        </button>
+        
+        <button onclick="window.location.href='inspeksjoner.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+            Mine Inspeksjoner
+        </button>
+        
+        <button onclick="window.location.href='bigard.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+            Mine Bigårder
+        </button>
+        
+        <button onclick="window.location.href='selg-honning.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+            Selg Honning
+        </button>
+        
+        <!-- Highlighted Button -->
+        <button onclick="window.location.href='kjop-honning.html'" class="w-full bg-black border-2 border-black text-[#FFD700] font-bold py-2.5 rounded hover:bg-gray-800 transition-colors shadow-sm">
+            Kjøp Honning
+        </button>
+
+        <!-- Spacer -->
+        <div class="h-4"></div>
+
+        <!-- Profile Button -->
+        <button onclick="window.location.href='profil.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+            Profil
+        </button>
+
+        <!-- Export / Reset -->
+        <div class="w-full pt-4 space-y-2">
+            <button onclick="downloadJSON()" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">Last ned data (JSON)</button>
+            <button onclick="downloadCSV()" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">Last ned data (CSV)</button>
+            <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded hover:bg-red-700 transition-colors shadow-sm">Nullstill alt</button>
+        </div>
+        
+        <div id="app-footer"></div>
     </div>
+</div>
+
+<div class="mt-8">
+    <a href="dashboard.html" class="text-black font-semibold text-sm hover:underline">← Tilbake til oversikt</a>
+</div>
 
 </body>
 </html>
+<script src="header.js"></script>
+<link rel="manifest" href="manifest.json">
+<script>
+  function download(filename, content, type) {
+    const blob = new Blob([content], { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  function downloadJSON() {
+    const data = {
+      beekeeper: JSON.parse(localStorage.getItem('beekeeper') || 'null'),
+      apiaries: JSON.parse(localStorage.getItem('apiaries') || '[]'),
+      hives: JSON.parse(localStorage.getItem('hives') || '[]'),
+      inspections: JSON.parse(localStorage.getItem('inspections') || '[]'),
+      honey_ready: localStorage.getItem('honey_ready') || 'false'
+    };
+    download('birokter-data.json', JSON.stringify(data, null, 2), 'application/json');
+  }
+  function downloadCSV() {
+    const arr = JSON.parse(localStorage.getItem('inspections') || '[]');
+    const header = ['ID','HiveId','Status','Temp','Weather','Note','Timestamp'];
+    const rows = arr.map((i, idx) => [
+      String(idx+1), i.hiveId || '', i.status || '', i.temp || '', i.weather || '', (i.note || '').replace(/[\n\r,]/g,' '), new Date(i.ts || Date.now()).toISOString()
+    ]);
+    const csv = [header].concat(rows).map(r => r.join(',')).join('\n');
+    download('inspeksjoner.csv', csv, 'text/csv');
+  }
+  function resetAll() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+  }
+</script>

@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Registrer Ny Bigård - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,18 +13,15 @@
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen pt-0 pb-10">
-
-    <!-- Top Blue Header with Logo -->
-    <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-2 mb-10 shadow-md">
-         <!-- Bee Icon / Logo -->
-         <img src="logo.png" alt="Logo" class="h-8 w-auto">
-         <span class="text-white font-bold text-lg">Birøkter Registeret</span>
-    </div>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
 
     <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm p-8 flex flex-col border border-gray-200 mx-4">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
+        <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
+    <div class="p-8">
         <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bigård</h1>
 
         <form onsubmit="saveApiary(event)" class="space-y-5">
@@ -32,13 +29,13 @@
             <!-- Bigård-navn -->
             <div>
                 <label for="apiary_name" class="block text-sm font-bold text-black mb-1">Bigård-navn</label>
-                <input type="text" id="apiary_name" name="apiary_name" placeholder="F.eks. Rascheprangen" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+                <input type="text" id="apiary_name" name="apiary_name" placeholder="F.eks. Rascheprangen" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
             </div>
 
             <!-- Adresse / plassering -->
             <div>
                 <label for="address" class="block text-sm font-bold text-black mb-1">Adresse / plassering</label>
-                <textarea id="address" name="address" rows="3" placeholder="Adresse, stedsnavn, beskrivelse" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500 resize-none font-mono text-sm"></textarea>
+                <textarea id="address" name="address" rows="3" placeholder="Adresse, stedsnavn, beskrivelse" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500 resize-none font-mono text-sm"></textarea>
             </div>
 
             <!-- Auto number info -->
@@ -46,19 +43,23 @@
 
             <!-- Buttons -->
             <div class="pt-2 space-y-4">
-                <button type="submit" class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all">
+                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all">
                     Lagre bigård
                 </button>
-                <a href="bigard.html" class="block w-full text-center text-[#0f2a4a] font-bold text-sm hover:underline">
+                <button type="button" onclick="window.location.href='bigard.html'" class="w-full text-center text-black font-bold text-sm hover:underline">
                     ← Tilbake til bigårder
-                </a>
+                </button>
             </div>
+            
+            <div id="app-footer"></div>
 
         </form>
     </div>
+    </div>
 
 </body>
-</html>
+<script src="header.js"></script>
+<link rel="manifest" href="manifest.json">
 <script>
   function saveApiary(e) {
     e.preventDefault();
@@ -67,7 +68,7 @@
     let apiaries = [];
     try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (err) {}
     const nextNumber = apiaries.length + 1;
-    const id = `BG-${String(nextNumber).padStart(2, '0')}`;
+    const id = `BIGÅRD-${String(nextNumber).padStart(3, '0')}`;
     const apiary = { id, name, address };
     apiaries.push(apiary);
     try { localStorage.setItem('apiaries', JSON.stringify(apiaries)); } catch (err) {}

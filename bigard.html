@@ -2,85 +2,169 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Bigård - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
-
-    <!-- Page Title outside card -->
-    <h1 class="text-3xl font-bold mb-6 text-black">Bigård</h1>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
 
     <!-- Main Card -->
     <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
-        <!-- Top Blue Header with Logo -->
-        <div class="bg-[#1e3a5f] w-full py-4 flex items-center justify-center space-x-2">
-             <!-- Bee Icon / Logo -->
-             <img src="logo.png" alt="Logo" class="h-8 w-auto">
-             <span class="text-white font-bold text-lg uppercase tracking-wider">TOPP LOGO</span>
+        <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
+    <div class="p-6 flex flex-col items-center w-full">
+        
+        <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
+        <div id="apiary_empty" class="w-full text-center text-gray-600 mb-4"></div>
+        
+        <!-- List -->
+        <div id="apiary_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
+
+        <!-- Dropdown -->
+        <div id="apiary_dropdown_container" class="w-full mb-8 hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Eldre bigårder</label>
+            <select id="apiary_dropdown" class="w-full border border-gray-300 rounded px-3 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#FFD700]" onchange="if(this.value) window.location.href='bikuber.html?apiaryId='+encodeURIComponent(this.value)">
+                <option value="">Velg bigård...</option>
+            </select>
         </div>
 
-        <div class="p-6 flex flex-col items-center w-full">
-            
-            <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
-            <div id="apiary_empty" class="w-full text-center text-gray-600 mb-4"></div>
-            <div id="apiary_list" class="w-full space-y-3 mb-6"></div>
-
-            <!-- Action Buttons Stack -->
-            <div class="w-full space-y-3">
-                <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
-                    Registrer Ny Bigård
-                </button>
-                <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
-                    Registrer Ny Bikube
-                </button>
-                <button disabled class="w-full bg-[#2c4b70] text-white font-bold py-3 px-4 rounded opacity-60 text-left pl-6">
-                    Mine Bikuber (kommer)
-                </button>
-            </div>
-            
-            <!-- Copyright -->
-            <p class="text-xs text-gray-400 mt-8">copyright 2025 © LEK-Honning</p>
-
+        <!-- Action Buttons -->
+        <div class="w-full space-y-4 pt-6 border-t-2 border-gray-100 mt-auto">
+            <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
+                Registrer Ny Bigård
+            </button>
+            <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
+                Registrer Ny Bikube
+            </button>
+            <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
+                Mine Bikuber
+            </button>
+            <button onclick="window.location.href='dashboard.html'" class="w-full text-black font-semibold text-sm hover:underline py-2 text-center mt-2">
+               ← Tilbake til oversikt
+            </button>
         </div>
+        
+        <div id="app-footer"></div>
+
+    </div>
     </div>
     
-    <div class="mt-8">
-        <a href="dashboard.html" class="text-[#1e3a5f] font-semibold text-sm hover:underline">← Tilbake til oversikt</a>
-    </div>
-
 </body>
-</html>
 <script>
+  function statusColor(s) {
+    const n = (s || '').toUpperCase();
+    if (n === 'OK') return 'bg-green-500';
+    if (n === 'DØD') return 'bg-red-600';
+    if (n === 'SYKDOM' || n === 'VARROA MISTANKE') return 'bg-orange-500';
+    if (n === 'BYTT DRONNING') return 'bg-purple-500';
+    if (n === 'TRENGER FÔR' || n === 'FOR LITE MAT') return 'bg-amber-500';
+    if (n === 'MOTTATT FÔR' || n === 'SKIFTET RAMMER' || n === 'DRONNING SETT') return 'bg-blue-500';
+    return 'bg-gray-400';
+  }
   function renderApiaries() {
     let apiaries = [];
     try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+    let hives = []; let inspections = [];
+    try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+    try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+    
+    // Sort reverse
+    const reversed = [...apiaries].reverse();
+    const limit = 10;
+    const recent = reversed.slice(0, limit);
+    const older = reversed.slice(limit);
+
     const emptyEl = document.getElementById('apiary_empty');
     const listEl = document.getElementById('apiary_list');
+    const dropContainer = document.getElementById('apiary_dropdown_container');
+    const dropSelect = document.getElementById('apiary_dropdown');
+
     if (!apiaries.length) {
       if (emptyEl) emptyEl.textContent = 'Du har ingen registrerte bigårder ennå.';
       if (listEl) listEl.innerHTML = '';
+      if (dropContainer) dropContainer.classList.add('hidden');
       return;
     }
     if (emptyEl) emptyEl.textContent = '';
-    if (listEl) {
-      listEl.innerHTML = '';
-      apiaries.forEach(a => {
+    
+    // Helper for name display
+    const getDisplayName = (a) => {
+        // "om man velger bort navn på bigården, så får den kun nummeret, og da kutter vi ut bindestreken bak, og midtstiller nummeret."
+        if (a.name && a.name.trim() !== '') {
+            return `${a.id} — ${a.name}`;
+        } else {
+            // Remove hyphen? Assuming ID format is "BIGARD-001".
+            // If user meant the hyphen in "ID - Name", then it's already handled by logic.
+            // But user said "kutter vi ut bindestreken bak". Maybe "BIGARD-001" -> "BIGARD 001"?
+            // Or if ID is just a number?
+            // Let's assume standard ID "BIGARD-XXX".
+            // If no name, just return the ID, maybe formatted.
+            return a.id; // Simple ID display.
+        }
+    };
+
+    const isCentered = (a) => {
+        return !(a.name && a.name.trim() !== '');
+    };
+
+    // Render Recent
+    listEl.innerHTML = '';
+    recent.forEach(a => {
+        const relatedHives = hives.filter(h => h.apiaryId === a.id);
+        const hiveIds = relatedHives.map(h => h.id);
+        const last = inspections.filter(i => hiveIds.includes(i.hiveId)).sort((x,y)=> (y.ts||0)-(x.ts||0))[0];
+        
         const btn = document.createElement('button');
-        btn.className = 'w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6';
-        btn.textContent = `${a.id} — ${a.name}`;
+        btn.className = 'relative w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-4 px-2 rounded shadow-sm transition-all text-center flex flex-col items-center justify-center min-h-[110px]';
+        
+        // ID
+        const idSpan = document.createElement('span');
+        idSpan.className = 'text-xl font-extrabold uppercase tracking-wide';
+        idSpan.textContent = a.id;
+        btn.appendChild(idSpan);
+
+        // Name
+        if (a.name && a.name.trim() !== '') {
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'text-xs font-medium opacity-80 mt-1 break-words w-full px-1 leading-tight';
+            nameSpan.textContent = a.name;
+            btn.appendChild(nameSpan);
+        }
+        
+        // Status Dot
+        if (last) {
+          const dot = document.createElement('span');
+          dot.className = `absolute top-2 right-2 w-3 h-3 rounded-full ${statusColor(last.status)} shadow-sm border border-black/10`;
+          btn.appendChild(dot);
+        }
+
+        // Click
+        btn.onclick = () => { window.location.href = `bikuber.html?apiaryId=${encodeURIComponent(a.id)}`; };
+
         listEl.appendChild(btn);
-      });
+    });
+
+    // Render Older
+    if (older.length > 0) {
+        dropContainer.classList.remove('hidden');
+        while (dropSelect.options.length > 1) { dropSelect.remove(1); }
+        older.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            opt.textContent = getDisplayName(a);
+            dropSelect.appendChild(opt);
+        });
+    } else {
+        dropContainer.classList.add('hidden');
     }
   }
   renderApiaries();
 </script>
+<script src="header.js"></script>
 </html>

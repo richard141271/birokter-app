@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Registrer Ny Bikube - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,55 +13,89 @@
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen pt-0 pb-10">
-
-    <!-- Top Blue Header with Logo -->
-    <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-2 mb-10 shadow-md">
-         <!-- Bee Icon / Logo -->
-         <img src="logo.png" alt="Logo" class="h-8 w-auto">
-         <span class="text-white font-bold text-lg">Birøkter Registeret</span>
-    </div>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
 
     <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm p-8 flex flex-col border border-gray-200 mx-4">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
+        <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
+    <div class="p-8">
         <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bikube</h1>
 
-        <form onsubmit="event.preventDefault(); alert('Bikube lagret!'); window.location.href='bigard.html';" class="space-y-5">
+        <form onsubmit="saveHive(event)" class="space-y-5">
             
-            <!-- Bikube-nummer -->
             <div>
-                <label for="hive_id" class="block text-sm font-bold text-black mb-1">Bikube-nummer</label>
-                <input type="text" id="hive_id" name="hive_id" placeholder="F.eks. BK-012" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+                <label for="apiary_select" class="block text-sm font-bold text-black mb-1">Velg bigård</label>
+                <select id="apiary_select" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500"></select>
             </div>
 
             <!-- Dronning (årstall) -->
             <div>
                 <label for="queen_year" class="block text-sm font-bold text-black mb-1">Dronning (årstall)</label>
-                <input type="number" id="queen_year" name="queen_year" placeholder="2024" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+                <input type="number" id="queen_year" name="queen_year" placeholder="2024" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
             </div>
 
              <!-- Type / Rase -->
              <div>
                 <label for="type" class="block text-sm font-bold text-black mb-1">Rase / Type (Valgfritt)</label>
-                <input type="text" id="type" name="type" placeholder="Krainer, Buckfast..." class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+                <input type="text" id="type" name="type" placeholder="Krainer, Buckfast..." class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
             </div>
 
-            <!-- Info -->
-            <p class="text-sm text-gray-600 font-medium">Bikuben knyttes til: <span class="text-gray-800 font-bold">Rascheprangen (BG-01)</span></p>
+            <p id="bind_info" class="text-sm text-gray-600 font-medium"></p>
 
             <!-- Buttons -->
             <div class="pt-2 space-y-4">
-                <button type="submit" class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all">
+                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all">
                     Lagre bikube
                 </button>
-                <a href="bigard.html" class="block w-full text-center text-[#0f2a4a] font-bold text-sm hover:underline">
-                    ← Tilbake til bigård
-                </a>
+                <button type="button" onclick="window.location.href='bikuber.html'" class="w-full text-center text-black font-bold text-sm hover:underline">
+                    ← Tilbake til bikuber
+                </button>
             </div>
+            
+            <div id="app-footer"></div>
 
         </form>
     </div>
+    </div>
 
 </body>
+<script src="header.js"></script>
+<link rel="manifest" href="manifest.json">
+<script>
+  function loadApiaries() {
+    let apiaries = [];
+    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+    const sel = document.getElementById('apiary_select');
+    const info = document.getElementById('bind_info');
+    if (sel) {
+      sel.innerHTML = '';
+      apiaries.forEach(a => {
+        const opt = document.createElement('option'); opt.value = a.id; opt.textContent = `${a.id} — ${a.name}`; sel.appendChild(opt);
+      });
+      const updateInfo = () => {
+        const a = apiaries.find(x => x.id === sel.value);
+        info.textContent = a ? `Bikuben knyttes til: ${a.name} (${a.id})` : '';
+      };
+      sel.addEventListener('change', updateInfo);
+      updateInfo();
+    }
+  }
+  function saveHive(e) {
+    e.preventDefault();
+    const apiaryId = document.getElementById('apiary_select')?.value || '';
+    const queen_year = document.getElementById('queen_year')?.value || '';
+    const type = document.getElementById('type')?.value || '';
+    let hives = [];
+    try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+    const id = `KUBE-${String(hives.length + 1).padStart(3, '0')}`;
+    const hive = { id, apiaryId, queen_year, type };
+    hives.push(hive);
+    try { localStorage.setItem('hives', JSON.stringify(hives)); } catch (e) {}
+    window.location.href = 'bikuber.html';
+  }
+  loadApiaries();
+</script>
 </html>

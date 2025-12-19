@@ -14,11 +14,8 @@
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen pt-0 pb-10 px-4">
-    <!-- Top Blue Header with Logo -->
-    <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-2 mb-10 shadow-md">
-         <img src="logo.png" alt="Logo" class="h-8 w-auto">
-         <span class="text-white font-bold text-lg">Birøkter Registeret</span>
-    </div>
+    <!-- Header Container -->
+    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm mb-6"></div>
 
     <!-- Title -->
     <h1 class="text-3xl font-bold mb-6 text-black">Registrer birøkter</h1>
@@ -31,59 +28,59 @@
             <!-- Fullt navn -->
             <div>
                 <label for="name" class="block text-sm font-bold text-gray-900 mb-1">Fullt navn</label>
-                <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Adresse -->
             <div>
                 <label for="address" class="block text-sm font-bold text-gray-900 mb-1">Adresse</label>
-                <input type="text" id="address" name="address" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="text" id="address" name="address" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Postnummer -->
             <div>
                 <label for="zip" class="block text-sm font-bold text-gray-900 mb-1">Postnummer</label>
-                <input type="text" id="zip" name="zip" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="text" id="zip" name="zip" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Kommune -->
             <div>
                 <label for="municipality" class="block text-sm font-bold text-gray-900 mb-1">Kommune</label>
-                <input type="text" id="municipality" name="municipality" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="text" id="municipality" name="municipality" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Telefon -->
             <div>
                 <label for="phone" class="block text-sm font-bold text-gray-900 mb-1">Telefon</label>
-                <input type="tel" id="phone" name="phone" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="tel" id="phone" name="phone" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- E-post -->
             <div>
                 <label for="email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
-                <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- PIN-kode -->
             <div>
                 <label for="pin" class="block text-sm font-bold text-gray-900 mb-1">PIN-kode (4 siffer)</label>
-                <input type="password" id="pin" name="pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="password" id="pin" name="pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Bekreft PIN-kode -->
             <div>
                 <label for="pin_confirm" class="block text-sm font-bold text-gray-900 mb-1">Bekreft PIN-kode</label>
-                <input type="password" id="pin_confirm" name="pin_confirm" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="password" id="pin_confirm" name="pin_confirm" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
             </div>
 
             <!-- Hobbyrøkt / Næringsrøkt Radio -->
             <div class="flex flex-col items-start space-y-2 mt-4">
                 <label class="inline-flex items-center cursor-pointer">
-                    <input type="radio" class="form-radio text-blue-600 h-5 w-5" name="rokt_type" value="hobby" checked>
+                    <input type="radio" class="form-radio text-black focus:ring-[#FFD700] h-5 w-5" name="rokt_type" value="hobby" checked>
                     <span class="ml-2 text-base text-gray-900">Hobbyrøkt</span>
                 </label>
                 <label class="inline-flex items-center cursor-pointer">
-                    <input type="radio" class="form-radio text-blue-600 h-5 w-5" name="rokt_type" value="naering">
+                    <input type="radio" class="form-radio text-black focus:ring-[#FFD700] h-5 w-5" name="rokt_type" value="naering">
                     <span class="ml-2 text-base text-gray-900">Næringsrøkt</span>
                 </label>
             </div>
@@ -92,22 +89,22 @@
             <div id="business_fields" class="hidden space-y-4 mt-4">
                 <div>
                     <label for="company_name" class="block text-sm font-bold text-gray-900 mb-1">Firmanavn</label>
-                    <input type="text" id="company_name" name="company_name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <input type="text" id="company_name" name="company_name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
                 </div>
                 <div>
                     <label for="org_number" class="block text-sm font-bold text-gray-900 mb-1">Organisasjonsnummer</label>
-                    <input type="text" id="org_number" name="org_number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <input type="text" id="org_number" name="org_number" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
                 </div>
                 <div>
                     <label for="company_account" class="block text-sm font-bold text-gray-900 mb-1">Kontonummer (firma)</label>
-                    <input type="text" id="company_account" name="company_account" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <input type="text" id="company_account" name="company_account" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
                 </div>
             </div>
 
             <!-- Kontonummer -->
             <div class="mt-4">
                 <label for="account" class="block text-sm font-bold text-gray-900 mb-1">Kontonummer (utbetaling)</label>
-                <input type="text" id="account" name="account" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="text" id="account" name="account" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
                 <p class="text-xs text-gray-500 mt-1">Brukes for utbetaling av honning, provisjon og samarbeid</p>
             </div>
 
@@ -116,31 +113,31 @@
                 
                 <!-- Norges Birøkterlag -->
                 <div class="flex items-center">
-                    <input id="is_nbl_member" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <input id="is_nbl_member" type="checkbox" class="form-checkbox h-5 w-5 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                     <label class="text-sm font-medium text-gray-900">Medlem av Norges Birøkterlag</label>
                 </div>
 
                 <!-- Medlemsnummer NBL -->
                 <div>
                     <label for="nbl_id" class="block text-sm font-bold text-gray-900 mb-1">Medlemsnummer NBL</label>
-                    <input type="text" id="nbl_id" name="nbl_id" placeholder="Valgfritt" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-400">
+                    <input type="text" id="nbl_id" name="nbl_id" placeholder="Valgfritt" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500 placeholder-gray-400">
                 </div>
 
                 <!-- Lokallag -->
                 <div>
                     <label for="lokallag" class="block text-sm font-bold text-gray-900 mb-1">Lokallag</label>
-                    <input type="text" id="lokallag" name="lokallag" placeholder="Kan kobles senere" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-400">
+                    <input type="text" id="lokallag" name="lokallag" placeholder="Kan kobles senere" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500 placeholder-gray-400">
                 </div>
 
                  <!-- LEK-Honning -->
                  <div class="flex items-center mt-2">
-                    <input id="is_lek_member" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <input id="is_lek_member" type="checkbox" class="form-checkbox h-5 w-5 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                     <label class="text-sm font-medium text-gray-900">Medlem av LEK-Honning™</label>
                 </div>
 
                 <!-- HC -->
                 <div class="flex items-center mt-2">
-                    <input id="is_hc_supplier" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded mr-3">
+                    <input id="is_hc_supplier" type="checkbox" class="form-checkbox h-5 w-5 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                     <label class="text-sm font-medium text-gray-900">Leverer honning til HC</label>
                 </div>
 
@@ -151,19 +148,19 @@
                 <h3 class="block text-sm font-bold text-gray-900 mb-3">Interessert i:</h3>
                 <div class="space-y-2">
                     <div class="flex items-center">
-                        <input id="interest_salg" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
+                        <input id="interest_salg" type="checkbox" class="form-checkbox h-4 w-4 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                         <label class="text-sm font-medium text-gray-900">Salg</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="interest_rekruttering" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
+                        <input id="interest_rekruttering" type="checkbox" class="form-checkbox h-4 w-4 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                         <label class="text-sm font-medium text-gray-900">Rekruttering</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="interest_kurs" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
+                        <input id="interest_kurs" type="checkbox" class="form-checkbox h-4 w-4 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                         <label class="text-sm font-medium text-gray-900">Kurs</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="interest_samarbeid" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded mr-3">
+                        <input id="interest_samarbeid" type="checkbox" class="form-checkbox h-4 w-4 text-black border-gray-300 rounded mr-3 focus:ring-yellow-500">
                         <label class="text-sm font-medium text-gray-900">Samarbeid</label>
                     </div>
                 </div>
@@ -171,17 +168,21 @@
 
             <!-- Buttons -->
             <div class="grid grid-cols-2 gap-4 pt-8">
-                <a href="index.html" class="flex items-center justify-center w-full bg-white border-2 border-[#1e4b75] text-[#1e4b75] font-bold py-3 rounded shadow-sm hover:bg-blue-50 transition-colors">
+                <a href="index.html" class="flex items-center justify-center w-full bg-white border-2 border-black text-black font-bold py-3 rounded shadow-sm hover:bg-gray-50 transition-colors">
                     Avbryt
                 </a>
-                <button type="submit" class="w-full bg-[#1e4b75] hover:bg-[#163a5c] text-white font-bold py-3 rounded shadow-md transition-all">
+                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 rounded shadow-md transition-all">
                     Registrer
                 </button>
             </div>
+            
+            <div id="app-footer"></div>
 
         </form>
+        </div>
     </div>
-
+    
+    <script src="header.js"></script>
     <script>
         const hobbyRadio = document.querySelector('input[value="hobby"]');
         const naeringRadio = document.querySelector('input[value="naering"]');
@@ -197,37 +198,50 @@
         naeringRadio.addEventListener('change', toggleBusinessFields);
         function saveRegistration(e) {
             e.preventDefault();
+            const form = e.target;
             const data = {
-                name: document.getElementById('name')?.value || '',
-                address: document.getElementById('address')?.value || '',
-                zip: document.getElementById('zip')?.value || '',
-                municipality: document.getElementById('municipality')?.value || '',
-                phone: document.getElementById('phone')?.value || '',
-                email: document.getElementById('email')?.value || '',
-                pin: document.getElementById('pin')?.value || '',
-                account: document.getElementById('account')?.value || '',
-                rokt_type: naeringRadio.checked ? 'naering' : 'hobby',
-                company_name: document.getElementById('company_name')?.value || '',
-                org_number: document.getElementById('org_number')?.value || '',
-                company_account: document.getElementById('company_account')?.value || '',
-                is_nbl_member: document.getElementById('is_nbl_member')?.checked || false,
-                nbl_id: document.getElementById('nbl_id')?.value || '',
-                lokallag: document.getElementById('lokallag')?.value || '',
-                is_lek_member: document.getElementById('is_lek_member')?.checked || false,
-                is_hc_supplier: document.getElementById('is_hc_supplier')?.checked || false,
+                name: form.name.value,
+                address: form.address.value,
+                zip: form.zip.value,
+                municipality: form.municipality.value,
+                phone: form.phone.value,
+                email: form.email.value,
+                pin: form.pin.value,
+                rokt_type: document.querySelector('input[name="rokt_type"]:checked').value,
+                company_name: form.company_name.value,
+                org_number: form.org_number.value,
+                company_account: form.company_account.value,
+                account: form.account.value,
+                is_nbl_member: document.getElementById('is_nbl_member').checked,
+                nbl_id: form.nbl_id.value,
+                lokallag: form.lokallag.value,
+                is_lek_member: document.getElementById('is_lek_member').checked,
+                is_hc_supplier: document.getElementById('is_hc_supplier').checked,
                 interests: {
-                    salg: document.getElementById('interest_salg')?.checked || false,
-                    rekruttering: document.getElementById('interest_rekruttering')?.checked || false,
-                    kurs: document.getElementById('interest_kurs')?.checked || false,
-                    samarbeid: document.getElementById('interest_samarbeid')?.checked || false
+                    salg: document.getElementById('interest_salg').checked,
+                    rekruttering: document.getElementById('interest_rekruttering').checked,
+                    kurs: document.getElementById('interest_kurs').checked,
+                    samarbeid: document.getElementById('interest_samarbeid').checked
                 }
             };
-            try {
-                localStorage.setItem('beekeeper', JSON.stringify(data));
-            } catch (e) {}
-            window.location.href = 'index.html';
+
+            if (data.pin !== document.getElementById('pin_confirm').value) {
+                alert('PIN-kodene er ikke like');
+                return;
+            }
+
+            // Generate Member ID (simulated auto-increment)
+            let lastId = parseInt(localStorage.getItem('last_member_id') || '1000');
+            data.memberId = lastId + 1;
+            localStorage.setItem('last_member_id', data.memberId);
+
+            localStorage.setItem('beekeeper', JSON.stringify(data));
+            localStorage.setItem('auth', 'true');
+            window.location.href = 'dashboard.html';
         }
     </script>
 
+    <script src="header.js"></script>
 </body>
 </html>
+<link rel="manifest" href="manifest.json">
