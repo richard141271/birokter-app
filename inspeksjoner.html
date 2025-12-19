@@ -19,18 +19,27 @@
 
     <div class="p-6">
       <h1 class="text-2xl font-bold mb-6 text-black text-center">Mine inspeksjoner</h1>
-      <div class="space-y-2 mb-4">
+      <div class="space-y-2 mb-4 no-print">
         <input id="search_general" type="text" placeholder="Søk (Kube, Bigård, Dato, Notat...)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+        
+        <!-- Filter Row -->
         <div class="flex items-center justify-between">
-          <label class="flex items-center space-x-2 text-sm">
-            <input id="filter_last30" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
-            <span>Siste 30 dager</span>
-          </label>
-          <label class="flex items-center space-x-2 text-sm">
-            <input id="filter_severity" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
-            <span>Bare røde/gule statuser</span>
-          </label>
+          <div class="flex items-center space-x-4">
+            <label class="flex items-center space-x-2 text-sm">
+              <input id="filter_last30" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
+              <span>Siste 30 dager</span>
+            </label>
+            <label class="flex items-center space-x-2 text-sm">
+              <input id="filter_severity" type="checkbox" class="rounded text-[#FFD700] focus:ring-[#FFD700]">
+              <span>Bare røde/gule statuser</span>
+            </label>
+          </div>
         </div>
+
+        <!-- Print Button -->
+        <button onclick="window.print()" class="w-full bg-white border-2 border-black text-black font-bold py-2 rounded shadow-sm hover:bg-gray-50 uppercase text-xs tracking-wider mt-2">
+            SKRIV UT INSPEKSJONSRAPPORT
+        </button>
       </div>
       <div id="insp_empty" class="text-gray-600 text-center mb-4"></div>
       <div id="insp_list" class="space-y-3"></div>
