@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen py-6 px-4">
@@ -38,9 +38,6 @@
         <div class="w-full space-y-4 pt-6 border-t-2 border-gray-100 mt-auto">
             <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
                 Registrer Ny Bigård
-            </button>
-            <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
-                Registrer Ny Bikube
             </button>
             <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
                 Mine Bikuber
@@ -121,18 +118,18 @@
         const last = inspections.filter(i => hiveIds.includes(i.hiveId)).sort((x,y)=> (y.ts||0)-(x.ts||0))[0];
         
         const btn = document.createElement('button');
-        btn.className = 'relative w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-4 px-2 rounded shadow-sm transition-all text-center flex flex-col items-center justify-center min-h-[110px]';
+        btn.className = 'relative w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-2 px-1 rounded shadow-sm transition-all text-center flex flex-col items-center justify-center min-h-[60px]';
         
         // ID
         const idSpan = document.createElement('span');
-        idSpan.className = 'text-xl font-extrabold uppercase tracking-wide';
+        idSpan.className = 'text-lg font-extrabold uppercase tracking-wide leading-tight';
         idSpan.textContent = a.id;
         btn.appendChild(idSpan);
 
         // Name
         if (a.name && a.name.trim() !== '') {
             const nameSpan = document.createElement('span');
-            nameSpan.className = 'text-xs font-medium opacity-80 mt-1 break-words w-full px-1 leading-tight';
+            nameSpan.className = 'text-[10px] font-medium opacity-80 mt-0.5 break-words w-full px-0.5 leading-tight';
             nameSpan.textContent = a.name;
             btn.appendChild(nameSpan);
         }

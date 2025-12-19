@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #FFF8F0;
         }
     </style>
 </head>
@@ -29,45 +29,31 @@
     <div class="p-6 flex flex-col items-center w-full space-y-3">
         
         <!-- Menu Items -->
-        <button onclick="window.location.href='bikuber.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+        <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
             Mine Bikuber
         </button>
-        
-        <button onclick="window.location.href='inspeksjoner.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
-            Mine Inspeksjoner
-        </button>
-        
-        <button onclick="window.location.href='bigard.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
+        <button onclick="window.location.href='bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
             Mine Bigårder
         </button>
-        
-        <button onclick="window.location.href='selg-honning.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
-            Selg Honning
+        <button onclick="window.location.href='profil.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+            Min Profil
+        </button>
+        <button onclick="downloadCSV()" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+            Eksporter Data (CSV)
         </button>
         
-        <!-- Highlighted Button -->
-        <button onclick="window.location.href='kjop-honning.html'" class="w-full bg-black border-2 border-black text-[#FFD700] font-bold py-2.5 rounded hover:bg-gray-800 transition-colors shadow-sm">
-            Kjøp Honning
-        </button>
-
-        <!-- Spacer -->
-        <div class="h-4"></div>
-
-        <!-- Profile Button -->
-        <button onclick="window.location.href='profil.html'" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">
-            Profil
-        </button>
-
-        <!-- Export / Reset -->
-        <div class="w-full pt-4 space-y-2">
-            <button onclick="downloadJSON()" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">Last ned data (JSON)</button>
-            <button onclick="downloadCSV()" class="w-full bg-white border-2 border-black text-black font-bold py-2.5 rounded hover:bg-yellow-50 transition-colors shadow-sm">Last ned data (CSV)</button>
-            <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded hover:bg-red-700 transition-colors shadow-sm">Nullstill alt</button>
-        </div>
+        <!-- Divider -->
+        <div class="w-full border-t border-gray-200 my-2"></div>
         
-        <div id="app-footer"></div>
+        <button onclick="if(confirm('Er du sikker? All data slettes.')) resetAll()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded shadow-sm transition-colors">
+            Nullstill Alt
+        </button>
+        
+        <button onclick="window.location.href='dashboard.html'" class="w-full text-gray-500 font-medium text-sm hover:underline py-2">
+            Avbryt / Tilbake
+        </button>
     </div>
-</div>
+    </div>
 
 <div class="mt-8">
     <a href="dashboard.html" class="text-black font-semibold text-sm hover:underline">← Tilbake til oversikt</a>

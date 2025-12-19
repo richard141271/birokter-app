@@ -9,14 +9,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* bg-gray-100 */
+            background-color: #FFF8F0; /* Soft Beige */
         }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen pt-20 pb-10 px-4">
-
-    <!-- Title -->
-    <h1 class="text-3xl font-bold mb-8 text-black">I gang registreing</h1>
 
     <!-- Main Card -->
     <div class="bg-white rounded-lg shadow-md w-full max-w-xs p-6 flex flex-col items-center border border-gray-200">
@@ -68,12 +65,19 @@
 <script src="header.js"></script>
 <script>
   try {
-    const data = localStorage.getItem('beekeeper');
-    if (data) {
-      const btn = document.getElementById('registerBtn');
-      if (btn) btn.style.display = 'none';
+    const dataStr = localStorage.getItem('beekeeper');
+    if (dataStr) {
+      const data = JSON.parse(dataStr);
+      // Only hide if we actually have a registered user with a name
+      if (data && data.name && data.name.trim().length > 0) {
+        const btn = document.getElementById('registerBtn');
+        if (btn) btn.style.display = 'none';
+      }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error checking registration status:', e);
+    // If error, we assume not registered, so button stays visible
+  }
 </script>
 </body>
 </html>

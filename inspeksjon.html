@@ -7,7 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+        /* Hide scrollbar for button grid */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen py-6 px-4">
@@ -27,6 +30,8 @@
             </div>
 
             <form onsubmit="saveInspection(event)" class="space-y-4">
+                
+                <input type="hidden" id="status_input" value="OK">
                 
                 <div class="text-sm text-gray-600 text-center">Dato: <span id="date_display"></span> • Klokkeslett: <span id="time_display"></span></div>
                 
@@ -50,26 +55,17 @@
                     <input type="file" id="fileInput" class="hidden" accept="image/*,application/pdf" capture="environment" onchange="handleFile(this)">
                 </div>
 
-                <!-- STATUS -->
+                <!-- STATUS GRID -->
                 <div>
-                    <label for="status" class="block text-gray-500 text-sm font-bold mb-1 uppercase">STATUS</label>
-                    <select id="status" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFD700] font-bold" onchange="updateStatusColor(this)">
-                        <option value="OK">OK</option>
-                        <option value="DØD">DØD</option>
-                        <option value="SYKDOM">SYKDOM</option>
-                        <option value="BYTT DRONNING">BYTT DRONNING</option>
-                        <option value="TRENGER FÔR">TRENGER FÔR</option>
-                        <option value="MOTTATT FÔR">MOTTATT FÔR</option>
-                        <option value="SKIFTET RAMMER">SKIFTET RAMMER</option>
-                        <option value="DRONNING SETT">DRONNING SETT</option>
-                        <option value="SVARMING">SVARMING</option>
-                        <option value="VARROA MISTANKE">VARROA MISTANKE</option>
-                        <option value="FOR LITE MAT">FOR LITE MAT</option>
-                    </select>
+                    <label class="block text-gray-500 text-sm font-bold mb-2 uppercase">STATUS</label>
+                    <div class="grid grid-cols-2 gap-2" id="status_grid">
+                        <!-- Buttons injected by JS -->
+                    </div>
                 </div>
 
                 <!-- SAVE BUTTON -->
                 <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all mt-4 uppercase">Lagre inspeksjon</button>
+
 
                 <!-- Bottom Buttons Grid -->
                 <div class="grid grid-cols-2 gap-3 mt-6">
@@ -109,14 +105,44 @@
     const p = new URLSearchParams(window.location.search); return p.get(name);
   }
 
-  function weatherText(code) {
-    const m = {
-      0: 'Klar himmel', 1: 'Hovedsakelig klar', 2: 'Delvis skyet', 3: 'Overskyet',
-      45: 'Tåke', 48: 'Issenebling', 51: 'Lett yr', 53: 'Yr', 55: 'Kraftig yr',
-      61: 'Lett regn', 63: 'Regn', 65: 'Kraftig regn', 71: 'Lett snø', 73: 'Snø',
-      75: 'Kraftig snø', 80: 'Regnbyger', 81: 'Regnbyger', 82: 'Kraftige regnbyger'
-    };
-    return m[code] || 'Ukjent vær';
+  // Define Status Options with Colors
+  const statusOptions = [
+    { val: 'OK', color: 'bg-green-500 text-white', label: 'OK' },
+    { val: 'DØD', color: 'bg-red-600 text-white', label: 'DØD' },
+    { val: 'SYKDOM', color: 'bg-orange-500 text-white', label: 'SYKDOM' },
+    { val: 'BYTT DRONNING', color: 'bg-purple-500 text-white', label: 'BYTT DRONNING' },
+    { val: 'TRENGER FÔR', color: 'bg-amber-500 text-white', label: 'TRENGER FÔR' },
+    { val: 'MOTTATT FÔR', color: 'bg-blue-500 text-white', label: 'MOTTATT FÔR' },
+    { val: 'SKIFTET RAMMER', color: 'bg-blue-500 text-white', label: 'SKIFTET RAMMER' },
+    { val: 'DRONNING SETT', color: 'bg-blue-500 text-white', label: 'DRONNING SETT' },
+    { val: 'SVARMING', color: 'bg-red-500 text-white', label: 'SVARMING' },
+    { val: 'VARROA MISTANKE', color: 'bg-orange-500 text-white', label: 'VARROA MISTANKE' },
+    { val: 'FOR LITE MAT', color: 'bg-amber-500 text-white', label: 'FOR LITE MAT' }
+  ];
+
+  function renderStatusGrid() {
+      const grid = document.getElementById('status_grid');
+      const input = document.getElementById('status_input');
+      if (!grid) return;
+      grid.innerHTML = '';
+      
+      statusOptions.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          // Check if selected
+          const isSelected = input.value === opt.val;
+          
+          btn.className = `w-full py-2 px-1 rounded font-bold text-xs uppercase shadow-sm transition-all border-2 ${
+              isSelected ? 'border-black ring-2 ring-offset-1 ring-black scale-[1.02]' : 'border-transparent opacity-90 hover:opacity-100'
+          } ${opt.color}`;
+          
+          btn.textContent = opt.label;
+          btn.onclick = () => {
+              input.value = opt.val;
+              renderStatusGrid(); // Re-render to update selection
+          };
+          grid.appendChild(btn);
+      });
   }
 
   function handleFile(input) {
@@ -128,26 +154,13 @@
       }
   }
 
-  function updateStatusColor(select) {
-      const val = select.value;
-      select.className = 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-900 font-bold';
-      select.style.backgroundColor = '';
-      select.style.color = '';
-      
-      if (val === 'OK') { select.style.backgroundColor = '#22c55e'; select.style.color = 'white'; } // Green
-      else if (val === 'DØD') { select.style.backgroundColor = '#dc2626'; select.style.color = 'white'; } // Red
-      else if (val === 'SYKDOM') { select.style.backgroundColor = '#f97316'; select.style.color = 'white'; } // Orange
-      else if (val === 'BYTT DRONNING') { select.style.backgroundColor = '#a855f7'; select.style.color = 'white'; } // Purple
-      // Add more if needed
-  }
-
   function saveInspection(e) {
     e.preventDefault();
     const hiveId = getParam('hive') || '';
     const temp = document.querySelector('input[name="temp"]')?.value || '';
     const weather = document.querySelector('input[name="weather"]')?.value || '';
     const note = document.querySelector('input[name="note"]')?.value || '';
-    const status = document.getElementById('status')?.value || 'OK';
+    const status = document.getElementById('status_input')?.value || 'OK';
     
     // In a real app, handle image upload here
     
@@ -158,43 +171,20 @@
     try { localStorage.setItem('inspections', JSON.stringify(inspections)); } catch (e) {}
     window.location.href = 'bikuber.html';
   }
+  
+  // Init
+  const hiveId = getParam('hive');
+  if (hiveId) document.getElementById('page_title').textContent = `Ny Inspeksjon: ${hiveId}`; // Assuming page_title exists, or insp_header
+  
+  // Actually the header id is insp_header
+  if (hiveId) document.getElementById('insp_header').textContent = `Ny Inspeksjon: ${hiveId}`;
+  
+  // Display Date/Time
+  const now = new Date();
+  document.getElementById('date_display').textContent = now.toLocaleDateString('no-NO');
+  document.getElementById('time_display').textContent = now.toLocaleTimeString('no-NO', {hour: '2-digit', minute:'2-digit'});
 
-  function renderHeader() {
-    const hiveId = getParam('hive') || '';
-    const h = document.getElementById('insp_header'); if (h) h.textContent = `${hiveId} — inspeksjon`;
-  }
-
-  function prefillDateWeather() {
-    const now = new Date();
-    document.getElementById('date_display').textContent = now.toLocaleDateString();
-    document.getElementById('time_display').textContent = now.toLocaleTimeString();
-    
-    const tempEl = document.querySelector('input[name="temp"]');
-    const weatherEl = document.querySelector('input[name="weather"]');
-    
-    // Only fetch if empty
-    if (tempEl.value) return;
-
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(async pos => {
-        const { latitude, longitude } = pos.coords;
-        try {
-          const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
-          const r = await fetch(url); 
-          const j = await r.json();
-          const temp = j?.current?.temperature_2m;
-          const code = j?.current?.weather_code;
-          
-          if (tempEl && typeof temp === 'number') tempEl.value = `${Math.round(temp)}°C`;
-          if (weatherEl && typeof code !== 'undefined') weatherEl.value = weatherText(code);
-        } catch (err) { console.log('Weather fetch failed', err); }
-      }, () => { console.log('Geolocation denied'); });
-    }
-  }
-
-  renderHeader();
-  prefillDateWeather();
-  updateStatusColor(document.getElementById('status'));
+  renderStatusGrid();
 </script>
 <script src="header.js"></script>
 </html>

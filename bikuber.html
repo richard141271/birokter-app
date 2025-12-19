@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
   </style>
 </head>
 <body class="flex flex-col items-center min-h-screen py-6 px-4">
@@ -19,12 +19,12 @@
     <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
 
     <div class="p-6">
-      <h2 class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
+      <h2 id="page_title" class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
 
       <div id="hives_empty" class="text-gray-600 text-center mb-4"></div>
       
       <!-- Recent List -->
-      <div id="hives_list" class="space-y-3"></div>
+      <div id="hives_list" class="grid grid-cols-2 gap-4 mb-12"></div>
 
       <!-- Dropdown for older items -->
       <div id="hives_dropdown_container" class="mt-4 hidden">
@@ -35,7 +35,7 @@
       </div>
 
       <div class="w-full space-y-4 pt-6 border-t-2 border-gray-100 mt-8">
-        <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">Registrer Ny Bikube</button>
+        <button id="btn_register_hive" class="hidden w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">Registrer Ny Bikube</button>
         <button onclick="window.location.href='bigard.html'" class="w-full text-black font-semibold text-sm hover:underline py-2 text-center">← Mine bigårder</button>
       </div>
     </div>
@@ -58,9 +58,29 @@
       try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
       try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
       
+      if (apiaries.length === 0) {
+        alert('Du må registrere en bigård før du kan se dine bikuber.');
+        window.location.href = 'bigard.html';
+        return;
+      }
+
       // Filter by Apiary if param exists
       const params = new URLSearchParams(window.location.search);
       const filterApiaryId = params.get('apiaryId');
+
+      // Update Button Logic
+      const regBtn = document.getElementById('btn_register_hive');
+      if (filterApiaryId) {
+        regBtn.classList.remove('hidden');
+        regBtn.onclick = () => window.location.href = `ny-bikube.html?apiaryId=${encodeURIComponent(filterApiaryId)}`;
+        
+        // Update title if apiary found
+        const apiary = apiaries.find(a => a.id === filterApiaryId);
+        if (apiary) {
+          document.getElementById('page_title').textContent = `${apiary.name}`;
+        }
+      }
+
       if (filterApiaryId) {
         hives = hives.filter(h => h.apiaryId === filterApiaryId);
       }
@@ -113,24 +133,23 @@
         }
 
         const btn = document.createElement('button');
-        btn.className = 'w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-4 px-4 rounded shadow-sm transition-all text-center flex flex-col items-center justify-center space-y-1';
+        btn.className = 'relative w-full bg-[#FFD700] hover:bg-[#e6c200] text-black font-bold py-2 px-1 rounded shadow-sm transition-all text-center flex flex-col items-center justify-center min-h-[60px]';
         
         // Text content
         const idSpan = document.createElement('span');
-        idSpan.className = 'text-xl font-extrabold uppercase tracking-wide';
+        idSpan.className = 'text-lg font-extrabold uppercase tracking-wide leading-tight';
         idSpan.textContent = h.id;
         btn.appendChild(idSpan);
 
         const locSpan = document.createElement('span');
-        locSpan.className = 'text-xs font-medium opacity-80';
+        locSpan.className = 'text-[10px] font-medium opacity-80 mt-0.5 break-words w-full px-0.5 leading-tight';
         locSpan.textContent = locationText;
         btn.appendChild(locSpan);
 
         // Status dot
         if (last) {
           const dot = document.createElement('span');
-          dot.className = `absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full ${statusColor(last.status)} border-2 border-white shadow-sm`;
-          btn.style.position = 'relative'; // Ensure relative positioning for absolute dot
+          dot.className = `absolute right-2 top-2 w-3 h-3 rounded-full ${statusColor(last.status)} border border-black/10 shadow-sm`;
           btn.appendChild(dot);
         }
 
