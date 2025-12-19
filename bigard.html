@@ -18,39 +18,33 @@
     <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
         <!-- Header Container -->
-    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+    <div id="app-header"></div>
 
     <div class="p-6 flex flex-col items-center w-full">
-        
         <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
-        <div id="apiary_empty" class="w-full text-center text-gray-600 mb-4"></div>
-        
+
+        <div id="apiaries_empty" class="w-full text-center text-gray-600 mb-4"></div>
+
         <!-- List -->
-        <div id="apiary_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
+        <div id="apiaries_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
 
         <!-- Dropdown -->
-        <div id="apiary_dropdown_container" class="w-full mb-8 hidden">
+        <div id="apiaries_dropdown_container" class="w-full mb-8 hidden">
             <label class="block text-sm font-medium text-gray-700 mb-1">Eldre bigårder</label>
-            <select id="apiary_dropdown" class="w-full border border-gray-300 rounded px-3 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#FFD700]" onchange="if(this.value) window.location.href='bikuber.html?apiaryId='+encodeURIComponent(this.value)">
-                <option value="">Velg bigård...</option>
+            <select id="apiaries_dropdown" class="input-std" onchange="if(this.value) window.location.href='bikuber.html?apiary='+encodeURIComponent(this.value)">
+                <option value="">Velg eldre bigård...</option>
             </select>
         </div>
 
         <!-- Action Buttons -->
-        <div class="w-full space-y-4 pt-6 border-t-2 border-gray-100 mt-auto">
-            <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
+        <div class="w-full space-y-4 pt-4 sticky-footer-actions">
+            <button onclick="window.location.href='ny-bigard.html'" class="btn-primary">
                 Registrer Ny Bigård
             </button>
-            <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">
-                Mine Bikuber
-            </button>
-            <button onclick="window.location.href='dashboard.html'" class="w-full text-black font-semibold text-sm hover:underline py-2 text-center mt-2">
-               ← Tilbake til oversikt
+            <button onclick="window.location.href='dashboard.html'" class="w-full text-center text-black font-bold text-sm hover:underline py-2">
+                ← Tilbake til Min Side
             </button>
         </div>
-        
-        <div id="app-footer"></div>
-
     </div>
     </div>
     

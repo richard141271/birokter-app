@@ -1,65 +1,128 @@
+// Global Configuration and Utilities
+
+// Supabase Configuration
+const SUPABASE_URL = 'https://qxhcklowjjtkupvnhfhr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_dkAK99yyWC-uE6zERP-5Gw_xEs3grqv'; // User provided
+
+// Make client globally available
+window.supabase = null;
+
 function injectHeader() {
-  const container = document.getElementById('app-header');
-  if (!container) return;
-
-  const isAuth = localStorage.getItem('auth') === 'true';
-
-  // Clear existing
-  container.innerHTML = '';
-  
-  // Apply standard classes if not present (to ensure consistency)
-  // We assume the container has base colors, but we can enforce flex layout
-  if (!container.className.includes('flex')) {
-      container.className = 'bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm';
+  // 1. Inject CSS (Global Styles)
+  if (!document.querySelector('link[href="style.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'style.css';
+      document.head.appendChild(link);
   }
 
-  // Left: Logo + Title
-  const left = document.createElement('div');
-  left.className = 'flex flex-col overflow-hidden';
-  
-  const topRow = document.createElement('div');
-  topRow.className = 'flex items-center space-x-2';
+  // 2. Inject Supabase SDK
+  if (!document.querySelector('script[src*="supabase-js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      script.onload = () => {
+          // Initialize Supabase once library is loaded
+          if (window.supabaseData && window.supabaseData.createClient) {
+             // If using module version? No, CDN usually exposes 'supabase' or 'createClient'
+             // The CDN @supabase/supabase-js@2 exposes 'supabase' global usually, or we need to check how it's exposed.
+             // Usually it's window.supabase.createClient or just createClient.
+          }
+          try {
+            const { createClient } = window.supabase;
+            window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log("Supabase connected");
+          } catch(e) {
+              console.log("Supabase init pending/failed", e);
+          }
+      };
+      document.head.appendChild(script);
+  }
 
-  const img = document.createElement('img');
-  img.src = 'assets/logo.png'; 
-  img.alt = 'Logo'; 
-  img.className = 'h-8 w-auto';
-  topRow.appendChild(img);
+  // 3. Render Header
+  const container = document.getElementById('app-header');
+  if (container) {
+      renderHeader(container);
+  }
+
+  // 4. Render Footer (if element exists, though usually we just inject logic)
+  // We don't have a specific footer container in most files, 
+  // but we have sticky-footer-actions which are part of the page content.
+}
+
+function renderHeader(container) {
+  // Clear existing (prevent duplicates)
+  container.innerHTML = '';
+  
+  // Use 'sticky-header' class from style.css (already applied to #app-header)
+  // But we need to ensure the inner content structure matches our design.
+  
+  const isAuth = localStorage.getItem('auth') === 'true';
+
+  // Left: Back Button + Title Logic
+  const left = document.createElement('div');
+  left.className = 'flex items-center space-x-3 overflow-hidden'; 
+  
+  const path = window.location.pathname;
+  const page = path.split('/').pop();
+  const isHome = page === 'index.html' || page === 'dashboard.html' || page === '' || page === 'login.html';
+  
+  if (!isHome) {
+      const backBtn = document.createElement('button');
+      backBtn.className = 'text-black p-1 hover:bg-black/10 rounded-full transition-colors';
+      backBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>`;
+      backBtn.onclick = () => {
+          if (document.referrer && document.referrer.includes(window.location.host)) {
+              history.back();
+          } else {
+              window.location.href = 'dashboard.html';
+          }
+      };
+      left.appendChild(backBtn);
+  } else {
+      const img = document.createElement('img');
+      img.src = 'assets/logo.png'; 
+      img.alt = 'Logo'; 
+      img.className = 'h-8 w-auto';
+      img.onerror = () => { img.style.display = 'none'; }; // Hide if missing
+      left.appendChild(img);
+  }
+
+  // Title Column
+  const titleCol = document.createElement('div');
+  titleCol.className = 'flex flex-col';
 
   const title = document.createElement('span');
   title.className = 'text-black font-bold text-lg leading-tight truncate';
   title.textContent = 'Birøkter Registeret';
-  topRow.appendChild(title);
+  titleCol.appendChild(title);
   
-  left.appendChild(topRow);
-
-  // Beekeeper Name (User Name)
+  // Beekeeper Name
   let data = null;
   try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
   if (data && data.name) {
       const nameEl = document.createElement('span');
-      nameEl.className = 'text-black text-xs font-medium truncate pl-10'; // Indent to align with text
+      nameEl.className = 'text-black text-xs font-medium truncate opacity-80'; 
       nameEl.textContent = data.name;
-      left.appendChild(nameEl);
+      titleCol.appendChild(nameEl);
   }
-
+  
+  left.appendChild(titleCol);
   container.appendChild(left);
 
-  // Right: Logout
+  // Right: Logout or Login
   const right = document.createElement('div');
   right.className = 'flex items-center space-x-2 flex-shrink-0 ml-2';
 
   if (isAuth) {
     const logout = document.createElement('button');
-    logout.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
+    logout.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors uppercase tracking-wider';
     logout.textContent = 'Logg ut';
     logout.onclick = () => { localStorage.removeItem('auth'); window.location.href = 'index.html'; };
     right.appendChild(logout);
   } else {
-    // Only show Login button if NOT on login page
     if (!window.location.href.includes('login.html')) {
         const login = document.createElement('button');
-        login.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
+        login.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors uppercase tracking-wider';
         login.textContent = 'Logg inn';
         login.onclick = () => { window.location.href = 'login.html'; };
         right.appendChild(login);
@@ -67,37 +130,7 @@ function injectHeader() {
   }
 
   container.appendChild(right);
-  
-  // Inject or Update Footer
-  const footerId = 'app-footer';
-  let footer = document.getElementById(footerId);
-  if (!footer) {
-      footer = document.createElement('div');
-      footer.id = footerId;
-      // Append to the main card or body depending on structure
-      const mainCard = document.querySelector('.bg-white.rounded-lg, .bg-white.rounded-xl, .bg-white.rounded-md');
-      if (mainCard) {
-           mainCard.appendChild(footer);
-      } else {
-           document.body.appendChild(footer);
-      }
-  }
-  
-  // Always update styles and content
-  footer.className = 'w-full py-4 text-center text-xs text-gray-500 mt-auto';
-  footer.textContent = 'Copyright 2025 © LEK-Honning';
 }
 
-function registerSW() {
-  if ('serviceWorker' in navigator) {
-    try {
-      navigator.serviceWorker.register('sw.js');
-    } catch (e) { console.log('SW fail', e); }
-  }
-}
-
+// Auto-inject on load
 document.addEventListener('DOMContentLoaded', injectHeader);
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    injectHeader();
-}
-registerSW();

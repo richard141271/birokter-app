@@ -18,28 +18,29 @@
   <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
     
     <!-- Header Container (injected by header.js) -->
-    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+    <div id="app-header"></div>
 
     <div class="p-6">
-      <h2 id="page_title" class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
-
-      <div id="hives_empty" class="text-gray-600 text-center mb-4"></div>
+      <h2 class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
       
-      <!-- Recent List -->
-      <div id="hives_list" class="grid grid-cols-2 gap-4 mb-12"></div>
+      <div id="hives_empty" class="w-full text-center text-gray-600 mb-4"></div>
+      
+      <!-- List -->
+      <div id="hives_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
 
-      <!-- Dropdown for older items -->
-      <div id="hives_dropdown_container" class="mt-4 hidden">
+      <!-- Dropdown -->
+      <div id="hives_dropdown_container" class="w-full mb-8 hidden">
         <label class="block text-sm font-medium text-gray-700 mb-1">Eldre bikuber</label>
-        <select id="hives_dropdown" class="w-full border border-gray-300 rounded px-3 py-3 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-500" onchange="if(this.value) window.location.href='inspeksjon.html?hive='+encodeURIComponent(this.value)">
-          <option value="">Velg bikube...</option>
+        <select id="hives_dropdown" class="input-std" onchange="renderSingleFromDropdown(this.value)">
+            <option value="">Velg eldre bikube...</option>
         </select>
       </div>
 
-      <div class="w-full space-y-4 pt-6 border-t-2 border-gray-100 mt-8">
-        <button onclick="window.location.href='inspeksjoner.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center uppercase">Søk alle inspeksjoner</button>
-        <button id="btn_register_hive" class="hidden w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all text-center">Registrer Ny Bikube</button>
-        <button onclick="window.location.href='bigard.html'" class="w-full text-black font-semibold text-sm hover:underline py-2 text-center">← Mine bigårder</button>
+      <!-- Action Buttons -->
+      <div class="w-full space-y-4 pt-4 sticky-footer-actions">
+        <button onclick="window.location.href='inspeksjoner.html'" class="btn-primary">Søk alle inspeksjoner</button>
+        <button id="btn_register_hive" class="hidden btn-primary">Registrer Ny Bikube</button>
+        <button onclick="window.location.href='bigard.html'" class="w-full text-center text-black font-bold text-sm hover:underline py-2">← Tilbake til bigårder</button>
       </div>
     </div>
   </div>

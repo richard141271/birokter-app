@@ -8,6 +8,12 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+    @media print {
+        body * { visibility: hidden; }
+        #print_area, #print_area * { visibility: visible; }
+        #print_area { position: absolute; left: 0; top: 0; width: 100%; }
+        .no-print { display: none !important; }
+    }
   </style>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
@@ -52,9 +58,31 @@
         </select>
       </div>
 
-      <div class="mt-6">
-        <a href="bikuber.html" class="block text-black font-semibold text-sm hover:underline">← Mine bikuber</a>
+      <div id="print_area" class="hidden print:block">
+          <table class="w-full border-collapse text-sm">
+              <thead>
+                  <tr class="bg-gray-100">
+                      <th class="border border-gray-300 p-2 font-bold">Dato</th>
+                      <th class="border border-gray-300 p-2 font-bold">Kube</th>
+                      <th class="border border-gray-300 p-2 font-bold">Status</th>
+                      <th class="border border-gray-300 p-2 font-bold">Notat</th>
+                      <th class="border border-gray-300 p-2 font-bold">Bilde</th>
+                  </tr>
+              </thead>
+              <tbody id="print_tbody"></tbody>
+          </table>
       </div>
+
+      <!-- Action Buttons -->
+      <div class="w-full space-y-4 pt-4 sticky-footer-actions no-print">
+          <button onclick="window.print()" class="btn-primary">
+              Skriv ut / Lagre som PDF
+          </button>
+          <button onclick="window.location.href='bikuber.html'" class="w-full text-center text-black font-bold text-sm hover:underline py-2">
+            ← Tilbake til bikuber
+          </button>
+      </div>
+
     </div>
   </div>
   <script>
@@ -161,6 +189,67 @@
       } else {
           dropContainer.classList.add('hidden');
       }
+
+      renderPrintTable(filtered, hiveToApiary, apiaryName);
+    }
+    
+    function renderPrintTable(items, hiveToApiary, apiaryName) {
+        const tbody = document.getElementById('print_tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        items.forEach(i => {
+            const tr = document.createElement('tr');
+            const d = new Date(i.ts || Date.now());
+            const dateStr = d.toLocaleDateString('no-NO');
+            const timeStr = d.toLocaleTimeString('no-NO', {hour:'2-digit', minute:'2-digit'});
+            
+            const apiaryId = hiveToApiary[i.hiveId] || '';
+            const apiaryNameStr = apiaryName[apiaryId] || apiaryId;
+            
+            const temp = i.temp ? `${i.temp}°C ` : '';
+            const weather = i.weather ? i.weather : '';
+            
+            const imageCell = i.image ? `<img src="${i.image}" class="h-6 w-6 object-cover cursor-pointer mx-auto border border-gray-200" onclick="printImageA5('${i.image}')" title="Klikk for A5 utskrift">` : '-';
+            
+            tr.innerHTML = `
+                <td class="border border-gray-300 p-2 whitespace-nowrap">${dateStr}<br><span class="text-gray-500">${timeStr}</span></td>
+                <td class="border border-gray-300 p-2">${apiaryNameStr}</td>
+                <td class="border border-gray-300 p-2 font-mono font-bold">${i.hiveId}</td>
+                <td class="border border-gray-300 p-2">${temp}<br>${weather}</td>
+                <td class="border border-gray-300 p-2 font-bold ${severeStatus(i.status) ? 'text-red-600' : 'text-green-600'}">${i.status}</td>
+                <td class="border border-gray-300 p-2 italic">${i.note || '-'}</td>
+                <td class="border border-gray-300 p-2 text-center">${imageCell}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function printImageA5(dataUrl) {
+        const win = window.open('', '_blank');
+        win.document.write(`
+            <html>
+            <head>
+                <title>Utskrift Bilde A5</title>
+                <style>
+                    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                    img { 
+                        max-width: 148mm; 
+                        max-height: 210mm; 
+                        width: auto; height: auto;
+                        object-fit: contain;
+                    }
+                    @media print {
+                        @page { size: A5; margin: 0; }
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="${dataUrl}" onload="window.print(); window.close();">
+            </body>
+            </html>
+        `);
+        win.document.close();
     }
 
     function renderList(items, container, hiveToApiary, apiaryName) {

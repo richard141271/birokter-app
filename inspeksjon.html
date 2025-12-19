@@ -33,7 +33,7 @@
 
             <form onsubmit="saveInspection(event)" class="space-y-4">
                 
-                <input type="hidden" id="status_input" value="OK">
+                <!-- <input type="hidden" id="status_input" value="OK"> -->
                 
                 <div class="text-sm text-gray-600 text-center">Dato: <span id="date_display"></span> • Klokkeslett: <span id="time_display"></span></div>
                 
@@ -57,46 +57,27 @@
                     <input type="file" id="fileInput" class="hidden" accept="image/*,application/pdf" capture="environment" onchange="handleFile(this)">
                 </div>
 
-                <!-- STATUS GRID -->
+                <!-- STATUS SELECT -->
                 <div>
                     <label class="block text-gray-500 text-sm font-bold mb-2 uppercase">STATUS</label>
-                    <div class="grid grid-cols-2 gap-2" id="status_grid">
-                        <!-- Buttons injected by JS -->
-                    </div>
+                    <select id="status_input" class="w-full border border-gray-300 rounded px-3 py-3 focus:outline-none focus:ring-2 focus:ring-[#FFD700] uppercase bg-white text-gray-900 font-bold">
+                        <!-- Options injected by JS -->
+                    </select>
                 </div>
 
                 <!-- SAVE BUTTON -->
-                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all mt-4 uppercase">Lagre inspeksjon</button>
+                <button type="submit" class="btn-primary">Lagre inspeksjon</button>
 
 
                 <!-- Bottom Buttons Grid -->
-                <div class="grid grid-cols-2 gap-3 mt-6">
-                    
-                    <!-- Left Column Buttons -->
-                    <div class="space-y-3">
-                        <button type="button" onclick="const h=getParam('hive'); if(h) window.location.href='inspeksjoner.html?hive='+encodeURIComponent(h)" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
-                            Tidligere Logg
-                        </button>
-                        <button type="button" onclick="window.location.href='bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
-                            Mine Bigårder
-                        </button>
-                        <button type="button" onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2 px-2 rounded text-sm shadow-sm">
-                            Mine Bikuber
-                        </button>
-                    </div>
-
-                    <!-- Right Column: Mattilsynet -->
-                    <div class="flex flex-col justify-end">
-                        <button type="button" onclick="window.location.href='https://www.mattilsynet.no/om_mattilsynet/kontakt_oss/'" class="w-full bg-white border-2 border-black text-black font-bold py-2 px-2 rounded text-sm shadow-sm hover:bg-yellow-50 h-full flex flex-col items-center justify-center">
-                            <span class="block text-xs mb-1">MATTILSYNET</span>
-                            <span class="text-lg">KONTAKT</span>
-                        </button>
-                    </div>
-
+                <div class="grid grid-cols-2 gap-3 mt-6 sticky-footer-actions">
+                    <button type="button" onclick="window.location.href='bikuber.html'" class="w-full border border-gray-300 rounded px-3 py-3 text-gray-700 font-bold uppercase hover:bg-gray-50">
+                        Avbryt
+                    </button>
+                    <button type="button" onclick="window.location.href='inspeksjoner.html'" class="w-full border border-gray-300 rounded px-3 py-3 text-gray-700 font-bold uppercase hover:bg-gray-50">
+                        Mine Inspeksjoner
+                    </button>
                 </div>
-                
-                <div id="app-footer"></div>
-
             </form>
         </div>
     </div>
@@ -122,28 +103,16 @@
     { val: 'FOR LITE MAT', color: 'bg-amber-500 text-white', label: 'FOR LITE MAT' }
   ];
 
-  function renderStatusGrid() {
-      const grid = document.getElementById('status_grid');
-      const input = document.getElementById('status_input');
-      if (!grid) return;
-      grid.innerHTML = '';
+  function renderStatusOptions() {
+      const select = document.getElementById('status_input');
+      if (!select) return;
+      select.innerHTML = '';
       
       statusOptions.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          // Check if selected
-          const isSelected = input.value === opt.val;
-          
-          btn.className = `w-full py-2 px-1 rounded font-bold text-xs uppercase shadow-sm transition-all border-2 ${
-              isSelected ? 'border-black ring-2 ring-offset-1 ring-black scale-[1.02]' : 'border-transparent opacity-90 hover:opacity-100'
-          } ${opt.color}`;
-          
-          btn.textContent = opt.label;
-          btn.onclick = () => {
-              input.value = opt.val;
-              renderStatusGrid(); // Re-render to update selection
-          };
-          grid.appendChild(btn);
+          const option = document.createElement('option');
+          option.value = opt.val;
+          option.textContent = opt.label;
+          select.appendChild(option);
       });
   }
 
@@ -164,14 +133,33 @@
     const note = document.querySelector('input[name="note"]')?.value || '';
     const status = document.getElementById('status_input')?.value || 'OK';
     
-    // In a real app, handle image upload here
-    
-    let inspections = [];
-    try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
-    const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
-    inspections.push({ id, hiveId, status, temp, weather, note, ts: Date.now() });
-    try { localStorage.setItem('inspections', JSON.stringify(inspections)); } catch (e) {}
-    window.location.href = 'bikuber.html';
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    const finishSave = (imgData) => {
+        let inspections = [];
+        try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+        const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
+        // Store image if provided
+        inspections.push({ id, hiveId, status, temp, weather, note, image: imgData, ts: Date.now() });
+        
+        try { 
+            localStorage.setItem('inspections', JSON.stringify(inspections)); 
+            window.location.href = 'bikuber.html';
+        } catch (e) {
+            alert('Lagring feilet! Bildet er for stort for nettleserens lagring. Prøv et mindre bilde eller ingen bilde.');
+        }
+    };
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            finishSave(evt.target.result);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        finishSave(null);
+    }
   }
   
   // Init
