@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrer Ny Bigård - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-0 pb-10">
+
+    <!-- Top Blue Header with Logo -->
+    <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-2 mb-10 shadow-md">
+         <!-- Bee Icon / Logo -->
+         <img src="logo.png" alt="Logo" class="h-8 w-auto">
+         <span class="text-white font-bold text-lg">Birøkter Registeret</span>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm p-8 flex flex-col border border-gray-200 mx-4">
+        
+        <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bigård</h1>
+
+        <form onsubmit="event.preventDefault(); alert('Bigård lagret!'); window.location.href='bigard.html';" class="space-y-5">
+            
+            <!-- Bigård-navn -->
+            <div>
+                <label for="apiary_name" class="block text-sm font-bold text-black mb-1">Bigård-navn</label>
+                <input type="text" id="apiary_name" name="apiary_name" placeholder="F.eks. Rascheprangen" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+            </div>
+
+            <!-- Adresse / plassering -->
+            <div>
+                <label for="address" class="block text-sm font-bold text-black mb-1">Adresse / plassering</label>
+                <textarea id="address" name="address" rows="3" placeholder="Adresse, stedsnavn, beskrivelse" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500 resize-none font-mono text-sm"></textarea>
+            </div>
+
+            <!-- Auto number info -->
+            <p class="text-sm text-gray-600 font-medium">Bigård får automatisk nummer: <span class="text-gray-800 font-bold">BG-01, BG-02, BG-03 ...</span></p>
+
+            <!-- Buttons -->
+            <div class="pt-2 space-y-4">
+                <button type="submit" class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all">
+                    Lagre bigård
+                </button>
+                <a href="bigard.html" class="block w-full text-center text-[#0f2a4a] font-bold text-sm hover:underline">
+                    ← Tilbake til bigårder
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innstillinger - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
+
+    <!-- Page Title outside card -->
+    <h1 class="text-3xl font-bold mb-6 text-black uppercase tracking-wide">INNSTILLINGER</h1>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+        
+        <!-- Top Blue Header with Logo -->
+        <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-3">
+             <!-- Bee Icon / Logo -->
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.352-.272-2.636-.759-3.808a.75.75 0 00-.722-.515 11.209 11.209 0 01-7.877-3.08zM12 4.69c2.11 0 4.08.66 5.728 1.81.229.16.486.32.754.468.273.15.556.28.845.396-.58 3.525-2.63 6.636-5.46 8.583a.75.75 0 01-.86 0 10.46 10.46 0 01-5.46-8.583c.29-.116.572-.246.845-.396.268-.148.525-.308.754-.468A9.709 9.709 0 0112 4.69z" clip-rule="evenodd" />
+              </svg>
+             <span class="text-white font-bold text-xl">Birøkter Registeret</span>
+        </div>
+
+        <!-- Grey Sub-header -->
+        <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
+            <span class="text-gray-600 font-medium">Innstillinger</span>
+        </div>
+
+        <div class="p-6 flex flex-col items-center w-full space-y-3">
+            
+            <!-- Menu Items -->
+            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
+                Mine Bikuber
+            </button>
+            
+            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
+                Mine Inspekjoner
+            </button>
+            
+            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
+                Mine Bigårder
+            </button>
+            
+            <button class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
+                Selg Honning
+            </button>
+            
+            <!-- Highlighted Button -->
+            <button class="w-full bg-[#0f2a4a] border-2 border-[#0f2a4a] text-white font-bold py-2.5 rounded hover:bg-[#1a3d66] transition-colors shadow-sm">
+                Kjøp Honning
+            </button>
+
+            <!-- Spacer -->
+            <div class="h-4"></div>
+
+            <!-- Profile Button -->
+            <button onclick="window.location.href='profil.html'" class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-2.5 rounded hover:bg-blue-50 transition-colors shadow-sm">
+                Profil
+            </button>
+
+        </div>
+    </div>
+    
+    <div class="mt-8">
+        <a href="dashboard.html" class="text-[#0f2a4a] font-semibold text-sm hover:underline">← Tilbake til oversikt</a>
+    </div>
+
+</body>
+</html>

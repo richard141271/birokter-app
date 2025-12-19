@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrer Ny Bikube - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-0 pb-10">
+
+    <!-- Top Blue Header with Logo -->
+    <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-2 mb-10 shadow-md">
+         <!-- Bee Icon / Logo -->
+         <img src="logo.png" alt="Logo" class="h-8 w-auto">
+         <span class="text-white font-bold text-lg">Birøkter Registeret</span>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm p-8 flex flex-col border border-gray-200 mx-4">
+        
+        <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bikube</h1>
+
+        <form onsubmit="event.preventDefault(); alert('Bikube lagret!'); window.location.href='bigard.html';" class="space-y-5">
+            
+            <!-- Bikube-nummer -->
+            <div>
+                <label for="hive_id" class="block text-sm font-bold text-black mb-1">Bikube-nummer</label>
+                <input type="text" id="hive_id" name="hive_id" placeholder="F.eks. BK-012" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+            </div>
+
+            <!-- Dronning (årstall) -->
+            <div>
+                <label for="queen_year" class="block text-sm font-bold text-black mb-1">Dronning (årstall)</label>
+                <input type="number" id="queen_year" name="queen_year" placeholder="2024" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+            </div>
+
+             <!-- Type / Rase -->
+             <div>
+                <label for="type" class="block text-sm font-bold text-black mb-1">Rase / Type (Valgfritt)</label>
+                <input type="text" id="type" name="type" placeholder="Krainer, Buckfast..." class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-gray-500">
+            </div>
+
+            <!-- Info -->
+            <p class="text-sm text-gray-600 font-medium">Bikuben knyttes til: <span class="text-gray-800 font-bold">Rascheprangen (BG-01)</span></p>
+
+            <!-- Buttons -->
+            <div class="pt-2 space-y-4">
+                <button type="submit" class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all">
+                    Lagre bikube
+                </button>
+                <a href="bigard.html" class="block w-full text-center text-[#0f2a4a] font-bold text-sm hover:underline">
+                    ← Tilbake til bigård
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigård - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
+
+    <!-- Page Title outside card -->
+    <h1 class="text-3xl font-bold mb-6 text-black">Bigård</h1>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+        
+        <!-- Top Blue Header with Logo -->
+        <div class="bg-[#1e3a5f] w-full py-4 flex items-center justify-center space-x-2">
+             <!-- Bee Icon / Logo -->
+             <img src="logo.png" alt="Logo" class="h-8 w-auto">
+             <span class="text-white font-bold text-lg uppercase tracking-wider">TOPP LOGO</span>
+        </div>
+
+        <div class="p-6 flex flex-col items-center w-full">
+            
+            <!-- Title -->
+            <h2 class="text-2xl font-bold text-black mb-6">Bigård</h2>
+
+            <!-- Subtitle / ID -->
+            <div class="w-full text-left mb-2">
+                <p class="text-gray-500 font-medium">BG02-raschepen...</p>
+            </div>
+
+            <!-- Hive Grid -->
+            <div class="grid grid-cols-2 gap-4 w-full mb-4">
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK006</button>
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK007</button>
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK008</button>
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK001</button>
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK010</button>
+                <button onclick="window.location.href='inspeksjon.html'" class="bg-[#2c4b70] text-white font-bold py-3 rounded shadow-sm hover:bg-[#233d5c] transition-colors">BK011</button>
+            </div>
+
+            <!-- "Fler kuber" button -->
+            <button class="bg-[#dbeafe] text-[#1e3a5f] font-semibold py-1.5 px-6 rounded mb-2 hover:bg-blue-200 transition-colors text-sm">
+                Fler kuber
+            </button>
+            
+            <!-- Arrow down -->
+            <div class="text-[#1e3a5f] mb-6">
+                ↓
+            </div>
+
+            <!-- Action Buttons Stack -->
+            <div class="w-full space-y-3">
+                <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
+                    Registrer Ny Bigård
+                </button>
+                <button onclick="window.location.href='ny-bikube.html'" class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
+                    Registrer Ny Bikube
+                </button>
+                <button class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
+                    Mine Bigårder
+                </button>
+                <button class="w-full bg-[#2c4b70] hover:bg-[#233d5c] text-white font-bold py-3 px-4 rounded shadow-sm transition-all text-left pl-6">
+                    Mine Bikuber
+                </button>
+            </div>
+            
+            <!-- Copyright -->
+            <p class="text-xs text-gray-400 mt-8">copyright 2025 © LEK-Honning</p>
+
+        </div>
+    </div>
+    
+    <div class="mt-8">
+        <a href="dashboard.html" class="text-[#1e3a5f] font-semibold text-sm hover:underline">← Tilbake til oversikt</a>
+    </div>
+
+</body>
+</html>

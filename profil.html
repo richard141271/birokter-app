@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
+
+    <!-- Page Title outside card -->
+    <h1 class="text-3xl font-bold mb-6 text-black uppercase tracking-wide">Profil</h1>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+        
+        <!-- Top Blue Header with Logo -->
+        <div class="bg-[#0f2a4a] w-full py-5 flex items-center justify-center space-x-3">
+             <!-- Bee Icon / Logo -->
+             <img src="logo.png" alt="Logo" class="h-10 w-auto">
+             <span class="text-white font-bold text-xl">Birøkter Registeret</span>
+        </div>
+
+        <!-- Grey Sub-header -->
+        <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
+            <span class="text-gray-600 font-medium">Profil</span>
+        </div>
+
+        <div class="p-6 flex flex-col items-center w-full text-center space-y-4">
+            
+            <!-- User Info -->
+            <div class="space-y-1">
+                <h2 class="text-xl font-bold text-gray-900">Jørn Richard Thoresen</h2>
+                <p class="text-gray-700">Rasch Pram 7, 1787 Halden</p>
+                <p class="text-gray-700">4737406 • 1441271@email.com</p>
+            </div>
+
+            <!-- Big Number (Balance / Honey kg?) -->
+            <div class="bg-gray-100 px-8 py-2 rounded border border-gray-300 my-4">
+                <span class="text-3xl font-bold text-black">126.70</span>
+            </div>
+
+            <!-- Account Info -->
+            <p class="text-gray-700 text-sm">Konto: 1003.38.39066 (Privat)</p>
+
+            <!-- Badges / Certifications -->
+            <div class="bg-gray-50 p-4 rounded-lg w-full text-left space-y-2 text-sm text-gray-800 border border-gray-100">
+                <p>• LEK-Honning™ gold member</p>
+                <p>• Hobby Birøkter LEK-Sertifisert</p>
+                <p>• Leverer ikke Honning til HC</p>
+            </div>
+
+            <!-- Update Button -->
+            <button class="w-full bg-[#0f2a4a] hover:bg-[#1a3d66] text-white font-bold py-3 px-4 rounded shadow-md transition-all mt-4">
+                Endre/oppdatere profil
+            </button>
+
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation Button -->
+    <div class="mt-8 w-full max-w-sm">
+        <button onclick="window.location.href='innstillinger.html'" class="w-full bg-white border-2 border-[#0f2a4a] text-[#0f2a4a] font-bold py-3 rounded hover:bg-blue-50 transition-colors shadow-sm uppercase tracking-wide">
+            Innstillinger
+        </button>
+    </div>
+
+</body>
+</html>

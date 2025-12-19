@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pt-20 pb-10 px-4">
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-8 text-black">I gang registreing</h1>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-lg shadow-md w-full max-w-xs p-6 flex flex-col items-center border border-gray-200">
+        
+        <!-- Logo Area -->
+        <div class="flex flex-col items-center mb-6">
+            <!-- Logo -->
+            <img src="logo.png" alt="Logo" class="h-20 w-auto mb-2">
+            <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="w-full space-y-3 mb-6 flex flex-col items-center">
+            <button onclick="window.location.href='register.html'" class="w-48 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
+                Registrer deg
+            </button>
+            <button onclick="window.location.href='dashboard.html'" class="w-32 bg-[#1e73be] hover:bg-[#165ba1] text-white font-semibold py-2 px-4 rounded shadow-sm transition-all">
+                Logg inn
+            </button>
+        </div>
+
+        <!-- Links -->
+        <div class="w-full space-y-3 flex flex-col items-center mb-8">
+            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                LEK-Honning Norge
+            </a>
+            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                Honningcentralen
+            </a>
+            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                Norges birøkter-lag
+            </a>
+            <a href="#" class="block w-full text-center border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded hover:bg-blue-50 transition-colors">
+                Honning relaterte
+            </a>
+        </div>
+
+        <!-- Bottom Button -->
+        <div class="w-full flex justify-center">
+            <button class="w-full border-2 border-[#1e73be] text-gray-800 font-medium py-1.5 rounded uppercase tracking-wide hover:bg-blue-50 transition-colors">
+                MATTILSYNET
+            </button>
+        </div>
+
+    </div>
+</body>
+</html>
