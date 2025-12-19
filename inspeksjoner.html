@@ -107,15 +107,53 @@
         if (onlySevere && !severeStatus(i.status)) return false;
         return true;
       }).sort((a,b)=> (b.ts||0)-(a.ts||0));
+      
       const emptyEl = document.getElementById('insp_empty');
       const listEl = document.getElementById('insp_list');
-      if (!filtered.length) { if (emptyEl) emptyEl.textContent = 'Ingen inspeksjoner funnet.'; if (listEl) listEl.innerHTML = ''; return; }
+      const dropContainer = document.getElementById('insp_dropdown_container');
+      const dropSelect = document.getElementById('insp_dropdown');
+
+      if (!filtered.length) { 
+          if (emptyEl) emptyEl.textContent = 'Ingen inspeksjoner funnet.'; 
+          if (listEl) listEl.innerHTML = ''; 
+          if (dropContainer) dropContainer.classList.add('hidden');
+          return; 
+      }
+      
       if (emptyEl) emptyEl.textContent = '';
-      listEl.innerHTML = '';
-      filtered.forEach(i => {
+      
+      // Limit to 6 recent
+      const limit = 6;
+      const recent = filtered.slice(0, limit);
+      const older = filtered.slice(limit);
+
+      renderList(recent, listEl, hiveToApiary, apiaryName);
+
+      // Render Dropdown
+      if (older.length > 0) {
+          dropContainer.classList.remove('hidden');
+          while (dropSelect.options.length > 1) { dropSelect.remove(1); }
+          older.forEach(i => {
+             const d = new Date(i.ts || Date.now());
+             const opt = document.createElement('option');
+             opt.value = i.id; // Assuming ID exists, else use index? Logic assumes ID.
+             opt.textContent = `${d.toLocaleString('no-NO')} - ${i.hiveId}`;
+             dropSelect.appendChild(opt);
+          });
+      } else {
+          dropContainer.classList.add('hidden');
+      }
+    }
+
+    function renderList(items, container, hiveToApiary, apiaryName) {
+      container.innerHTML = '';
+      items.forEach(i => {
         const row = document.createElement('div');
         row.className = 'flex items-center justify-between border border-gray-200 rounded p-3 text-sm';
         const d = new Date(i.ts || Date.now());
+        const dateStr = d.toLocaleDateString('no-NO');
+        const timeStr = d.toLocaleTimeString('no-NO', {hour:'2-digit', minute:'2-digit'});
+        
         const apiaryId = hiveToApiary[i.hiveId] || '';
         const name = apiaryName[apiaryId] || apiaryId;
         const left = document.createElement('div');
@@ -131,7 +169,12 @@
         const subLine = document.createElement('span');
         subLine.className = 'text-xs text-gray-500';
         const note = (i.note || '').trim();
-        subLine.textContent = `${d.toLocaleString('no-NO')} • ${i.status}${note ? ' • ' + note : ''}`;
+        // Format: Date Kl.Time Temp Weather Status [Note]
+        // Example: 20.05.2024 Kl.14:30 20°C SOL • OK
+        const temp = i.temp ? `${i.temp}°C ` : '';
+        const weather = i.weather ? `${i.weather} ` : '';
+        
+        subLine.textContent = `${dateStr} Kl.${timeStr} ${temp}${weather}• ${i.status}${note ? ' • ' + note : ''}`;
         
         text.appendChild(mainLine);
         text.appendChild(subLine);
@@ -142,8 +185,30 @@
         dot.className = `ml-3 inline-block w-2.5 h-2.5 rounded-full ${statusColor(i.status)}`;
         row.appendChild(left);
         row.appendChild(dot);
-        listEl.appendChild(row);
+        container.appendChild(row);
       });
+    }
+
+    function renderSingleFromDropdown(id) {
+        if (!id) return;
+        let inspections = [];
+        try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+        const item = inspections.find(i => i.id === id);
+        if (item) {
+             // Mock lookup maps
+             let hives = []; let apiaries = [];
+             try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+             try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+             const hiveToApiary = Object.fromEntries(hives.map(h => [h.id, h.apiaryId]));
+             const apiaryName = Object.fromEntries(apiaries.map(a => [a.id, a.name || a.id]));
+             
+             // Render just this one into the list
+             const listEl = document.getElementById('insp_list');
+             renderList([item], listEl, hiveToApiary, apiaryName);
+             
+             // Optionally scroll to it
+             listEl.scrollIntoView({ behavior: 'smooth' });
+        }
     }
     document.getElementById('search_general')?.addEventListener('input', applyFilters);
     document.getElementById('filter_last30')?.addEventListener('change', applyFilters);

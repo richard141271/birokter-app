@@ -143,6 +143,12 @@
           btn.appendChild(dot);
         }
 
+        // Hive Count Badge
+        const countBadge = document.createElement('span');
+        countBadge.className = 'absolute top-1 right-1 bg-black text-[#FFD700] text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10';
+        countBadge.textContent = relatedHives.length;
+        btn.appendChild(countBadge);
+
         // Click
         btn.onclick = () => { window.location.href = `bikuber.html?apiaryId=${encodeURIComponent(a.id)}`; };
 

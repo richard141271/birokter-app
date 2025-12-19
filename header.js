@@ -21,7 +21,7 @@ function injectHeader() {
   topRow.className = 'flex items-center space-x-2';
 
   const img = document.createElement('img');
-  img.src = 'logo.png'; 
+  img.src = 'assets/logo.png'; 
   img.alt = 'Logo'; 
   img.className = 'h-8 w-auto';
   topRow.appendChild(img);
