@@ -1,11 +1,11 @@
-const CACHE_NAME = 'birokter-v1';
+const CACHE_NAME = 'birokter-v2';
 const ASSETS = [
   '/', 'index.html', 'login.html', 'register.html', 'dashboard.html',
   'bigard.html', 'ny-bigard.html', 'ny-bikube.html',
   'bikuber.html', 'inspeksjon.html', 'inspeksjoner.html',
   'innstillinger.html', 'profil.html', 'profil-rediger.html',
   'kjop-honning.html', 'selg-honning.html',
-  'logo.png', 'manifest.json', 'header.js'
+  'assets/logo.png', 'manifest.json', 'header.js'
 ];
 
 self.addEventListener('install', (event) => {

@@ -10,7 +10,7 @@ function injectHeader() {
   // Apply standard classes if not present (to ensure consistency)
   // We assume the container has base colors, but we can enforce flex layout
   if (!container.className.includes('flex')) {
-      container.className = 'bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm';
+      container.className = 'bg-[#FFD700] w-full py-1 px-3 flex items-center justify-between shadow-sm';
   }
 
   // Left: Logo + Title
@@ -21,7 +21,7 @@ function injectHeader() {
   topRow.className = 'flex items-center space-x-2';
 
   const img = document.createElement('img');
-  img.src = 'logo.png'; 
+  img.src = 'assets/logo.png'; 
   img.alt = 'Logo'; 
   img.className = 'h-8 w-auto';
   topRow.appendChild(img);
@@ -49,13 +49,17 @@ function injectHeader() {
   const right = document.createElement('div');
   right.className = 'flex items-center space-x-2 flex-shrink-0 ml-2';
 
+  // Check if we are on login page
+  const isLoginPage = window.location.pathname.includes('login.html');
+
   if (isAuth) {
     const logout = document.createElement('button');
     logout.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
     logout.textContent = 'Logg ut';
     logout.onclick = () => { localStorage.removeItem('auth'); window.location.href = 'index.html'; };
     right.appendChild(logout);
-  } else {
+  } else if (!isLoginPage) {
+    // Only show "Logg inn" if NOT on login page
     const login = document.createElement('button');
     login.className = 'text-xs bg-black text-[#FFD700] font-bold px-3 py-1.5 rounded hover:bg-gray-800 transition-colors';
     login.textContent = 'Logg inn';
@@ -93,8 +97,23 @@ function registerSW() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', injectHeader);
+function injectFavicon() {
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+  link.type = 'image/png';
+  link.href = 'assets/logo.png';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  injectHeader();
+  injectFavicon();
+});
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     injectHeader();
+    injectFavicon();
 }
 registerSW();
