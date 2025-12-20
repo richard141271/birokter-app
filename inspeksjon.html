@@ -174,7 +174,7 @@
   document.getElementById('date_display').textContent = now.toLocaleDateString('no-NO');
   document.getElementById('time_display').textContent = now.toLocaleTimeString('no-NO', {hour: '2-digit', minute:'2-digit'});
 
-  renderStatusGrid();
+  renderStatusOptions();
 
   // Fetch Weather
   function fetchWeather() {

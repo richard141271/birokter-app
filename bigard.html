@@ -73,10 +73,10 @@
     const recent = reversed.slice(0, limit);
     const older = reversed.slice(limit);
 
-    const emptyEl = document.getElementById('apiary_empty');
-    const listEl = document.getElementById('apiary_list');
-    const dropContainer = document.getElementById('apiary_dropdown_container');
-    const dropSelect = document.getElementById('apiary_dropdown');
+    const emptyEl = document.getElementById('apiaries_empty');
+    const listEl = document.getElementById('apiaries_list');
+    const dropContainer = document.getElementById('apiaries_dropdown_container');
+    const dropSelect = document.getElementById('apiaries_dropdown');
 
     if (!apiaries.length) {
       if (emptyEl) emptyEl.textContent = 'Du har ingen registrerte bigårder ennå.';
