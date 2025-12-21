@@ -102,30 +102,16 @@ function renderHeader(container) {
   const grid = document.createElement('div');
   grid.className = 'grid grid-cols-3 items-center w-full';
 
-  // Left: Back Button OR Logo
+  // Left: Logo (Always show logo)
   const leftCol = document.createElement('div');
   leftCol.className = 'flex justify-start items-center pl-1'; // Added padding
   
-  if (!isHome) {
-      const backBtn = document.createElement('button');
-      backBtn.className = 'text-black p-2 hover:bg-black/10 rounded-full transition-colors';
-      backBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>`;
-      backBtn.onclick = () => {
-          if (document.referrer && document.referrer.includes(window.location.host)) {
-              history.back();
-          } else {
-              window.location.href = 'dashboard.html';
-          }
-      };
-      leftCol.appendChild(backBtn);
-  } else {
-      // Show Logo on Home/Dashboard
-      const logo = document.createElement('img');
-      logo.src = 'assets/logo.png';
-      logo.alt = 'Logo';
-      logo.className = 'h-10 w-auto object-contain'; // Small header logo
-      leftCol.appendChild(logo);
-  }
+  const logo = document.createElement('img');
+  logo.src = 'assets/logo.png';
+  logo.alt = 'Logo';
+  logo.className = 'h-10 w-auto object-contain'; // Small header logo
+  leftCol.appendChild(logo);
+
   grid.appendChild(leftCol);
 
   // Center: Title
