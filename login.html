@@ -17,20 +17,17 @@
 </head>
 <body class="flex flex-col items-center min-h-screen py-6 px-4">
 
-    <div id="app-header"></div>
-
     <!-- Main Card -->
     <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col mt-0">
 
+        <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+
         <div class="p-6 flex flex-col items-center w-full">
-            <!-- Removed Logo Area as requested "fjærn både logo og logg inn fra toppen" -->
-            <!-- But we need SOME title or indicator? User said "det holder med en logo og en logg inn". -->
-            <!-- Header has text "Birøkter Registeret". Body has nothing now. -->
-            <!-- If we remove logo here, it's very plain. But user asked for it. -->
-            <!-- Wait, user said "sentrer Birøkterregisteret på toppen... logg inn siden har logo på topp som skal fjærnes" -->
-            <!-- I'll keep the form clean. -->
             
-        <form onsubmit="login(event)" class="w-full space-y-4 mt-4">
+            <!-- Logo -->
+            <img src="assets/logo.png" alt="Logo" class="h-20 w-auto mb-4 object-contain">
+
+            <form onsubmit="login(event)" class="w-full space-y-4 mt-2">
             <div>
                 <label for="login_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
                 <input type="email" id="login_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
