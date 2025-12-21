@@ -109,7 +109,7 @@ function renderHeader(container) {
   const logo = document.createElement('img');
   logo.src = 'assets/logo.png';
   logo.alt = 'Logo';
-  logo.className = 'h-10 w-auto object-contain'; // Small header logo
+  logo.className = 'h-14 w-auto object-contain'; // Increased size, prevent stretching
   leftCol.appendChild(logo);
 
   grid.appendChild(leftCol);

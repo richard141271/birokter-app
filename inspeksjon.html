@@ -179,6 +179,11 @@
 
   // Fetch Weather
   function fetchWeather() {
+      const tempInput = document.querySelector('input[name="temp"]');
+      const weatherInput = document.querySelector('input[name="weather"]');
+      
+      if (!tempInput || !weatherInput) return;
+
       if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(async position => {
               const lat = position.coords.latitude;
@@ -187,7 +192,7 @@
                   const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                   const data = await response.json();
                   if (data.current_weather) {
-                      document.querySelector('input[name="temp"]').value = `${data.current_weather.temperature}°C`;
+                      tempInput.value = `${data.current_weather.temperature}°C`;
                       // Map WMO codes to text (simplified)
                       const code = data.current_weather.weathercode;
                       let weatherDesc = "Ukjent";
@@ -199,15 +204,21 @@
                       else if (code <= 82) weatherDesc = "Byger";
                       else if (code <= 99) weatherDesc = "Torden";
                       
-                      document.querySelector('input[name="weather"]').value = weatherDesc;
+                      weatherInput.value = weatherDesc;
                   }
               } catch (e) {
                   console.error("Weather fetch failed", e);
+                  tempInput.placeholder = "N/A";
+                  weatherInput.placeholder = "N/A";
               }
+          }, (error) => {
+              console.warn("Location access denied or failed", error);
+              // Optional: user denied location
           });
       }
   }
-  fetchWeather();
+  // Run after a slight delay to ensure inputs are ready (though they should be)
+  setTimeout(fetchWeather, 500);
 </script>
 <script src="header.js"></script>
 </html>
