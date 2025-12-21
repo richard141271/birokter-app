@@ -55,9 +55,6 @@ body {
 
 /* App Navigation Footer (The Tab Bar) */
 .app-nav-footer {
-    position: -webkit-sticky; /* Safari support */
-    position: sticky;
-    bottom: 0;
     width: 100%;
     background-color: white;
     border-top: 1px solid #e5e7eb;
@@ -67,6 +64,30 @@ body {
     z-index: 50;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     margin-top: auto; /* Push to bottom if content is short */
+    flex-shrink: 0;
+}
+
+/* --- APP-LIKE SCROLLING LAYOUT --- */
+/* Target the main card to fill the viewport (minus padding) */
+.bg-white.rounded-xl, .bg-white.rounded-lg, .bg-white.shadow-md {
+    max-height: calc(100vh - 3rem); /* Fits within body py-6 */
+    height: calc(100vh - 3rem);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make the content area (between header and footer) scrollable */
+#app-header + div {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    /* Ensure padding is inside scroll area */
+    width: 100%;
+}
+
+/* Ensure Header don't shrink */
+#app-header {
+    flex-shrink: 0;
 }
 
 .nav-item {

@@ -102,9 +102,10 @@ function renderHeader(container) {
   const grid = document.createElement('div');
   grid.className = 'grid grid-cols-3 items-center w-full';
 
-  // Left: Back Button
+  // Left: Back Button OR Logo
   const leftCol = document.createElement('div');
-  leftCol.className = 'flex justify-start';
+  leftCol.className = 'flex justify-start items-center pl-1'; // Added padding
+  
   if (!isHome) {
       const backBtn = document.createElement('button');
       backBtn.className = 'text-black p-2 hover:bg-black/10 rounded-full transition-colors';
@@ -117,6 +118,13 @@ function renderHeader(container) {
           }
       };
       leftCol.appendChild(backBtn);
+  } else {
+      // Show Logo on Home/Dashboard
+      const logo = document.createElement('img');
+      logo.src = 'assets/logo.png';
+      logo.alt = 'Logo';
+      logo.className = 'h-10 w-auto object-contain'; // Small header logo
+      leftCol.appendChild(logo);
   }
   grid.appendChild(leftCol);
 
