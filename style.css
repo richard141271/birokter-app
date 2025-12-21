@@ -14,33 +14,99 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Ensure body allows scrolling for sticky elements */
 }
 
-/* Sticky Header */
+/* Sticky Header Container */
 #app-header {
+    position: -webkit-sticky; /* Safari support */
     position: sticky;
     top: 0;
     z-index: 50;
     width: 100%;
+    /* Container only handles positioning, visual styles moved to inner elements */
+    background-color: transparent;
+    box-shadow: none; 
+    display: block; /* Stack children vertically */
+    padding: 0;
+}
+
+/* Yellow Top Bar */
+.header-top-bar {
     background-color: var(--brand-yellow);
+    width: 100%;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* Sticky Footer / Action Bar */
-.sticky-footer-actions {
+/* Logout Bar (Below Header) */
+.header-logout-bar {
+    background-color: var(--brand-black); /* Contrast background */
+    width: 100%;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: flex-end; /* Align to right */
+    border-bottom: 1px solid #374151;
+}
+
+
+/* App Navigation Footer (The Tab Bar) */
+.app-nav-footer {
+    position: -webkit-sticky; /* Safari support */
     position: sticky;
     bottom: 0;
+    width: 100%;
     background-color: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.75rem 0;
+    z-index: 50;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    margin-top: auto; /* Push to bottom if content is short */
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #9ca3af; /* gray-400 */
+    font-size: 0.7rem;
+    text-decoration: none;
+    transition: color 0.2s;
+    width: 100%;
+}
+
+.nav-item:hover {
+    color: var(--brand-black);
+}
+
+.nav-item.active {
+    color: var(--brand-black);
+    font-weight: 700;
+}
+
+.nav-item svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Sticky Action Bar (Buttons above footer) */
+.sticky-footer-actions {
+    position: sticky;
+    bottom: 4rem; /* Place above the nav bar (approx height of nav bar) */
+    background-color: white; /* Or transparent if desired */
     border-top: 1px solid #f3f4f6;
-    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
     z-index: 40;
-    padding-bottom: 1.5rem; /* pb-6 */
-    margin-bottom: -1.5rem; /* -mb-6 */
-    padding-top: 1rem; /* pt-4 */
-    margin-left: -1.5rem; /* -mx-6 to counteract padding */
-    margin-right: -1.5rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding: 1rem;
+    /* Negative margins to span full width of padding container if needed, 
+       but simplified here to just be a block */
+    width: 100%;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 /* Standard Button Style (Black & Gold) */
@@ -61,6 +127,8 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.025em; /* tracking-wide */
     text-align: center;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-primary:hover {
@@ -84,15 +152,16 @@ body {
     box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
-/* Main Content Wrapper (Card) */
+/* Main Card Wrapper */
+/* This class should be added to the main div in HTML files if not present */
 .main-card {
     background-color: white;
     border-radius: 0.75rem; /* rounded-xl */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
     width: 100%;
     max-width: 24rem; /* max-w-sm */
-    /* overflow: hidden;  <-- REMOVED to allow sticky header to work */
     border: 1px solid #e5e7eb; /* border-gray-200 */
     display: flex;
     flex-direction: column;
+    overflow: visible; /* Allow sticky children to work relative to viewport */
 }

@@ -7,30 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
     </style>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen pt-0 pb-10 px-4">
-    <!-- Header Container -->
-    <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm mb-6"></div>
-
-    <!-- Title -->
-    <h1 class="text-3xl font-bold mb-6 text-black">Registrer birøkter</h1>
+<body class="flex flex-col items-center min-h-screen py-6 px-4">
 
     <!-- Main Card -->
-    <div class="bg-white rounded-lg shadow-md w-full max-w-md p-6 flex flex-col border border-gray-200">
+    <div class="bg-white rounded-lg shadow-md w-full max-w-md overflow-hidden border border-gray-200 flex flex-col mt-0">
         
-        <div class="flex flex-col items-center mb-6">
-            <img src="assets/logo.png" alt="Logo" class="h-28 w-auto mb-2 object-contain">
-            <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
-        </div>
+        <!-- Header Container -->
+        <div id="app-header"></div>
 
-        <form id="registerForm" onsubmit="saveRegistration(event)" class="space-y-4">
+        <div class="p-6 flex flex-col items-center">
+            
+            <h1 class="text-2xl font-bold mb-6 text-black text-center">Registrer birøkter</h1>
+
+            <div class="flex flex-col items-center mb-6">
+                <img src="assets/logo.png" alt="Logo" class="h-20 w-auto mb-2 object-contain">
+                <p class="text-sm font-medium text-gray-800">Birøkter registret</p>
+            </div>
+
+            <form id="registerForm" onsubmit="saveRegistration(event)" class="space-y-4 w-full">
             
             <!-- Fullt navn -->
             <div>

@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
         /* Hide scrollbar for button grid */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -21,7 +20,7 @@
     <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
         
         <!-- Header Container -->
-        <div id="app-header" class="bg-[#FFD700] w-full py-3 px-3 flex items-center justify-between shadow-sm"></div>
+        <div id="app-header"></div>
 
         <div class="p-6">
             <h1 id="insp_header" class="text-xl font-bold text-black text-center mb-4"></h1>
@@ -80,6 +79,7 @@
                 </div>
             </form>
         </div>
+        <div id="app-footer"></div>
     </div>
 
 </body>
