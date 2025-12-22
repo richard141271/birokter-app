@@ -30,12 +30,50 @@ const REPO = {
     syncAll: async function() {
         if (!this.isConnected) return;
         
+        await this.syncProfile();
         await this.syncTable('apiaries', 'apiaries');
         await this.syncTable('hives', 'hives');
         await this.syncTable('inspections', 'inspections');
         
         // Dispatch event so UI can update
         window.dispatchEvent(new Event('data-synced'));
+    },
+
+    syncProfile: async function() {
+        try {
+            // 1. Get Cloud Profile
+            const { data, error } = await this.client.from('profiles').select('*').single();
+            
+            // 2. Get Local Profile
+            const localProfile = JSON.parse(localStorage.getItem('beekeeper') || 'null');
+
+            if (data) {
+                // Cloud has data -> Update Local
+                localStorage.setItem('beekeeper', JSON.stringify(data));
+                console.log('Synced Profile from cloud');
+            } else {
+                // Cloud is empty -> Push Local if exists
+                if (localProfile) {
+                    console.log('Pushing local profile to cloud...');
+                    const { error: insertError } = await this.client
+                        .from('profiles')
+                        .insert(localProfile);
+                    
+                    if (insertError) {
+                        console.error('Failed to push profile:', insertError);
+                        alert(`Kunne ikke synkronisere profil til skyen: ${insertError.message}`);
+                    } else {
+                        console.log('Profile pushed to cloud');
+                    }
+                }
+            }
+        } catch (e) {
+            // .single() throws if no rows, which is fine, we catch it here?
+            // Actually Supabase JS .single() returns error code PGRST116 for no rows
+            // It doesn't throw.
+            // But let's be safe.
+            console.log('Profile sync check:', e);
+        }
     },
 
     // --- PROFILE / AUTH HELPER ---
@@ -127,14 +165,19 @@ const REPO = {
                 if (localData.length > 0) {
                     console.log(`Pushing local ${tableName} to cloud...`);
                     // We simply map items. We MUST include the ID.
-                    // If local ID is "L-001", we send it.
-                    // If Supabase has default gen_random_uuid(), it will only be used if we omit ID.
-                    // But we WANT to keep our local IDs.
-                    await this.client.from(tableName).insert(localData);
+                    const { error } = await this.client.from(tableName).insert(localData);
+                    
+                    if (error) {
+                        console.error(`Failed to push ${tableName}:`, error);
+                        alert(`Kunne ikke synkronisere ${tableName} til skyen: ${error.message}`);
+                    } else {
+                        console.log(`Pushed ${tableName} to cloud`);
+                    }
                 }
             }
         } catch (e) {
             console.error(`Sync error for ${tableName}:`, e);
+            // alert(`Sync error: ${e.message}`); // Optional: don't spam user on network error
         }
     },
 
