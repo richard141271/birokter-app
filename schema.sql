@@ -25,8 +25,37 @@ create table if not exists profiles (
   "orgNr" text,
   pin text,
   "memberId" text,
-  user_id uuid default auth.uid()
+  user_id uuid default auth.uid(),
+  
+  -- Nye felter som manglet
+  municipality text,
+  rokt_type text,
+  company_name text,
+  org_number text,
+  company_account text,
+  account text,
+  is_nbl_member boolean,
+  nbl_id text,
+  lokallag text,
+  is_lek_member boolean,
+  is_hc_supplier boolean,
+  interests jsonb
 );
+
+-- Oppdater eksisterende tabell hvis den mangler felter (Idempotent)
+alter table profiles add column if not exists municipality text;
+alter table profiles add column if not exists rokt_type text;
+alter table profiles add column if not exists company_name text;
+alter table profiles add column if not exists org_number text;
+alter table profiles add column if not exists company_account text;
+alter table profiles add column if not exists account text;
+alter table profiles add column if not exists is_nbl_member boolean;
+alter table profiles add column if not exists nbl_id text;
+alter table profiles add column if not exists lokallag text;
+alter table profiles add column if not exists is_lek_member boolean;
+alter table profiles add column if not exists is_hc_supplier boolean;
+alter table profiles add column if not exists interests jsonb;
+
 
 -- Sikre unik e-post (hvis tabellen ble laget uten 'unique' først)
 do $$ 

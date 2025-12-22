@@ -96,6 +96,7 @@ const REPO = {
                 
             if (error) {
                 console.error('Profile save failed:', error);
+                alert('Kunne ikke lagre til skyen: ' + error.message + '\n\nDataene er lagret lokalt.');
             } else if (data) {
                 // Update local with the server-generated ID
                 localStorage.setItem('beekeeper', JSON.stringify(data));
