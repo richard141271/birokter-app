@@ -56,6 +56,32 @@ begin
 end $$;
 
 -- 5. Sørg for at tabellene har alle nødvendige felter
+
+-- Apiaries
+alter table apiaries add column if not exists "regNr" text;
+alter table apiaries add column if not exists name text;
+alter table apiaries add column if not exists type text;
+alter table apiaries add column if not exists address text;
+alter table apiaries add column if not exists deleted_at timestamp with time zone;
+
+-- Hives
+alter table hives add column if not exists "apiaryId" text;
+alter table hives add column if not exists "queenYear" text;
+alter table hives add column if not exists type text;
+alter table hives add column if not exists strength text;
+alter table hives add column if not exists status text;
+alter table hives add column if not exists created_at timestamp with time zone default timezone('utc'::text, now()) not null;
+
+-- Inspections
+alter table inspections add column if not exists "hiveId" text;
+alter table inspections add column if not exists status text;
+alter table inspections add column if not exists temp text;
+alter table inspections add column if not exists weather text;
+alter table inspections add column if not exists note text;
+alter table inspections add column if not exists image text;
+alter table inspections add column if not exists ts bigint;
+alter table inspections add column if not exists created_at timestamp with time zone default timezone('utc'::text, now()) not null;
+
 -- Profiles
 alter table profiles add column if not exists "memberId" text;
 alter table profiles add column if not exists interests jsonb;
