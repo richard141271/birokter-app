@@ -57,8 +57,13 @@ function injectHeader() {
                 window.REPO.init();
             }
           } catch(e) {
-              console.log("Supabase init pending/failed", e);
+              console.error("Supabase init failed", e);
+              window.lastSupabaseError = e.message;
           }
+      };
+      script.onerror = (e) => {
+          console.error("Supabase script failed to load", e);
+          window.lastSupabaseError = "Could not load Supabase script (Check Internet/CDN)";
       };
       document.head.appendChild(script);
   }
@@ -155,8 +160,12 @@ function renderHeader(container) {
   if (isAuth) {
       const statusDot = document.createElement('div');
       statusDot.id = 'cloud-status-dot';
-      statusDot.className = 'w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm';
+      statusDot.className = 'w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm cursor-pointer'; // Added cursor-pointer
       statusDot.title = 'Offline';
+      statusDot.onclick = () => {
+          const err = window.lastSupabaseError || 'Unknown connection error';
+          alert('Connection Status:\n' + (window.REPO && window.REPO.isConnected ? 'Online' : 'Offline') + '\n\nLast Error: ' + err);
+      };
       rightCol.appendChild(statusDot);
 
       // Check status periodically
