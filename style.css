@@ -27,7 +27,12 @@ body {
     background-color: white;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     position: relative;
-    padding-bottom: 90px; /* Ensure content is not hidden behind fixed footer */
+    padding-bottom: 120px; /* Increased from 90px to ensure content clears footer on all devices */
+}
+
+/* Prevent iOS Zoom on inputs */
+input, select, textarea {
+    font-size: 16px !important;
 }
 
 /* Sticky Header Container */
