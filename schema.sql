@@ -1,59 +1,56 @@
--- Enable Row Level Security (RLS) is recommended, but for simplicity in this prototype, 
--- we will start with public access. You should enable RLS later.
+-- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å sette opp databasen riktig.
+-- Hvis du allerede har tabeller, kan det være lurt å slette dem først (DROP TABLE apiaries, hives, inspections;)
 
--- 1. Create Apiaries (Lokasjoner/Bigårder) table
+-- 1. Tabell for Bigårder (Apiaries)
 create table if not exists apiaries (
-  id uuid default gen_random_uuid() primary key,
+  id text primary key, -- Vi bruker TEXT for ID (f.eks "L-001")
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  name text not null, -- Name is currently the identifier in the app
-  type text, -- 'bigard', 'lager', etc.
-  icon text, -- e.g. 'home', 'archive'
-  coordinates jsonb, -- {lat: ..., lng: ...}
-  deleted_at timestamp with time zone, -- Soft delete
-  user_id uuid default auth.uid() -- Link to user if logged in
+  name text,
+  type text,
+  address text,
+  "regNr" text, -- Matches JSON: regNr
+  deleted_at timestamp with time zone,
+  user_id uuid default auth.uid()
 );
 
--- 2. Create Hives (Bikuber) table
+-- 2. Tabell for Bikuber (Hives)
 create table if not exists hives (
-  id uuid default gen_random_uuid() primary key,
+  id text primary key, -- f.eks "B-001"
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  name text not null,
-  location text, -- Currently links to apiary name
+  "apiaryId" text, -- Matches JSON: apiaryId
+  "queenYear" text, -- Matches JSON: queenYear
+  type text,
   strength text,
   status text,
   deleted_at timestamp with time zone,
   user_id uuid default auth.uid()
 );
 
--- 3. Create Inspections (Inspeksjoner) table
+-- 3. Tabell for Inspeksjoner (Inspections)
 create table if not exists inspections (
-  id uuid default gen_random_uuid() primary key,
+  id text primary key, -- f.eks "INSPEKSJON-001"
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  hive_id text, -- ID or Name of the hive
-  date date,
-  notes text,
-  registrations jsonb, -- Detailed inspection data
+  "hiveId" text, -- Matches JSON: hiveId
+  status text,
+  temp text,
+  weather text,
+  note text,
+  image text, -- Base64 streng
+  ts bigint,
   user_id uuid default auth.uid()
 );
 
--- 4. Enable RLS (Row Level Security) - Optional for now but good practice
+-- 4. Slå på sikkerhet (RLS)
 alter table apiaries enable row level security;
 alter table hives enable row level security;
 alter table inspections enable row level security;
 
--- 5. Create Policies (Allow everything for now if you have the key)
--- Note: In a real app, you would restrict this to the authenticated user.
-create policy "Enable read access for all users" on apiaries for select using (true);
-create policy "Enable insert access for all users" on apiaries for insert with check (true);
-create policy "Enable update access for all users" on apiaries for update using (true);
-create policy "Enable delete access for all users" on apiaries for delete using (true);
+-- 5. Lagre regler (Policies) - Åpent for alle (enkelt oppsett)
+-- Drop existing policies first to avoid errors if re-running
+drop policy if exists "Public Access Apiaries" on apiaries;
+drop policy if exists "Public Access Hives" on hives;
+drop policy if exists "Public Access Inspections" on inspections;
 
-create policy "Enable read access for all users" on hives for select using (true);
-create policy "Enable insert access for all users" on hives for insert with check (true);
-create policy "Enable update access for all users" on hives for update using (true);
-create policy "Enable delete access for all users" on hives for delete using (true);
-
-create policy "Enable read access for all users" on inspections for select using (true);
-create policy "Enable insert access for all users" on inspections for insert with check (true);
-create policy "Enable update access for all users" on inspections for update using (true);
-create policy "Enable delete access for all users" on inspections for delete using (true);
+create policy "Public Access Apiaries" on apiaries for all using (true);
+create policy "Public Access Hives" on hives for all using (true);
+create policy "Public Access Inspections" on inspections for all using (true);
