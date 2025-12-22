@@ -1,10 +1,14 @@
 -- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å fikse ID-problemet.
--- Dette scriptet er nå oppdatert for å slette ALLE gamle policies som kan skape trøbbel.
+-- Dette scriptet er nå oppdatert for å slette ALLE gamle policies og Foreign Keys som skaper trøbbel.
 
--- 0. Slett policies som hindrer oss i å endre ID-typen
+-- 0. Slett policies og constraints som hindrer oss i å endre ID-typen
 -- Vi tar hardt i her og sletter alt av mulige varianter for å være sikre.
 
--- Profiles
+-- Slett foreign keys som lenker til auth.users (fordi vi endrer ID til tekst)
+alter table profiles drop constraint if exists "profiles_id_fkey";
+alter table profiles drop constraint if exists "profiles_user_id_fkey";
+
+-- Profiles Policies
 drop policy if exists "Users can view own profile" on profiles;
 drop policy if exists "Users can update own profile" on profiles;
 drop policy if exists "Users can insert own profile" on profiles;
