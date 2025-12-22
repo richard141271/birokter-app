@@ -52,6 +52,7 @@ function injectHeader() {
             const { createClient } = window.supabase;
             window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log("Supabase connected");
+            window.lastSupabaseError = null; // Clear error on success
             
             // Dispatch event for Repository to listen to
             window.dispatchEvent(new Event('supabase-ready'));
@@ -167,7 +168,7 @@ function renderHeader(container) {
       statusDot.className = 'w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm cursor-pointer'; // Added cursor-pointer
       statusDot.title = 'Offline';
       statusDot.onclick = () => {
-          const err = window.lastSupabaseError || 'Unknown connection error';
+          const err = window.lastSupabaseError || (window.REPO && window.REPO.isConnected ? 'None' : 'Unknown connection error');
           const libStatus = window.supabase ? 'Loaded' : 'Not Loaded';
           const clientStatus = window.supabaseClient ? 'Initialized' : 'Null';
           const repoStatus = window.REPO ? (window.REPO.isConnected ? 'Connected' : 'Disconnected') : 'Missing';
