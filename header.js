@@ -2,7 +2,7 @@
 
 // Supabase Configuration
 const SUPABASE_URL = 'https://qxhcklowjjtkupvnhfhr.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_dkAK99yyWC-uE6zERP-5Gw_xEs3grqv'; // User provided
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4aGNrbG93amp0a3Vwdm5oZmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNzI3NzQsImV4cCI6MjA4MTc0ODc3NH0.JYqpSlWQ6NDmxiKGJBcwLovedrPloMDNn2o19lQLIN4';
 
 // Make client globally available
 window.supabase = null;
