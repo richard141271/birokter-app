@@ -43,7 +43,20 @@ create table if not exists profiles (
 );
 
 -- Oppdater eksisterende tabell hvis den mangler felter (Idempotent)
+-- Grunnleggende felter (i tilfelle tabellen er gammel)
+alter table profiles add column if not exists "memberId" text;
+alter table profiles add column if not exists "orgName" text;
+alter table profiles add column if not exists "orgNr" text;
+alter table profiles add column if not exists pin text;
+alter table profiles add column if not exists role text;
+alter table profiles add column if not exists phone text;
+alter table profiles add column if not exists zip text;
+alter table profiles add column if not exists address text;
+alter table profiles add column if not exists name text;
+
+-- Nye felter (lagt til senere)
 alter table profiles add column if not exists municipality text;
+
 alter table profiles add column if not exists rokt_type text;
 alter table profiles add column if not exists company_name text;
 alter table profiles add column if not exists org_number text;
