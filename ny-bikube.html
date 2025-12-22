@@ -11,56 +11,69 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen py-6 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
         
         <!-- Header Container -->
-    <div id="app-header"></div>
+        <div id="app-header"></div>
 
-    <div class="p-8">
-        <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bikube</h1>
+        <!-- Scrollable Content -->
+        <div class="app-content p-8">
+            <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bikube</h1>
 
-        <!-- ID Badge -->
-        <div class="w-full bg-yellow-50 border border-yellow-200 rounded p-4 text-center mb-6">
-            <p class="text-gray-600 text-sm mb-1">Du registrerer nå</p>
-            <p id="next_hive_id" class="text-2xl font-extrabold text-black tracking-wider"></p>
+            <!-- ID Badge -->
+            <div class="w-full bg-yellow-50 border border-yellow-200 rounded p-4 text-center mb-6">
+                <p class="text-gray-600 text-sm mb-1">Du registrerer nå</p>
+                <p id="next_hive_id" class="text-2xl font-extrabold text-black tracking-wider"></p>
+            </div>
+
+            <form onsubmit="saveHive(event)" class="space-y-5">
+                
+                <!-- Hidden Input for Logic -->
+                <input type="hidden" id="apiary_id_final">
+                
+                <!-- Context Info: EITHER Fixed Display OR Dropdown -->
+                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                    <span class="text-xs text-gray-500 font-bold uppercase block mb-1">Tilhører bigård</span>
+                    
+                    <!-- Scenario 1: Pre-selected (Hidden by default) -->
+                    <span id="apiary_fixed_display" class="hidden text-lg font-bold text-black"></span>
+                    
+                    <!-- Scenario 2: Select Dropdown (Hidden by default) -->
+                    <select id="apiary_select" class="w-full border border-gray-300 rounded px-3 py-2 bg-white font-bold text-black focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+                        <option value="">Velg bigård...</option>
+                    </select>
+                </div>
+
+                <!-- Dronning (årstall) -->
+                <div>
+                    <label for="queen_year" class="block text-sm font-bold text-black mb-1">Dronning (årstall)</label>
+                    <input type="number" id="queen_year" name="queen_year" placeholder="2024" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
+                </div>
+
+                <!-- Type / Rase -->
+                 <div>
+                    <label for="type" class="block text-sm font-bold text-black mb-1">Rase / Type (Valgfritt)</label>
+                    <input type="text" id="type" name="type" placeholder="Krainer, Buckfast..." class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-2 space-y-4 pb-24">
+                    <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all">
+                        Lagre bikube
+                    </button>
+                    <button type="button" onclick="history.back()" class="w-full text-center text-gray-500 font-medium text-sm hover:underline">
+                        Avbryt
+                    </button>
+                </div>
+                
+            </form>
         </div>
+        
+        <div id="app-footer"></div>
 
-        <form onsubmit="saveHive(event)" class="space-y-5">
-            
-            <input type="hidden" id="apiary_id_hidden">
-            
-            <!-- Context Info -->
-            <div class="bg-gray-50 p-3 rounded border border-gray-200">
-                <span class="text-xs text-gray-500 font-bold uppercase block mb-1">Tilhører bigård</span>
-                <span id="apiary_name_display" class="text-lg font-bold text-black"></span>
-            </div>
-
-            <!-- Dronning (årstall) -->
-            <div>
-                <label for="queen_year" class="block text-sm font-bold text-black mb-1">Dronning (årstall)</label>
-                <input type="number" id="queen_year" name="queen_year" placeholder="2024" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
-            </div>
-
-            <!-- Type / Rase -->
-             <div>
-                <label for="type" class="block text-sm font-bold text-black mb-1">Rase / Type (Valgfritt)</label>
-                <input type="text" id="type" name="type" placeholder="Krainer, Buckfast..." class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 placeholder-gray-500">
-            </div>
-
-            <!-- Buttons -->
-            <div class="pt-2 space-y-4 pb-24">
-                <button type="submit" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-all">
-                    Lagre bikube
-                </button>
-            </div>
-            
-            <div id="app-footer"></div>
-
-        </form>
-    </div>
     </div>
 
 </body>
@@ -69,54 +82,111 @@
 <script>
   function init() {
     const params = new URLSearchParams(window.location.search);
-    const apiaryId = params.get('apiaryId');
+    const apiaryIdParam = params.get('apiaryId');
     
-    if (!apiaryId) {
-        alert('Du må velge en bigård før du kan registrere en bikube.');
-        window.location.href = 'bigard.html';
-        return;
-    }
-
-    let apiaries = [];
-    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
-    const apiary = apiaries.find(a => a.id === apiaryId);
-    
-    if (!apiary) {
-        alert('Fant ikke bigården.');
-        window.location.href = 'bigard.html';
-        return;
-    }
-
-    document.getElementById('apiary_id_hidden').value = apiary.id;
-    document.getElementById('apiary_name_display').textContent = `${apiary.name} (${apiary.id})`;
-
     // Calculate next ID
     let hives = [];
     try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
     const nextId = `KUBE-${String(hives.length + 1).padStart(3, '0')}`;
     document.getElementById('next_hive_id').textContent = nextId;
+
+    // Load Apiaries
+    let apiaries = [];
+    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+    
+    // Filter out deleted items (just in case)
+    apiaries = apiaries.filter(a => !a.deletedAt); // Assuming deleted items are removed from main list, but if using flag:
+    // We are using separate 'deleted_items' list, so 'apiaries' should be clean. 
+    // But let's be safe and check if I implemented softDelete by removing from list (Yes I did).
+
+    if (apiaries.length === 0) {
+        alert('Du må registrere en bigård før du kan lage en bikube!');
+        window.location.href = 'ny-bigard.html';
+        return;
+    }
+
+    const selectDisplay = document.getElementById('apiary_select');
+
+    // Always enable select mode
+    enableSelectMode(apiaries, selectDisplay);
+
+    if (apiaryIdParam) {
+        // Pre-select if param exists
+        const apiary = apiaries.find(a => a.id === apiaryIdParam);
+        if (apiary) {
+            // Lock mode: Show fixed display, hide select
+            document.getElementById('apiary_fixed_display').textContent = apiary.name;
+            document.getElementById('apiary_fixed_display').classList.remove('hidden');
+            selectDisplay.classList.add('hidden');
+            
+            // Set value on select anyway (hidden) for logic
+            selectDisplay.value = apiary.id;
+        }
+    }
+  }
+
+  function enableSelectMode(apiaries, selectEl) {
+      apiaries.forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.id;
+          opt.textContent = `${a.name} (${a.id})`;
+          selectEl.appendChild(opt);
+      });
   }
 
   function saveHive(e) {
     e.preventDefault();
-    const apiaryId = document.getElementById('apiary_id_hidden').value;
-    const queen_year = document.getElementById('queen_year')?.value || '';
-    const type = document.getElementById('type')?.value || '';
     
+    const selectDisplay = document.getElementById('apiary_select');
+    
+    // Determine ID from select
+    const apiaryId = selectDisplay.value;
+
+    if (!apiaryId) {
+        alert('Vennligst velg en bigård.');
+        return;
+    }
+
+    // Logic: Confirm only if NOT locked (i.e. user selected from dropdown)
+    const fixedDisplay = document.getElementById('apiary_fixed_display');
+    const isLocked = !fixedDisplay.classList.contains('hidden');
+    
+    if (!isLocked) {
+        // User manually selected from list -> Confirm
+        // Fetch apiaries again to get name
+        let apiaries = [];
+        try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+        const apiary = apiaries.find(a => a.id === apiaryId);
+        const name = apiary ? apiary.name : apiaryId;
+        
+        if (!confirm(`Er du sikker på at du vil legge denne bikuben i bigård: "${name}"?`)) {
+            return;
+        }
+    }
+    // Else (Locked) -> No confirm
+
+    const queenYear = document.getElementById('queen_year').value;
+    const type = document.getElementById('type').value;
+    const id = document.getElementById('next_hive_id').textContent;
+
+    const newHive = {
+      id,
+      apiaryId,
+      queenYear,
+      type,
+      strength: 'Sterk', // default
+      status: 'OK',      // default
+      created_at: new Date().toISOString()
+    };
+
     let hives = [];
     try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
-    
-    // Recalculate ID just in case
-    const id = `KUBE-${String(hives.length + 1).padStart(3, '0')}`;
-    
-    const hive = { id, apiaryId, queen_year, type };
-    hives.push(hive);
-    try { localStorage.setItem('hives', JSON.stringify(hives)); } catch (e) {}
-    
-    // Redirect back to the apiary's hive list
-    window.location.href = `bikuber.html?apiaryId=${encodeURIComponent(apiaryId)}`;
+    hives.push(newHive);
+    localStorage.setItem('hives', JSON.stringify(hives));
+
+    window.location.href = 'bikuber.html?apiaryId=' + encodeURIComponent(apiaryId);
   }
-  
-  init();
+
+  document.addEventListener('DOMContentLoaded', init);
 </script>
 </html>

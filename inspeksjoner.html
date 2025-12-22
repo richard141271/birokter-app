@@ -18,12 +18,16 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
-  <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
+
+  <!-- App Viewport Container -->
+  <div class="app-viewport">
+    
     <!-- Header Container -->
     <div id="app-header"></div>
 
-    <div class="p-6">
+    <!-- Scrollable Content -->
+    <div class="app-content p-6">
       <h1 class="text-2xl font-bold mb-6 text-black text-center">Mine inspeksjoner</h1>
       <div class="space-y-2 mb-4 no-print">
         <input id="search_general" type="text" placeholder="Søk (Kube, Bigård, Dato, Notat...)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
@@ -74,7 +78,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="w-full space-y-4 pt-4 sticky-footer-actions no-print pb-24">
+      <div class="w-full space-y-4 pt-4 no-print pb-6">
           <button onclick="window.print()" class="btn-primary">
               Skriv ut / Lagre som PDF
           </button>
@@ -128,6 +132,25 @@
       const hiveToApiary = Object.fromEntries(hives.map(h => [h.id, h.apiaryId]));
       const apiaryName = Object.fromEntries(apiaries.map(a => [a.id, a.name || a.id]));
       
+      // Filter Feedback
+      const headerEl = document.querySelector('h1');
+      if (filterHiveId) {
+          headerEl.textContent = `Inspeksjoner: ${filterHiveId}`;
+          // Also show a "Show All" button if filtered
+          if (!document.getElementById('btn_clear_filter')) {
+             const btn = document.createElement('button');
+             btn.id = 'btn_clear_filter';
+             btn.textContent = "Vis alle inspeksjoner";
+             btn.className = "block mx-auto mb-4 text-sm text-[#FFD700] underline";
+             btn.onclick = () => window.location.href = 'inspeksjoner.html';
+             headerEl.after(btn);
+          }
+      } else {
+          headerEl.textContent = 'Mine inspeksjoner';
+          const btn = document.getElementById('btn_clear_filter');
+          if (btn) btn.remove();
+      }
+
       const filtered = inspections.filter(i => {
         if (filterHiveId && i.hiveId !== filterHiveId) return false;
         
@@ -166,27 +189,11 @@
       
       if (emptyEl) emptyEl.textContent = '';
       
-      // Limit to 6 recent
-      const limit = 6;
-      const recent = filtered.slice(0, limit);
-      const older = filtered.slice(limit);
-
-      renderList(recent, listEl, hiveToApiary, apiaryName);
-
-      // Render Dropdown
-      if (older.length > 0) {
-          dropContainer.classList.remove('hidden');
-          while (dropSelect.options.length > 1) { dropSelect.remove(1); }
-          older.forEach(i => {
-             const d = new Date(i.ts || Date.now());
-             const opt = document.createElement('option');
-             opt.value = i.id; // Assuming ID exists, else use index? Logic assumes ID.
-             opt.textContent = `${d.toLocaleString('no-NO')} - ${i.hiveId}`;
-             dropSelect.appendChild(opt);
-          });
-      } else {
-          dropContainer.classList.add('hidden');
-      }
+      // Show all inspections (no limit)
+      renderList(filtered, listEl, hiveToApiary, apiaryName);
+      
+      // Hide dropdown container as we show everything in the list
+      if (dropContainer) dropContainer.classList.add('hidden');
 
       renderPrintTable(filtered, hiveToApiary, apiaryName);
     }

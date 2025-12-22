@@ -14,15 +14,16 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen py-6 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
         
         <!-- Header Container -->
         <div id="app-header"></div>
 
-        <div class="p-6">
+        <!-- Scrollable Content -->
+        <div class="app-content p-6">
             <h1 id="insp_header" class="text-xl font-bold text-black text-center mb-4"></h1>
 
             <!-- INSPEKSJON Header -->
@@ -65,12 +66,12 @@
                 </div>
 
                 <!-- SAVE BUTTON -->
-                <button type="submit" class="btn-primary mb-24">Lagre inspeksjon</button>
+                <button type="submit" class="btn-primary mb-6">Lagre inspeksjon</button>
 
 
                 <!-- Bottom Buttons Grid -->
                 <!-- Removed sticky-footer-actions class to prevent overlap, increased margin -->
-                <div class="grid grid-cols-2 gap-3 mt-6 pb-24">
+                <div class="grid grid-cols-2 gap-3 mt-6 pb-6">
                     <button type="button" onclick="window.location.href='bikuber.html'" class="w-full border border-gray-300 rounded px-3 py-3 text-gray-700 font-bold uppercase hover:bg-gray-50">
                         Avbryt
                     </button>
@@ -178,47 +179,84 @@
   renderStatusOptions();
 
   // Fetch Weather
-  function fetchWeather() {
+  async function fetchWeather() {
       const tempInput = document.querySelector('input[name="temp"]');
       const weatherInput = document.querySelector('input[name="weather"]');
       
       if (!tempInput || !weatherInput) return;
 
-      if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(async position => {
-              const lat = position.coords.latitude;
-              const lon = position.coords.longitude;
-              try {
-                  const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                  const data = await response.json();
-                  if (data.current_weather) {
-                      tempInput.value = `${data.current_weather.temperature}°C`;
-                      // Map WMO codes to text (simplified)
-                      const code = data.current_weather.weathercode;
-                      let weatherDesc = "Ukjent";
-                      if (code === 0) weatherDesc = "Klart";
-                      else if (code <= 3) weatherDesc = "Lettskyet";
-                      else if (code <= 48) weatherDesc = "Tåke";
-                      else if (code <= 67) weatherDesc = "Regn";
-                      else if (code <= 77) weatherDesc = "Snø";
-                      else if (code <= 82) weatherDesc = "Byger";
-                      else if (code <= 99) weatherDesc = "Torden";
-                      
-                      weatherInput.value = weatherDesc;
-                  }
-              } catch (e) {
-                  console.error("Weather fetch failed", e);
-                  tempInput.placeholder = "N/A";
-                  weatherInput.placeholder = "N/A";
-              }
-          }, (error) => {
-              console.warn("Location access denied or failed", error);
-              // Optional: user denied location
-          });
+      // Show loading state
+      tempInput.placeholder = "Henter...";
+      weatherInput.placeholder = "Henter...";
+
+      if (!("geolocation" in navigator)) {
+          tempInput.placeholder = "Ingen GPS";
+          weatherInput.placeholder = "Ingen GPS";
+          return;
       }
+
+      navigator.geolocation.getCurrentPosition(async position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          try {
+              const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+              if (!response.ok) throw new Error('Network response was not ok');
+              const data = await response.json();
+              
+              if (data.current_weather) {
+                  tempInput.value = `${data.current_weather.temperature}°C`;
+                  
+                  // Map WMO codes
+                  const code = data.current_weather.weathercode;
+                  let weatherDesc = "Ukjent";
+                  if (code === 0) weatherDesc = "Klart";
+                  else if (code <= 3) weatherDesc = "Lettskyet";
+                  else if (code <= 45) weatherDesc = "Tåke";
+                  else if (code <= 48) weatherDesc = "Rim";
+                  else if (code <= 57) weatherDesc = "Yr";
+                  else if (code <= 67) weatherDesc = "Regn";
+                  else if (code <= 77) weatherDesc = "Snø";
+                  else if (code <= 82) weatherDesc = "Byger";
+                  else if (code <= 99) weatherDesc = "Torden";
+                  
+                  weatherInput.value = weatherDesc;
+              }
+          } catch (e) {
+              console.error("Weather fetch failed", e);
+              tempInput.placeholder = "Feil";
+              weatherInput.placeholder = "Feil";
+          }
+      }, (error) => {
+          console.warn("Location access denied or failed", error);
+          let msg = "GPS Feil";
+          if (error.code === 1) msg = "Ingen tilgang"; // Permission denied
+          else if (error.code === 2) msg = "Ingen signal"; // Position unavailable
+          else if (error.code === 3) msg = "Tidsavbrudd"; // Timeout
+          
+          tempInput.placeholder = msg;
+          weatherInput.placeholder = msg;
+      }, { timeout: 15000, enableHighAccuracy: false }); // Relaxed requirements
   }
-  // Run after a slight delay to ensure inputs are ready (though they should be)
-  setTimeout(fetchWeather, 500);
+  
+  // Call on load
+  document.addEventListener('DOMContentLoaded', () => {
+      fetchWeather();
+  });
+
+  // Go to My Inspections for this hive
+  window.goToMyInspections = function() {
+      const hiveId = getParam('hive');
+      if (hiveId) {
+          window.location.href = `inspeksjoner.html?hive=${encodeURIComponent(hiveId)}`;
+      } else {
+          window.location.href = 'inspeksjoner.html';
+      }
+  };
+    
+  // Run on load
+  window.addEventListener('load', () => {
+      setTimeout(fetchWeather, 500);
+  });
 </script>
 <script src="header.js"></script>
 </html>

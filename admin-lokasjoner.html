@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Administrer Lokasjoner - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com">  // Initialize
+  document.addEventListener('DOMContentLoaded', renderSettingsLocations);
+</script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+    </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
+
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
+        
+        <!-- Header Container -->
+        <div id="app-header"></div>
+
+        <!-- Scrollable Content -->
+        <div class="app-content p-6 flex flex-col items-center w-full">
+            <h1 class="text-xl font-bold text-black mb-4">Administrer Lokasjoner</h1>
+            <p class="text-xs text-gray-500 mb-6 text-center">Her kan du slette eller endre lokasjoner. Du må flytte eller håndtere bikuber før du kan slette en lokasjon.</p>
+            
+            <div id="settings_locations_list" class="w-full space-y-3 mb-8"></div>
+            
+            <button onclick="window.location.href='ny-bigard.html'" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded shadow-md transition-colors">
+                + Opprett ny lokasjon
+            </button>
+            
+            <button onclick="openTrashModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-4 rounded shadow-sm transition-colors mt-3 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-2.111-1.058L4.95 9.172M5.05 9.05a2 2 0 011.95-1.55h9.95a2 2 0 011.95 1.55m-1.95 0a2 2 0 01-1.95 1.55H7.05a2 2 0 01-1.95-1.55m1.95 0V4a1 1 0 011-1h6a1 1 0 011 1v2" /></svg>
+                Papirkurv / Gjenopprett
+            </button>
+            
+            <button onclick="window.location.href='innstillinger.html'" class="mt-4 text-sm text-gray-500 underline">
+                Tilbake til innstillinger
+            </button>
+        </div>
+        
+        <div id="app-footer"></div>
+    </div>
+
+    <!-- Trash Modal -->
+    <div id="trash_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold mb-4 flex justify-between items-center">
+                <span>Slettede elementer</span>
+                <button onclick="closeTrashModal()" class="text-gray-500 hover:text-black">✕</button>
+            </h3>
+            
+            <div id="trash_list" class="space-y-3 mb-6"></div>
+            
+            <button onclick="closeTrashModal()" class="w-full bg-gray-100 text-gray-700 font-bold py-2 rounded">Lukk</button>
+        </div>
+    </div>
+
+
+    <!-- PIN Modal -->
+    <div id="pin_modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xs p-6 text-center">
+            <h3 class="text-lg font-bold mb-4 text-gray-900">Bekreft gjenoppretting</h3>
+            <p class="text-sm text-gray-500 mb-4">Angi PIN-kode for å gjenopprette elementet.</p>
+            
+            <input type="password" id="pin_input" maxlength="4" class="w-full text-center text-2xl tracking-[0.5em] font-bold border-b-2 border-gray-300 focus:border-[#FFD700] outline-none mb-6 py-2" placeholder="••••">
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closePinModal()" class="bg-gray-200 text-gray-800 font-bold py-2 rounded">Avbryt</button>
+                <button onclick="verifyPinForRestore()" class="bg-[#FFD700] text-black font-bold py-2 rounded">Bekreft</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hive Handling Wizard Modal -->
+    <div id="hive_wizard_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold mb-4">Håndter bikuber før sletting</h3>
+            <p class="text-sm text-gray-600 mb-4">
+                Følgende bikuber må håndteres før <span id="wizard_loc_name" class="font-bold"></span> kan slettes.
+            </p>
+            
+            <div id="wizard_current_hive_container" class="mb-6 border p-4 rounded bg-yellow-50">
+                <h4 class="font-bold text-lg" id="wizard_hive_name"></h4>
+                <p class="text-xs text-gray-500 mb-4">Hva vil du gjøre med denne?</p>
+                
+                <select id="wizard_action" class="w-full p-2 border rounded mb-3" onchange="updateWizardOptions()">
+                    <option value="">Velg handling...</option>
+                    <option value="move">Flytt til annen lokasjon</option>
+                    <option value="storage">Flytt til Lager</option>
+                    <option value="heather">Flyttes på Lyngtrekk</option>
+                    <option value="sell">Selges</option>
+                    <option value="destroy">Destrueres/Brennes (Sykdom)</option>
+                </select>
+
+                <!-- Sub-options for Move -->
+                <div id="wizard_move_options" class="hidden mb-3">
+                    <label class="block text-xs font-bold mb-1">Velg destinasjon:</label>
+                    <select id="wizard_destination" class="w-full p-2 border rounded"></select>
+                </div>
+                
+                <button onclick="processWizardStep()" class="w-full bg-black text-[#FFD700] font-bold py-2 rounded">
+                    Utfør og Neste
+                </button>
+            </div>
+            
+            <button onclick="closeWizard()" class="text-gray-500 text-sm underline w-full text-center">Avbryt</button>
+        </div>
+    </div>
+
+    <!-- Bulk Move Modal -->
+    <div id="bulk_move_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center">
+            <h3 class="text-lg font-bold mb-2">Tøm og slett lokasjon</h3>
+            <p class="text-sm text-gray-600 mb-6">Lokasjonen inneholder <span id="bulk_count" class="font-bold"></span> bikuber. Vil du flytte alle til en bil?</p>
+            
+            <div id="bulk_car_select_container" class="hidden mb-4 text-left">
+                <label class="block text-xs font-bold mb-1">Velg bil:</label>
+                <select id="bulk_car_select" class="w-full p-2 border rounded mb-2"></select>
+            </div>
+
+            <div id="bulk_actions" class="space-y-3">
+                <button onclick="showBulkCarSelect()" class="w-full bg-black text-[#FFD700] font-bold py-3 rounded shadow-md">
+                    Ja, flytt alle til bil
+                </button>
+                <button onclick="switchToIndividualWizard()" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-2 rounded">
+                    Nei, håndter individuelt
+                </button>
+                <button onclick="closeBulkModal()" class="w-full text-gray-500 text-sm underline py-1">
+                    Avbryt
+                </button>
+            </div>
+            
+            <!-- Step 2: Confirm Move -->
+            <div id="bulk_step2" class="hidden space-y-3">
+                <button onclick="executeBulkMoveToCar()" class="w-full bg-green-600 text-white font-bold py-3 rounded shadow-md">
+                    Bekreft flytting til bil
+                </button>
+                <button onclick="closeBulkModal()" class="w-full text-gray-500 text-sm underline py-1">
+                    Avbryt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Destination Modal (Post-Car) -->
+    <div id="post_car_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center">
+            <h3 class="text-lg font-bold mb-2">Videre flytting?</h3>
+            <p class="text-sm text-gray-600 mb-6">Kubene er nå i bilen. Vil du registrere hvor de flyttes videre nå?</p>
+            
+            <div id="post_car_dest_container" class="hidden mb-4 text-left">
+                <label class="block text-xs font-bold mb-1">Velg destinasjon:</label>
+                <select id="post_car_dest_select" class="w-full p-2 border rounded mb-2"></select>
+            </div>
+
+            <div id="post_car_actions" class="space-y-3">
+                <button onclick="showPostCarDestSelect()" class="w-full bg-black text-[#FFD700] font-bold py-3 rounded shadow-md">
+                    Ja, velg destinasjon
+                </button>
+                <button onclick="finishDeleteProcess()" class="w-full bg-gray-100 text-gray-700 font-bold py-3 rounded">
+                    Nei, la dem være i bilen
+                </button>
+            </div>
+             <div id="post_car_confirm" class="hidden space-y-3">
+                <button onclick="executePostCarMove()" class="w-full bg-green-600 text-white font-bold py-3 rounded shadow-md">
+                    Bekreft flytting
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="header.js"></script>
+<script>
+  let apiaries = [];
+  let hives = [];
+  let inspections = [];
+
+  // Load Data
+  function loadData() {
+      try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+      try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+      try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
+  }
+
+  // Soft Delete Helper
+  function softDelete(type, item) {
+    let deleted = [];
+    try { deleted = JSON.parse(localStorage.getItem('deleted_items') || '[]'); } catch(e) {}
+    
+    const entry = {
+        ...item,
+        deletedAt: Date.now(),
+        originalType: type, // 'apiary' or 'hive'
+        originalId: item.id
+    };
+    
+    deleted.push(entry);
+    localStorage.setItem('deleted_items', JSON.stringify(deleted));
+  }
+
+  function renderSettingsLocations() {
+      loadData();
+      const list = document.getElementById('settings_locations_list');
+      list.innerHTML = '';
+      
+      if (apiaries.length === 0) {
+          list.innerHTML = '<p class="text-center text-gray-400 italic">Ingen lokasjoner funnet.</p>';
+          return;
+      }
+
+      apiaries.forEach(loc => {
+          const locHives = hives.filter(h => h.apiaryId === loc.id);
+          const count = locHives.length;
+          
+          const row = document.createElement('div');
+          row.className = 'flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100';
+          
+          let subInfo = `${loc.type || 'Bigård'}`;
+          if (loc.type === 'Bil' && loc.regNr) {
+              subInfo += ` • ${loc.regNr}`;
+          }
+          subInfo += ` • ${count} enheter`;
+
+          row.innerHTML = `
+            <div class="flex flex-col">
+                <span class="font-bold text-base text-gray-900">${loc.name || loc.id}</span>
+                <span class="text-xs text-gray-500 font-mono">${loc.id}</span>
+                <span class="text-xs text-gray-600 mt-1">${subInfo}</span>
+            </div>
+            <button onclick="initiateDelete('${loc.id}')" class="bg-red-50 text-red-600 font-bold text-xs border border-red-200 px-3 py-2 rounded hover:bg-red-100 transition-colors">
+                SLETT
+            </button>
+          `;
+          list.appendChild(row);
+      });
+  }
+  
+  // Wizard State
+  let wizardTargetLocId = null;
+  let wizardHivesQueue = [];
+  
+  // Bulk State
+  let bulkTargetLocId = null;
+  let bulkHives = [];
+
+  function initiateDelete(locId) {
+      loadData();
+      const loc = apiaries.find(a => a.id === locId);
+      if (!loc) return;
+      
+      const locHives = hives.filter(h => h.apiaryId === locId);
+      
+      if (locHives.length === 0) {
+          if (confirm(`Er du sikker på at du vil slette "${loc.name}"?`)) {
+              // Soft Delete Apiary
+              softDelete('apiary', loc);
+              
+              apiaries = apiaries.filter(a => a.id !== locId);
+              localStorage.setItem('apiaries', JSON.stringify(apiaries));
+              renderSettingsLocations();
+          }
+          return;
+      }
+      
+      // Start Bulk Flow
+      bulkTargetLocId = locId;
+      bulkHives = [...locHives];
+      
+      document.getElementById('bulk_count').textContent = locHives.length;
+      document.getElementById('bulk_move_modal').classList.remove('hidden');
+      
+      // Reset Bulk UI
+      document.getElementById('bulk_actions').classList.remove('hidden');
+      document.getElementById('bulk_car_select_container').classList.add('hidden');
+      document.getElementById('bulk_step2').classList.add('hidden');
+  }
+
+  // --- Bulk Logic ---
+
+  function showBulkCarSelect() {
+      const cars = apiaries.filter(a => a.type === 'Bil');
+      const select = document.getElementById('bulk_car_select');
+      select.innerHTML = '';
+      
+      if (cars.length === 0) {
+          alert('Ingen biler registrert. Du må registrere en bil først, eller velge manuell håndtering.');
+          return;
+      }
+      
+      cars.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = `${c.name} (${c.regNr || 'Ingen reg.nr'})`;
+          select.appendChild(opt);
+      });
+      
+      document.getElementById('bulk_actions').classList.add('hidden');
+      document.getElementById('bulk_car_select_container').classList.remove('hidden');
+      document.getElementById('bulk_step2').classList.remove('hidden');
+  }
+  
+  function executeBulkMoveToCar() {
+      const carId = document.getElementById('bulk_car_select').value;
+      if (!carId) return;
+      
+      // Move all hives to car
+      hives = hives.map(h => {
+          if (h.apiaryId === bulkTargetLocId) {
+              return { ...h, apiaryId: carId };
+          }
+          return h;
+      });
+      localStorage.setItem('hives', JSON.stringify(hives));
+      
+      // Close Bulk Modal
+      document.getElementById('bulk_move_modal').classList.add('hidden');
+      
+      // Open Post-Car Modal
+      document.getElementById('post_car_modal').classList.remove('hidden');
+      document.getElementById('post_car_actions').classList.remove('hidden');
+      document.getElementById('post_car_dest_container').classList.add('hidden');
+      document.getElementById('post_car_confirm').classList.add('hidden');
+  }
+  
+  function showPostCarDestSelect() {
+      const select = document.getElementById('post_car_dest_select');
+      select.innerHTML = '';
+      
+      // Exclude current location (which is being deleted) and the car (where they are now)
+      // Actually, show all valid locations except deleted one
+      const targets = apiaries.filter(a => a.id !== bulkTargetLocId);
+      
+      targets.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = `${t.name} (${t.type || 'Bigård'})`;
+          select.appendChild(opt);
+      });
+      
+      document.getElementById('post_car_actions').classList.add('hidden');
+      document.getElementById('post_car_dest_container').classList.remove('hidden');
+      document.getElementById('post_car_confirm').classList.remove('hidden');
+  }
+  
+  function executePostCarMove() {
+      const destId = document.getElementById('post_car_dest_select').value;
+      const carId = document.getElementById('bulk_car_select').value; // We need to remember this?
+      // Wait, we just moved them to 'carId' in executeBulkMoveToCar.
+      // Now we move them from 'carId' to 'destId'?
+      // Or we just find the hives we just moved?
+      // Safer: Find hives that were in bulkTargetLocId (we have bulkHives list)
+      
+      bulkHives.forEach(bh => {
+          const hiveIndex = hives.findIndex(h => h.id === bh.id);
+          if (hiveIndex > -1) {
+              hives[hiveIndex].apiaryId = destId;
+          }
+      });
+      localStorage.setItem('hives', JSON.stringify(hives));
+      
+      finishDeleteProcess();
+  }
+  
+  function finishDeleteProcess() {
+      // Close all modals
+      document.getElementById('post_car_modal').classList.add('hidden');
+      document.getElementById('bulk_move_modal').classList.add('hidden');
+      
+      // Soft Delete the Location
+      const loc = apiaries.find(a => a.id === bulkTargetLocId);
+      if (loc) {
+          softDelete('apiary', loc);
+          apiaries = apiaries.filter(a => a.id !== bulkTargetLocId);
+          localStorage.setItem('apiaries', JSON.stringify(apiaries));
+      }
+      
+      renderSettingsLocations();
+      alert('Lokasjon slettet og bikuber flyttet.');
+      
+      // Reset state
+      bulkTargetLocId = null;
+      bulkHives = [];
+  }
+  
+  function closeBulkModal() {
+      document.getElementById('bulk_move_modal').classList.add('hidden');
+      bulkTargetLocId = null;
+      bulkHives = [];
+  }
+
+  function switchToIndividualWizard() {
+      closeBulkModal();
+      // Start Wizard
+      wizardTargetLocId = bulkTargetLocId; // Reuse ID from bulk
+      // Need to re-fetch hives since we closed modal
+      const locHives = hives.filter(h => h.apiaryId === wizardTargetLocId);
+      wizardHivesQueue = [...locHives];
+      
+      const loc = apiaries.find(a => a.id === wizardTargetLocId);
+      document.getElementById('wizard_loc_name').textContent = loc ? loc.name : wizardTargetLocId;
+      document.getElementById('hive_wizard_modal').classList.remove('hidden');
+      showNextHiveInWizard();
+  }
+
+  // --- Individual Wizard Logic ---
+  
+  function showNextHiveInWizard() {
+      if (wizardHivesQueue.length === 0) {
+          // All handled
+          closeWizard();
+          // Soft Delete Location
+          const loc = apiaries.find(a => a.id === wizardTargetLocId);
+          if (loc) {
+              softDelete('apiary', loc);
+              apiaries = apiaries.filter(a => a.id !== wizardTargetLocId);
+              localStorage.setItem('apiaries', JSON.stringify(apiaries));
+          }
+          renderSettingsLocations();
+          alert('Alle bikuber er håndtert og lokasjonen er slettet.');
+          return;
+      }
+      
+      const hive = wizardHivesQueue[0];
+      document.getElementById('wizard_hive_name').textContent = `Bikube: ${hive.name || hive.id}`;
+      document.getElementById('wizard_action').value = '';
+      updateWizardOptions();
+  }
+  
+  function updateWizardOptions() {
+      const action = document.getElementById('wizard_action').value;
+      const moveOpts = document.getElementById('wizard_move_options');
+      const destSelect = document.getElementById('wizard_destination');
+      
+      if (action === 'move' || action === 'heather' || action === 'storage') {
+          moveOpts.classList.remove('hidden');
+          destSelect.innerHTML = '';
+          
+          // Filter locations based on action
+          let targets = [];
+          if (action === 'storage') {
+              targets = apiaries.filter(a => a.type === 'Lager');
+              if (targets.length === 0) {
+                  const opt = document.createElement('option');
+                  opt.value = 'NEW_STORAGE';
+                  opt.textContent = '+ Opprett "Mitt Lager" automatisk';
+                  destSelect.appendChild(opt);
+              }
+          } else {
+              // Move or Heather -> Show all except current
+              targets = apiaries.filter(a => a.id !== wizardTargetLocId);
+          }
+          
+          targets.forEach(t => {
+              const opt = document.createElement('option');
+              opt.value = t.id;
+              opt.textContent = `${t.name} (${t.type || 'Bigård'})`;
+              destSelect.appendChild(opt);
+          });
+      } else {
+          moveOpts.classList.add('hidden');
+      }
+  }
+  
+  function processWizardStep() {
+      const hive = wizardHivesQueue[0];
+      const action = document.getElementById('wizard_action').value;
+      
+      if (!action) {
+          alert('Velg en handling');
+          return;
+      }
+      
+      if (action === 'destroy') {
+          const logEntry = {
+              hiveId: hive.id,
+              ts: Date.now(),
+              type: 'DESTRUCTION',
+              note: 'Destruert/brent grunnet sykdom under sletting av bigård.'
+          };
+          inspections.push(logEntry);
+          localStorage.setItem('inspections', JSON.stringify(inspections));
+          
+          // Soft Delete Hive
+          softDelete('hive', hive);
+          hives = hives.filter(h => h.id !== hive.id);
+          localStorage.setItem('hives', JSON.stringify(hives));
+          
+      } else if (action === 'sell') {
+           const logEntry = {
+              hiveId: hive.id,
+              ts: Date.now(),
+              type: 'SALE',
+              note: 'Solgt.'
+          };
+          inspections.push(logEntry);
+          localStorage.setItem('inspections', JSON.stringify(inspections));
+          
+          // Soft Delete Hive (Sold)
+          softDelete('hive', { ...hive, sold: true });
+          hives = hives.filter(h => h.id !== hive.id);
+          localStorage.setItem('hives', JSON.stringify(hives));
+          
+      } else if (action === 'move' || action === 'heather' || action === 'storage') {
+          let targetId = document.getElementById('wizard_destination').value;
+          
+          if (targetId === 'NEW_STORAGE') {
+              const newId = `L-${Date.now()}`;
+              const newLoc = {
+                  id: newId,
+                  name: 'Mitt Lager',
+                  type: 'Lager',
+                  address: 'Automatisk opprettet'
+              };
+              apiaries.push(newLoc);
+              localStorage.setItem('apiaries', JSON.stringify(apiaries));
+              targetId = newId;
+          }
+          
+          if (!targetId) {
+              alert('Velg en destinasjon');
+              return;
+          }
+          
+          const hiveIndex = hives.findIndex(h => h.id === hive.id);
+          if (hiveIndex > -1) {
+              hives[hiveIndex].apiaryId = targetId;
+              localStorage.setItem('hives', JSON.stringify(hives));
+          }
+      }
+      
+      wizardHivesQueue.shift();
+      showNextHiveInWizard();
+  }
+  
+  function closeWizard() {
+      document.getElementById('hive_wizard_modal').classList.add('hidden');
+      wizardTargetLocId = null;
+      wizardHivesQueue = [];
+  }
+
+  // --- Trash Logic ---
+  
+  function openTrashModal() {
+      renderTrashItems();
+      document.getElementById('trash_modal').classList.remove('hidden');
+  }
+  
+  function closeTrashModal() {
+      document.getElementById('trash_modal').classList.add('hidden');
+  }
+
+  function renderTrashItems() {
+      let deleted = [];
+      try { deleted = JSON.parse(localStorage.getItem('deleted_items') || '[]'); } catch(e) {}
+      const list = document.getElementById('trash_list');
+      list.innerHTML = '';
+      
+      if (deleted.length === 0) {
+          list.innerHTML = '<p class="text-center text-gray-400 italic">Papirkurven er tom.</p>';
+          return;
+      }
+
+      deleted.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'flex justify-between items-center bg-gray-50 p-3 rounded border border-gray-200';
+          
+          let info = item.originalType === 'apiary' ? (item.type || 'Bigård') : 'Bikube';
+          if (item.originalType === 'apiary' && item.type === 'Bil') info = 'Bil';
+          if (item.originalType === 'apiary' && item.type === 'Lager') info = 'Lager';
+
+          row.innerHTML = `
+              <div class="flex flex-col text-left">
+                  <span class="font-bold text-sm text-gray-900">${item.name || item.id}</span>
+                  <span class="text-xs text-gray-500">${info} • Slettet: ${new Date(item.deletedAt).toLocaleDateString()}</span>
+              </div>
+              <button onclick="requestRestore('${item.originalId}', '${item.originalType}')" class="bg-green-50 text-green-600 font-bold text-xs border border-green-200 px-3 py-1 rounded hover:bg-green-100 transition-colors">
+                  GJENOPPRETT
+              </button>
+          `;
+          list.appendChild(row);
+      });
+  }
+
+  // PIN Logic for Restore
+  let pendingRestoreId = null;
+  let pendingRestoreType = null;
+
+  function requestRestore(id, type) {
+      pendingRestoreId = id;
+      pendingRestoreType = type;
+      
+      const modal = document.getElementById('pin_modal');
+      const input = document.getElementById('pin_input');
+      modal.classList.remove('hidden');
+      input.value = '';
+      input.focus();
+  }
+
+  function closePinModal() {
+      document.getElementById('pin_modal').classList.add('hidden');
+      pendingRestoreId = null;
+      pendingRestoreType = null;
+  }
+
+  function verifyPinForRestore() {
+      const input = document.getElementById('pin_input').value;
+      let beekeeper = null;
+      try { beekeeper = JSON.parse(localStorage.getItem('beekeeper')); } catch (e) {}
+
+      if (beekeeper && beekeeper.pin) {
+          if (input === beekeeper.pin) {
+              performRestore();
+              closePinModal();
+          } else {
+              alert('Feil PIN-kode');
+              document.getElementById('pin_input').value = '';
+          }
+      } else {
+          // Fallback if no PIN set
+          performRestore();
+          closePinModal();
+      }
+  }
+
+  function performRestore() {
+      if (!pendingRestoreId || !pendingRestoreType) return;
+      
+      let deleted = [];
+      try { deleted = JSON.parse(localStorage.getItem('deleted_items') || '[]'); } catch(e) {}
+      
+      const item = deleted.find(i => i.originalId === pendingRestoreId && i.originalType === pendingRestoreType);
+      if (!item) return;
+
+      // Restore to main list
+      if (pendingRestoreType === 'apiary') {
+          apiaries.push(item);
+          localStorage.setItem('apiaries', JSON.stringify(apiaries));
+      } else if (pendingRestoreType === 'hive') {
+          hives.push(item);
+          localStorage.setItem('hives', JSON.stringify(hives));
+      }
+
+      // Remove from deleted items
+      deleted = deleted.filter(i => !(i.originalId === pendingRestoreId && i.originalType === pendingRestoreType));
+      localStorage.setItem('deleted_items', JSON.stringify(deleted));
+      
+      renderTrashItems();
+      renderSettingsLocations();
+      alert('Element gjenopprettet.');
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', renderSettingsLocations);
+</script>
+</html>

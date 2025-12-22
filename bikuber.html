@@ -12,16 +12,17 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen py-6 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
   
-  <!-- Main Card -->
-  <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+  <!-- App Viewport Container -->
+  <div class="app-viewport">
     
     <!-- Header Container -->
     <div id="app-header"></div>
 
-    <div class="p-6">
-      <h2 class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
+    <!-- Scrollable Content -->
+    <div class="app-content p-6 flex flex-col items-center">
+      <h2 id="page_title" class="text-2xl font-bold text-black mb-6 text-center">Mine bikuber</h2>
       
       <div id="hives_empty" class="w-full text-center text-gray-600 mb-4"></div>
       
@@ -37,9 +38,9 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="w-full space-y-4 pt-4 sticky-footer-actions pb-24">
+      <div class="w-full space-y-4 pt-4 pb-6">
         <button onclick="window.location.href='inspeksjoner.html'" class="btn-primary">Søk alle inspeksjoner</button>
-        <button id="btn_register_hive" class="hidden btn-primary">Registrer Ny Bikube</button>
+        <button id="btn_register_hive" onclick="window.location.href='ny-bikube.html'" class="btn-primary">Registrer Ny Bikube</button>
       </div>
     </div>
     <div id="app-footer"></div>
@@ -70,23 +71,39 @@
 
       // Filter by Apiary if param exists
       const params = new URLSearchParams(window.location.search);
+      const hasApiaryParam = params.has('apiaryId');
       const filterApiaryId = params.get('apiaryId');
 
       // Update Button Logic
       const regBtn = document.getElementById('btn_register_hive');
-      if (filterApiaryId) {
+      
+      if (hasApiaryParam) {
+        // We are in "Single Apiary" mode
         regBtn.classList.remove('hidden');
-        regBtn.onclick = () => window.location.href = `ny-bikube.html?apiaryId=${encodeURIComponent(filterApiaryId)}`;
+        regBtn.onclick = () => window.location.href = `ny-bikube.html?apiaryId=${encodeURIComponent(filterApiaryId || '')}`;
         
         // Update title if apiary found
-        const apiary = apiaries.find(a => a.id === filterApiaryId);
-        if (apiary) {
-          document.getElementById('page_title').textContent = `${apiary.name}`;
+        if (filterApiaryId) {
+            const apiary = apiaries.find(a => a.id === filterApiaryId);
+            if (apiary) {
+                document.getElementById('page_title').textContent = `${apiary.name}`;
+            } else {
+                // Apiary ID provided but not found in list (or empty)
+                document.getElementById('page_title').textContent = filterApiaryId || 'Ukjent lokasjon';
+            }
+        } else {
+            // Empty ID provided
+             document.getElementById('page_title').textContent = 'Ukjent lokasjon';
         }
-      }
 
-      if (filterApiaryId) {
+        // FILTER HIVES
+        // Even if filterApiaryId is empty string, we filter by it.
+        // This prevents showing ALL hives when an empty ID is passed.
         hives = hives.filter(h => h.apiaryId === filterApiaryId);
+
+      } else {
+        // No apiary param -> Show Global List (e.g. "Mine Bikuber" from menu)
+        // Keep standard title
       }
 
       // Sort hives (Newest first? Or by ID? Assuming newer ones are added last, reverse logic)

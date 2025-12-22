@@ -74,7 +74,7 @@ function injectHeader() {
       
       if (isAuthPage) {
           // Attempt to find the main card to append footer to
-          const mainCard = document.querySelector('.bg-white.rounded-xl') || document.body.firstElementChild;
+          const mainCard = document.querySelector('.app-viewport') || document.querySelector('.bg-white.rounded-xl') || document.body.firstElementChild;
           if (mainCard) {
               const footer = document.createElement('div');
               footer.id = 'app-footer';
@@ -96,7 +96,7 @@ function renderHeader(container) {
 
   // --- 1. YELLOW TOP BAR ---
   const topBar = document.createElement('div');
-  topBar.className = 'header-top-bar'; // Defined in style.css
+  topBar.className = 'header-top-bar bg-[#FFD700]'; // Added Tailwind class as backup
 
   // Grid layout for Top Bar to ensure centering
   const grid = document.createElement('div');
@@ -144,7 +144,7 @@ function renderHeader(container) {
   // --- 2. LOGOUT BAR (Below Yellow Header) ---
   if (isAuth) {
       const logoutBar = document.createElement('div');
-      logoutBar.className = 'header-logout-bar'; // Defined in style.css
+      logoutBar.className = 'header-logout-bar bg-black flex justify-end items-center'; // Added Tailwind classes
       
       const logoutBtn = document.createElement('button');
       logoutBtn.className = 'text-xs bg-[#FFD700] text-black font-bold px-4 py-1.5 rounded hover:bg-yellow-400 transition-colors uppercase tracking-wider';

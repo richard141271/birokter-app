@@ -11,38 +11,41 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen py-6 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
         
         <!-- Header Container -->
-    <div id="app-header"></div>
+        <div id="app-header"></div>
 
-    <div class="p-6 flex flex-col items-center w-full">
-        <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
+        <!-- Scrollable Content -->
+        <div class="app-content p-6 flex flex-col items-center">
+            <h2 class="text-2xl font-bold text-black mb-6">Mine bigårder</h2>
 
-        <div id="apiaries_empty" class="w-full text-center text-gray-600 mb-4"></div>
+            <div id="apiaries_empty" class="w-full text-center text-gray-600 mb-4"></div>
 
-        <!-- List -->
-        <div id="apiaries_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
+            <!-- List -->
+            <div id="apiaries_list" class="grid grid-cols-2 gap-4 w-full mb-12"></div>
 
-        <!-- Dropdown -->
-        <div id="apiaries_dropdown_container" class="w-full mb-8 hidden">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Eldre bigårder</label>
-            <select id="apiaries_dropdown" class="input-std" onchange="if(this.value) window.location.href='bikuber.html?apiary='+encodeURIComponent(this.value)">
-                <option value="">Velg eldre bigård...</option>
-            </select>
+            <!-- Dropdown -->
+            <div id="apiaries_dropdown_container" class="w-full mb-8 hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Eldre bigårder</label>
+                <select id="apiaries_dropdown" class="input-std" onchange="if(this.value) window.location.href='bikuber.html?apiaryId='+encodeURIComponent(this.value)">
+                    <option value="">Velg eldre bigård...</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons (Standard placement, not sticky) -->
+            <div class="w-full pb-6">
+                <button onclick="window.location.href='ny-bigard.html'" class="btn-primary">
+                    Registrer Ny Bigård
+                </button>
+            </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="w-full space-y-4 pt-4 sticky-footer-actions pb-24">
-            <button onclick="window.location.href='ny-bigard.html'" class="btn-primary">
-                Registrer Ny Bigård
-            </button>
-        </div>
-    </div>
-    <div id="app-footer"></div>
+        <!-- Footer Container -->
+        <div id="app-footer"></div>
     </div>
     
 </body>
@@ -125,6 +128,14 @@
             nameSpan.className = 'text-[10px] font-medium opacity-80 mt-0.5 break-words w-full px-0.5 leading-tight';
             nameSpan.textContent = a.name;
             btn.appendChild(nameSpan);
+        }
+        
+        // Type Badge (if not Bigård)
+        if (a.type && a.type !== 'Bigård') {
+            const typeBadge = document.createElement('span');
+            typeBadge.className = 'absolute bottom-1 left-1/2 transform -translate-x-1/2 bg-black/20 text-black text-[8px] font-bold px-1 rounded-sm';
+            typeBadge.textContent = a.type.toUpperCase();
+            btn.appendChild(typeBadge);
         }
         
         // Status Dot

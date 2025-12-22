@@ -11,25 +11,38 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen py-6 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
         
         <!-- Header Container -->
     <div id="app-header"></div>
 
-    <div class="p-8">
-        <h1 class="text-2xl font-bold text-black text-center mb-6">Registrer ny bigård</h1>
+    <!-- Scrollable Content -->
+    <div class="app-content p-8">
+        <h1 class="text-2xl font-bold text-black text-center mb-6">Opprett ny lokasjon</h1>
 
         <form onsubmit="saveApiary(event)" class="space-y-5">
             
+            <!-- Type Dropdown -->
+            <div>
+                <label for="location_type" class="block text-sm font-bold text-black mb-1">Type lokasjon</label>
+                <select id="location_type" name="location_type" class="w-full border border-gray-300 rounded-md px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white" onchange="updateLabels()">
+                    <option value="Bigård">Bigård</option>
+                    <option value="Lager">Lager</option>
+                    <option value="Bil">Bil</option>
+                    <option value="Verksted">Verksted / Service</option>
+                    <option value="Annet">Annet</option>
+                </select>
+            </div>
+
             <!-- Bigård-navn -->
             <div>
-                <label for="apiary_name" class="block text-sm font-bold text-black mb-1">Bigård-navn</label>
+                <label id="name_label" for="apiary_name" class="block text-sm font-bold text-black mb-1">Bigård-navn</label>
                 <div class="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-yellow-500 overflow-hidden">
                     <span id="next_id_display" class="bg-gray-100 text-gray-500 px-3 py-2.5 font-mono text-sm border-r border-gray-300 select-none">BG-XXX</span>
-                    <input type="text" id="apiary_name" name="apiary_name" placeholder="Navn på bigård" class="flex-1 px-3 py-2.5 focus:outline-none placeholder-gray-500">
+                    <input type="text" id="apiary_name" name="apiary_name" placeholder="Navn på lokasjon" class="flex-1 px-3 py-2.5 focus:outline-none placeholder-gray-500">
                 </div>
             </div>
 
@@ -46,48 +59,106 @@
                 </button>
             </div>
             
-            <div id="app-footer"></div>
-
         </form>
     </div>
+    
+    <div id="app-footer"></div>
+
     </div>
 
 </body>
 <script src="header.js"></script>
 <link rel="manifest" href="manifest.json">
 <script>
-  // Pre-calculate ID
+  // ID Configuration
+  const PREFIXES = {
+      'Bigård': 'BG',
+      'Lager': 'L',
+      'Bil': 'BIL',
+      'Verksted': 'V',
+      'Annet': 'A'
+  };
+
   let apiaries = [];
   try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (err) {}
-  const nextNumber = apiaries.length + 1;
-  const nextId = `BG-${String(nextNumber).padStart(3, '0')}`;
-  document.getElementById('next_id_display').textContent = nextId;
+
+  function generateId(type) {
+      const prefix = PREFIXES[type] || 'LOC';
+      
+      // Filter existing items of this type (or prefix match to be safe)
+      const existing = apiaries.filter(a => {
+          // Check if ID starts with prefix
+          if (a.id && a.id.startsWith(prefix + '-')) return true;
+          // Or if type matches (for legacy or manual edits)
+          if (a.type === type) return true;
+          return false;
+      });
+
+      // Find max number
+      let maxNum = 0;
+      existing.forEach(a => {
+          const parts = a.id.split('-');
+          if (parts.length > 1) {
+              const num = parseInt(parts[1], 10);
+              if (!isNaN(num) && num > maxNum) maxNum = num;
+          }
+      });
+
+      const nextNum = maxNum + 1;
+      // Padding: Bigård=3 (001), others maybe 2 or 3? Let's use 3 for consistency
+      // User said "L-001" and "BIL-01".
+      let pad = 3;
+      if (type === 'Bil') pad = 2; // "BIL-01"
+
+      return `${prefix}-${String(nextNum).padStart(pad, '0')}`;
+  }
+
+  function updateLabels() {
+      const type = document.getElementById('location_type').value;
+      const lbl = document.getElementById('name_label');
+      const regContainer = document.getElementById('reg_nr_container');
+      
+      // Update Name Label
+      if (type === 'Bigård') lbl.textContent = 'Bigård-navn';
+      else if (type === 'Lager') lbl.textContent = 'Lager-navn';
+      else if (type === 'Bil') lbl.textContent = 'Bil (Merke/Modell)';
+      else lbl.textContent = 'Navn på lokasjon';
+
+      // Show/Hide Reg Nr
+      if (type === 'Bil') {
+          regContainer.classList.remove('hidden');
+      } else {
+          regContainer.classList.add('hidden');
+      }
+
+      // Update ID Display
+      const newId = generateId(type);
+      document.getElementById('next_id_display').textContent = newId;
+  }
+
+  // Initialize
+  updateLabels();
 
   function saveApiary(e) {
     e.preventDefault();
+    const type = document.getElementById('location_type').value;
     const nameInput = document.getElementById('apiary_name');
     const name = nameInput?.value || '';
     const address = document.getElementById('address')?.value || '';
+    const regNr = document.getElementById('reg_nr')?.value || '';
     
     // Check for duplicates
     const nameTrimmed = name.trim();
     if (nameTrimmed) {
         const exactMatch = apiaries.find(a => (a.name || '').trim().toLowerCase() === nameTrimmed.toLowerCase());
         if (exactMatch) {
-            alert('En bigård med dette navnet finnes allerede. Vennligst velg et annet navn.');
+            alert('En lokasjon med dette navnet finnes allerede.');
             return;
-        }
-
-        const similarMatch = apiaries.find(a => (a.name || '').trim().toLowerCase().includes(nameTrimmed.toLowerCase()) || nameTrimmed.toLowerCase().includes((a.name || '').trim().toLowerCase()));
-        if (similarMatch) {
-            if (!confirm(`Navnet ligner på en eksisterende bigård ("${similarMatch.name}"). Er du sikker på at du vil bruke dette navnet?`)) {
-                return;
-            }
         }
     }
 
-    const id = nextId; // Use pre-calculated ID
-    const apiary = { id, name, address };
+    const id = document.getElementById('next_id_display').textContent;
+    const apiary = { id, name, address, type, regNr }; // Added regNr
     apiaries.push(apiary);
     try { localStorage.setItem('apiaries', JSON.stringify(apiaries)); } catch (err) {}
     window.location.href = 'bigard.html';

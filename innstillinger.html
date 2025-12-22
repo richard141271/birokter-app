@@ -15,83 +15,147 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="flex flex-col items-center min-h-screen pt-10 pb-10 px-4">
+<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
 
-    <!-- Main Card -->
-    <div class="bg-white rounded-xl shadow-md w-full max-w-sm overflow-hidden border border-gray-200 flex flex-col">
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
         
         <!-- Header Container -->
     <div id="app-header"></div>
 
-    <!-- Grey Sub-header -->
-    <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
-        <span class="text-gray-600 font-medium">Innstillinger</span>
-    </div>
+    <!-- Scrollable Content -->
+    <div class="app-content">
+        <!-- Grey Sub-header -->
+        <div class="bg-gray-200 w-full py-2 text-center border-b border-gray-300">
+            <span class="text-gray-600 font-medium">Innstillinger</span>
+        </div>
 
-    <div class="p-6 flex flex-col items-center w-full space-y-3">
-        
-        <!-- Logo -->
-        <img src="assets/logo.png" alt="Logo" class="h-16 w-auto mb-4 object-contain">
+        <div class="p-6 flex flex-col items-center w-full space-y-3">
+            
+            <!-- Logo -->
+            <img src="assets/logo.png" alt="Logo" class="h-16 w-auto mb-4 object-contain">
 
-        <!-- Menu Items -->
-        <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
-            Mine Bikuber
-        </button>
-        <button onclick="window.location.href='bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
-            Mine Bigårder
-        </button>
-        <button onclick="window.location.href='profil.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
-            Min Profil
-        </button>
-        <button onclick="downloadCSV()" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
-            Eksporter Data (CSV)
-        </button>
-        
-        <!-- Divider -->
-        <div class="w-full border-t border-gray-200 my-2"></div>
-        
-        <button onclick="if(confirm('Er du sikker? All data slettes.')) resetAll()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded shadow-sm transition-colors">
-            Nullstill Alt
-        </button>
-        
+            <!-- Menu Items -->
+            <button onclick="window.location.href='bikuber.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+                Mine Bikuber
+            </button>
+            <button onclick="window.location.href='bigard.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+                Mine Bigårder
+            </button>
+            <button onclick="window.location.href='profil.html'" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+                Min Profil
+            </button>
+            <button onclick="downloadCSV()" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+                Eksporter Data (CSV)
+            </button>
+            
+            <!-- Divider -->
+            <div class="w-full border-t border-gray-200 my-2"></div>
+            
+            <button onclick="requestPin('admin-lokasjoner.html')" class="w-full bg-black hover:bg-gray-800 text-[#FFD700] font-bold py-2.5 rounded shadow-sm transition-all">
+                Administrer Bigårder / Kuber
+            </button>
+
+            <!-- Divider -->
+            <div class="w-full border-t border-gray-200 my-2"></div>
+            
+            <button onclick="if(confirm('Er du sikker? All data slettes.')) resetAll()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded shadow-sm transition-colors">
+                Nullstill Alt
+            </button>
+            
+        </div>
     </div>
+    
     <div id="app-footer"></div>
     </div>
 
+    <!-- PIN Modal -->
+    <div id="pin_modal" class="hidden fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xs p-6 text-center relative z-[10000]">
+            <h3 class="text-lg font-bold mb-4 text-gray-900">Angi PIN-kode</h3>
+            <p class="text-sm text-gray-500 mb-4">Du må bekrefte identitet for å få tilgang.</p>
+            
+            <input type="password" id="pin_input" maxlength="4" class="w-full text-center text-2xl tracking-[0.5em] font-bold border-b-2 border-gray-300 focus:border-[#FFD700] outline-none mb-6 py-2" placeholder="••••" onkeydown="if(event.key === 'Enter') verifyPin()">
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closePinModal()" class="bg-gray-200 text-gray-800 font-bold py-2 rounded">Avbryt</button>
+                <button onclick="verifyPin()" class="bg-[#FFD700] text-black font-bold py-2 rounded">Bekreft</button>
+            </div>
+        </div>
+    </div>
+
 </body>
-</html>
 <script src="header.js"></script>
 <link rel="manifest" href="manifest.json">
 <script>
-  function download(filename, content, type) {
-    const blob = new Blob([content], { type });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-  function downloadJSON() {
-    const data = {
-      beekeeper: JSON.parse(localStorage.getItem('beekeeper') || 'null'),
-      apiaries: JSON.parse(localStorage.getItem('apiaries') || '[]'),
-      hives: JSON.parse(localStorage.getItem('hives') || '[]'),
-      inspections: JSON.parse(localStorage.getItem('inspections') || '[]'),
-      honey_ready: localStorage.getItem('honey_ready') || 'false'
+    let pendingRedirect = '';
+
+    // Attach event listener safely
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('btn_admin_locations');
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent any default behavior
+                requestPin('admin-lokasjoner.html');
+            });
+            // Also add touchstart for better mobile responsiveness
+            btn.addEventListener('touchstart', (e) => {
+                // e.preventDefault(); // Don't prevent default on touchstart as it might block click simulation? 
+                // Actually, let's just rely on click first. 
+                // If we want fast tap, we can use it, but let's stick to click to avoid double firing.
+            });
+        }
+    });
+
+    window.requestPin = function(url) {
+        console.log('Requesting PIN for:', url);
+        pendingRedirect = url;
+        const modal = document.getElementById('pin_modal');
+        const input = document.getElementById('pin_input');
+        
+        if (!modal) {
+            alert('Feil: PIN-dialog mangler i HTML.');
+            return;
+        }
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex'; // Force flex display
+        
+        input.value = '';
+        // Focus with a slight delay for mobile keyboards
+        setTimeout(() => {
+            input.focus();
+        }, 300);
     };
-    download('birokter-data.json', JSON.stringify(data, null, 2), 'application/json');
-  }
-  function downloadCSV() {
-    const arr = JSON.parse(localStorage.getItem('inspections') || '[]');
-    const header = ['ID','HiveId','Status','Temp','Weather','Note','Timestamp'];
-    const rows = arr.map((i, idx) => [
-      String(idx+1), i.hiveId || '', i.status || '', i.temp || '', i.weather || '', (i.note || '').replace(/[\n\r,]/g,' '), new Date(i.ts || Date.now()).toISOString()
-    ]);
-    const csv = [header].concat(rows).map(r => r.join(',')).join('\n');
-    download('inspeksjoner.csv', csv, 'text/csv');
-  }
-  function resetAll() {
-    localStorage.clear();
-    window.location.href = 'index.html';
-  }
+
+    window.closePinModal = function() {
+        const modal = document.getElementById('pin_modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+        pendingRedirect = '';
+    };
+
+    window.verifyPin = function() {
+        const input = document.getElementById('pin_input').value;
+        let beekeeper = null;
+        try {
+            beekeeper = JSON.parse(localStorage.getItem('beekeeper'));
+        } catch (e) { console.error(e); }
+
+        if (beekeeper && beekeeper.pin) {
+            if (input === beekeeper.pin) {
+                // Success
+                window.location.href = pendingRedirect;
+            } else {
+                alert('Feil PIN-kode');
+                document.getElementById('pin_input').value = '';
+            }
+        } else {
+            // If no PIN set, just allow
+            console.warn('No PIN found in localStorage');
+            window.location.href = pendingRedirect;
+        }
+    };
 </script>
