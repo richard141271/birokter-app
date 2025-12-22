@@ -42,9 +42,13 @@ function injectHeader() {
   // 2. Inject Supabase SDK
   if (!document.querySelector('script[src*="supabase-js"]')) {
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      // Use specific UMD build to ensure 'window.supabase' is defined
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js';
       script.onload = () => {
           try {
+            if (!window.supabase) {
+                throw new Error("window.supabase is undefined after script load");
+            }
             const { createClient } = window.supabase;
             window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log("Supabase connected");
@@ -164,7 +168,11 @@ function renderHeader(container) {
       statusDot.title = 'Offline';
       statusDot.onclick = () => {
           const err = window.lastSupabaseError || 'Unknown connection error';
-          alert('Connection Status:\n' + (window.REPO && window.REPO.isConnected ? 'Online' : 'Offline') + '\n\nLast Error: ' + err);
+          const libStatus = window.supabase ? 'Loaded' : 'Not Loaded';
+          const clientStatus = window.supabaseClient ? 'Initialized' : 'Null';
+          const repoStatus = window.REPO ? (window.REPO.isConnected ? 'Connected' : 'Disconnected') : 'Missing';
+          
+          alert(`Connection Status: ${repoStatus}\nLib: ${libStatus}\nClient: ${clientStatus}\nLast Error: ${err}`);
       };
       rightCol.appendChild(statusDot);
 
