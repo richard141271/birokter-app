@@ -230,3 +230,10 @@ const REPO = {
 
 // Expose globally
 window.REPO = REPO;
+
+// Auto-init if loaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    REPO.init();
+} else {
+    document.addEventListener('DOMContentLoaded', () => REPO.init());
+}
