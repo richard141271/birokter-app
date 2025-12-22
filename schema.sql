@@ -1,12 +1,35 @@
 -- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å fikse ID-problemet.
--- Dette scriptet er nå oppdatert for å fikse "policy dependency" feilen.
+-- Dette scriptet er nå oppdatert for å slette ALLE gamle policies som kan skape trøbbel.
 
 -- 0. Slett policies som hindrer oss i å endre ID-typen
--- Vi må fjerne disse FØR vi kan endre kolonne-typen.
+-- Vi tar hardt i her og sletter alt av mulige varianter for å være sikre.
+
+-- Profiles
 drop policy if exists "Users can view own profile" on profiles;
+drop policy if exists "Users can update own profile" on profiles;
+drop policy if exists "Users can insert own profile" on profiles;
+drop policy if exists "Users can delete own profile" on profiles;
 drop policy if exists "Public Access Profiles" on profiles;
+
+-- Apiaries
+drop policy if exists "Users can view own apiaries" on apiaries;
+drop policy if exists "Users can update own apiaries" on apiaries;
+drop policy if exists "Users can insert own apiaries" on apiaries;
+drop policy if exists "Users can delete own apiaries" on apiaries;
 drop policy if exists "Public Access Apiaries" on apiaries;
+
+-- Hives
+drop policy if exists "Users can view own hives" on hives;
+drop policy if exists "Users can update own hives" on hives;
+drop policy if exists "Users can insert own hives" on hives;
+drop policy if exists "Users can delete own hives" on hives;
 drop policy if exists "Public Access Hives" on hives;
+
+-- Inspections
+drop policy if exists "Users can view own inspections" on inspections;
+drop policy if exists "Users can update own inspections" on inspections;
+drop policy if exists "Users can insert own inspections" on inspections;
+drop policy if exists "Users can delete own inspections" on inspections;
 drop policy if exists "Public Access Inspections" on inspections;
 
 -- 1. Endre ID-kolonnen til å være TEKST (slik at den støtter både BG-001 og UUID)
