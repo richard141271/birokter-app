@@ -2,10 +2,18 @@
 -- Dette scriptet gjør 'user_id' valgfri (nullable) slik at appen fungerer uten Supabase Auth-login.
 -- Det sikrer også at ID-er er tekst (for å støtte appens ID-format).
 
--- 1. Fjern "not null" kravet på user_id (hvis det finnes)
+-- 1. Sørg for at user_id finnes og er valgfri (nullable)
+-- Vi legger den til hvis den mangler, og fjerner "not null" hvis den er streng.
+alter table apiaries add column if not exists user_id uuid;
 alter table apiaries alter column user_id drop not null;
+
+alter table hives add column if not exists user_id uuid;
 alter table hives alter column user_id drop not null;
+
+alter table inspections add column if not exists user_id uuid;
 alter table inspections alter column user_id drop not null;
+
+alter table profiles add column if not exists user_id uuid;
 alter table profiles alter column user_id drop not null;
 
 -- 2. Slett gamle policies som kan skape problemer
