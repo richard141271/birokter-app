@@ -10,35 +10,33 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--brand-bg);
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden; /* Prevent body scroll, handle internally */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
+    min-height: 100dvh;
     margin: 0;
+    display: flex;
+    justify-content: center;
+    overscroll-behavior-y: none; /* Prevent pull-to-refresh if not needed */
 }
 
 /* Main App Container - Simulates Mobile Viewport */
 .app-viewport {
     width: 100%;
     max-width: 28rem; /* max-w-sm approx */
-    height: 100%;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     background-color: white;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
+    position: relative;
+    padding-bottom: 90px; /* Ensure content is not hidden behind fixed footer */
 }
 
 /* Sticky Header Container */
 #app-header {
-    flex-shrink: 0;
-    z-index: 50;
     width: 100%;
-    background-color: transparent;
-    padding: 0;
+    z-index: 50;
+    background-color: white;
+    position: sticky;
+    top: 0;
 }
 
 /* Header Specifics */
@@ -54,33 +52,31 @@ body {
     width: 100%;
     padding: 0.5rem 1rem;
     display: flex;
-    justify-content: flex-end; /* Align right as per standard UI, or center if user insists */
+    justify-content: flex-end; 
     align-items: center;
 }
 
 /* Scrollable Content Area */
 .app-content {
     flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     width: 100%;
-    position: relative;
-    /* Add padding for content that shouldn't touch edges */
+    /* Removed overflow-y: auto to allow natural body scroll */
 }
 
 /* App Navigation Footer (The Tab Bar) */
 .app-nav-footer, #app-footer {
-    flex-shrink: 0;
+    position: fixed;
+    bottom: 0;
     width: 100%;
+    max-width: 28rem; /* Match viewport max-width */
     background-color: white;
     border-top: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-around;
-    padding: 0.75rem 0;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
-    z-index: 9999; /* Max z-index to ensure it's on top */
+    padding: 0.5rem 0; /* Reduced padding further as requested */
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+    z-index: 9999;
     box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-    position: relative; /* Ensure z-index works */
 }
 
 /* Overwrite old card styles to fit new layout structure - REMOVED as it breaks list items */

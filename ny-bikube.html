@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Registrer Ny Bikube - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -113,7 +113,13 @@
     if (apiaryIdParam) {
         // Pre-select if param exists
         const apiary = apiaries.find(a => a.id === apiaryIdParam);
-        if (apiary) {
+        
+        // STRICT CHECK: Can only create hive in "Bigård" (Apiary), not "Lager" (Storage) or "Bil" (Car)
+        if (apiary && apiary.type !== 'Bigård') {
+            alert('Du kan kun opprette nye bikuber i en registrert Bigård.\n\nDu kan ikke opprette bikuber direkte i ' + apiary.type + '.');
+            // Reset to allow selection from dropdown or redirect
+            // If we want to force them to select a valid Bigård, we just don't lock it.
+        } else if (apiary) {
             // Lock mode: Show fixed display, hide select
             document.getElementById('apiary_fixed_display').textContent = apiary.name;
             document.getElementById('apiary_fixed_display').classList.remove('hidden');
@@ -126,7 +132,18 @@
   }
 
   function enableSelectMode(apiaries, selectEl) {
-      apiaries.forEach(a => {
+      // Filter: Only show locations of type "Bigård"
+      const validApiaries = apiaries.filter(a => a.type === 'Bigård');
+      
+      if (validApiaries.length === 0) {
+           const opt = document.createElement('option');
+           opt.textContent = "Ingen registrerte bigårder funnet";
+           selectEl.appendChild(opt);
+           selectEl.disabled = true;
+           return;
+      }
+
+      validApiaries.forEach(a => {
           const opt = document.createElement('option');
           opt.value = a.id;
           opt.textContent = `${a.name} (${a.id})`;

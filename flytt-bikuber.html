@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Flytt Bikuber - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+    </style>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body class="bg-gray-50">
+
+    <!-- App Viewport Container -->
+    <div class="app-viewport">
+        
+        <!-- Header Container -->
+        <div id="app-header"></div>
+
+        <!-- Scrollable Content -->
+        <div class="app-content p-4 flex flex-col items-center w-full">
+            <h1 class="text-xl font-bold text-black mb-3">Flytt bikuber</h1>
+            <p class="text-xs text-gray-500 mb-4 text-center">Velg hvor du vil flytte bikuber fra og til.</p>
+            
+            <div class="w-full space-y-4">
+                
+                <!-- Step 1: Source & Destination -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <label class="block text-sm font-bold text-gray-900 mb-1">Fra lokasjon:</label>
+                    <select id="from_location" class="w-full border border-gray-300 rounded px-3 py-2 mb-4 bg-gray-50" onchange="loadHives()">
+                        <option value="">Velg fra...</option>
+                    </select>
+
+                    <label class="block text-sm font-bold text-gray-900 mb-1">Til lokasjon:</label>
+                    <select id="to_location" class="w-full border border-gray-300 rounded px-3 py-2 bg-gray-50">
+                        <option value="">Velg til...</option>
+                    </select>
+                </div>
+
+                <!-- Step 2: Select Hives -->
+                <div id="hives_selection_container" class="hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-bold text-gray-900">Velg bikuber</h3>
+                        <button onclick="toggleSelectAll()" class="text-xs text-[#FFD700] bg-black px-2 py-1 rounded">Velg alle</button>
+                    </div>
+                    
+                    <div id="hives_list" class="space-y-2 max-h-60 overflow-y-auto mb-4">
+                        <!-- Hives populated here -->
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="move_btn" onclick="executeMove()" class="hidden w-full bg-black text-[#FFD700] font-bold py-3 px-4 rounded shadow-md transition-colors">
+                    Bekreft Flytting
+                </button>
+                
+                <button onclick="window.history.back()" class="w-full text-gray-500 text-sm underline py-2">
+                    Avbryt
+                </button>
+
+            </div>
+        </div>
+        
+        <div id="app-footer"></div>
+    </div>
+
+    <!-- Move Confirmation Modal -->
+    <div id="confirm_modal" class="hidden fixed inset-0 bg-black/50 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Flytting fullført!</h3>
+            <p class="text-sm text-gray-600 mb-6"><span id="moved_count"></span> bikuber er flyttet.</p>
+            <button onclick="finishMove()" class="w-full bg-black text-[#FFD700] font-bold py-2 rounded">
+                OK
+            </button>
+        </div>
+    </div>
+
+</body>
+<script src="header.js"></script>
+<script>
+  let apiaries = [];
+  let hives = [];
+
+  // Load Data
+  function loadData() {
+      try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (e) {}
+      try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+  }
+
+  function init() {
+      loadData();
+      const fromSelect = document.getElementById('from_location');
+      const toSelect = document.getElementById('to_location');
+      
+      const params = new URLSearchParams(window.location.search);
+      const preSelectedFrom = params.get('from');
+
+      // Populate Locations
+      apiaries.forEach(loc => {
+          const opt = document.createElement('option');
+          opt.value = loc.id;
+          opt.textContent = `${loc.name} (${loc.type})`;
+          fromSelect.appendChild(opt.cloneNode(true));
+          toSelect.appendChild(opt);
+      });
+
+      if (preSelectedFrom) {
+          fromSelect.value = preSelectedFrom;
+          loadHives();
+      }
+  }
+
+  function loadHives() {
+      const fromId = document.getElementById('from_location').value;
+      const listContainer = document.getElementById('hives_selection_container');
+      const list = document.getElementById('hives_list');
+      const moveBtn = document.getElementById('move_btn');
+
+      if (!fromId) {
+          listContainer.classList.add('hidden');
+          moveBtn.classList.add('hidden');
+          return;
+      }
+
+      // Filter hives in selected location
+      const locHives = hives.filter(h => h.apiaryId === fromId);
+      
+      list.innerHTML = '';
+      if (locHives.length === 0) {
+          list.innerHTML = '<p class="text-center text-gray-400 italic text-sm">Ingen bikuber på denne lokasjonen.</p>';
+      } else {
+          locHives.forEach(h => {
+              const item = document.createElement('div');
+              item.className = 'flex items-center bg-white p-3 rounded border border-gray-200';
+              item.innerHTML = `
+                  <input type="checkbox" id="chk_${h.id}" value="${h.id}" class="h-5 w-5 text-yellow-500 focus:ring-yellow-500 border-gray-300 rounded mr-3">
+                  <div class="flex flex-col">
+                      <span class="font-bold text-sm text-gray-900">${h.name || h.id}</span>
+                      <span class="text-xs text-gray-500">Status: ${h.strength || 'Ukjent'}</span>
+                  </div>
+              `;
+              list.appendChild(item);
+          });
+      }
+
+      listContainer.classList.remove('hidden');
+      moveBtn.classList.remove('hidden');
+  }
+
+  function toggleSelectAll() {
+      const checkboxes = document.querySelectorAll('#hives_list input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every(c => c.checked);
+      checkboxes.forEach(c => c.checked = !allChecked);
+  }
+
+  function executeMove() {
+      const fromId = document.getElementById('from_location').value;
+      const toId = document.getElementById('to_location').value;
+      
+      if (!fromId || !toId) {
+          alert('Velg både fra og til lokasjon.');
+          return;
+      }
+      
+      if (fromId === toId) {
+          alert('Du kan ikke flytte til samme lokasjon.');
+          return;
+      }
+
+      const selectedIds = Array.from(document.querySelectorAll('#hives_list input[type="checkbox"]:checked')).map(c => c.value);
+      
+      if (selectedIds.length === 0) {
+          alert('Velg minst én bikube å flytte.');
+          return;
+      }
+
+      // Update Hives
+      let movedCount = 0;
+      hives = hives.map(h => {
+          if (selectedIds.includes(h.id)) {
+              movedCount++;
+              return { ...h, apiaryId: toId };
+          }
+          return h;
+      });
+      
+      localStorage.setItem('hives', JSON.stringify(hives));
+      
+      document.getElementById('moved_count').textContent = movedCount;
+      document.getElementById('confirm_modal').classList.remove('hidden');
+  }
+  
+  function finishMove() {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect'); // e.g. admin-lokasjoner.html
+      
+      if (redirect) {
+          window.location.href = redirect;
+      } else {
+          // Just reload to reset state or go back
+          window.location.href = 'admin-lokasjoner.html'; 
+      }
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</html>

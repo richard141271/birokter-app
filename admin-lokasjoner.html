@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Administrer Lokasjoner - Birøkter App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -393,6 +393,13 @@
       document.getElementById('bulk_move_modal').classList.add('hidden');
       bulkTargetLocId = null;
       bulkHives = [];
+  }
+
+  function redirectToManualMove() {
+      // User wants to manually move hives. Redirect to move page with this location selected as 'from'
+      // Pass a 'redirect' param so after moving they come back here? 
+      // Or maybe just let them handle it there.
+      window.location.href = `flytt-bikuber.html?from=${bulkTargetLocId}&redirect=admin-lokasjoner.html`;
   }
 
   function switchToIndividualWizard() {

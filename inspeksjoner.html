@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Mine inspeksjoner - Birøkter App</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
 </head>
-<body class="bg-gray-50 flex flex-col items-center h-screen w-screen overflow-hidden">
+<body class="bg-gray-50">
 
   <!-- App Viewport Container -->
   <div class="app-viewport">
@@ -27,7 +27,7 @@
     <div id="app-header"></div>
 
     <!-- Scrollable Content -->
-    <div class="app-content p-6">
+    <div class="app-content p-4">
       <h1 class="text-2xl font-bold mb-6 text-black text-center">Mine inspeksjoner</h1>
       <div class="space-y-2 mb-4 no-print">
         <input id="search_general" type="text" placeholder="Søk (Kube, Bigård, Dato, Notat...)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
