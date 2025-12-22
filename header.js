@@ -49,7 +49,10 @@ function injectHeader() {
             window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log("Supabase connected");
             
-            // Initialize Repository after Supabase is ready
+            // Dispatch event for Repository to listen to
+            window.dispatchEvent(new Event('supabase-ready'));
+
+            // Initialize Repository directly if it's already loaded
             if (window.REPO) {
                 window.REPO.init();
             }
@@ -145,9 +148,32 @@ function renderHeader(container) {
   }
   grid.appendChild(centerCol);
 
-  // Right: Empty (for balance)
+  // Right: Cloud Status
   const rightCol = document.createElement('div');
-  rightCol.className = 'flex justify-end';
+  rightCol.className = 'flex justify-end items-center pr-2';
+  
+  if (isAuth) {
+      const statusDot = document.createElement('div');
+      statusDot.id = 'cloud-status-dot';
+      statusDot.className = 'w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm';
+      statusDot.title = 'Offline';
+      rightCol.appendChild(statusDot);
+
+      // Check status periodically
+      setInterval(() => {
+          const dot = document.getElementById('cloud-status-dot');
+          if (dot) {
+              if (window.REPO && window.REPO.isConnected) {
+                  dot.className = 'w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow-sm';
+                  dot.title = 'Online & Synced';
+              } else {
+                  dot.className = 'w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm';
+                  dot.title = 'Offline / Connecting...';
+              }
+          }
+      }, 2000);
+  }
+
   grid.appendChild(rightCol);
 
   topBar.appendChild(grid);

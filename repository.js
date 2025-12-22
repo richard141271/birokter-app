@@ -7,13 +7,18 @@ const REPO = {
     isConnected: false,
 
     init: function() {
+        if (this.isConnected) return; // Already connected
+
         if (window.supabaseClient) {
             this.client = window.supabaseClient;
             this.isConnected = true;
             console.log('Repository: Supabase client initialized');
             this.syncAll();
         } else {
-            console.warn('Repository: Supabase client not found');
+            console.warn('Repository: Supabase client not found yet. Waiting for event...');
+            window.addEventListener('supabase-ready', () => {
+                this.init();
+            });
         }
     },
 
