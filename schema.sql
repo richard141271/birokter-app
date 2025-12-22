@@ -1,18 +1,24 @@
 -- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å fikse ID-problemet.
--- Dette scriptet er nå oppdatert for å kunne kjøres flere ganger uten feil (idempotent).
+-- Dette scriptet er nå oppdatert for å fikse "type mismatch" feilen (UUID vs Text).
 
--- 1. Endre ID-kolonnen til å ha en standardverdi (tilfeldig ID) hvis den mangler
-alter table apiaries 
-  alter column id set default gen_random_uuid()::text;
+-- 1. Endre ID-kolonnen til å være TEKST (slik at den støtter både BG-001 og UUID)
+-- Vi må gjøre dette FØR vi setter standardverdien.
 
-alter table hives 
-  alter column id set default gen_random_uuid()::text;
+-- Apiaries
+alter table apiaries alter column id type text;
+alter table apiaries alter column id set default gen_random_uuid()::text;
 
-alter table inspections 
-  alter column id set default gen_random_uuid()::text;
+-- Hives
+alter table hives alter column id type text;
+alter table hives alter column id set default gen_random_uuid()::text;
 
-alter table profiles 
-  alter column id set default gen_random_uuid()::text;
+-- Inspections
+alter table inspections alter column id type text;
+alter table inspections alter column id set default gen_random_uuid()::text;
+
+-- Profiles
+alter table profiles alter column id type text;
+alter table profiles alter column id set default gen_random_uuid()::text;
 
 -- 2. Profil-tabell (Beekeeper)
 create table if not exists profiles (
