@@ -2,8 +2,6 @@
 -- Vi legger til en "default" verdi for ID, slik at det ikke kræsjer hvis ID mangler.
 
 -- 1. Endre ID-kolonnen til å ha en standardverdi (tilfeldig ID) hvis den mangler
--- Dette gjør at manuelle tester i Supabase virker, og at appen er mer robust.
-
 alter table apiaries 
   alter column id set default gen_random_uuid()::text;
 
@@ -13,10 +11,35 @@ alter table hives
 alter table inspections 
   alter column id set default gen_random_uuid()::text;
 
--- Hvis tabellene ikke finnes fra før (f.eks. hvis forrige script feilet helt), 
--- kjører vi hele oppsettet på nytt under (med defaults inkludert).
--- Du kan trygt kjøre dette selv om tabellene finnes (IF NOT EXISTS).
+-- Profil-tabell (Beekeeper)
+create table if not exists profiles (
+  id text primary key default gen_random_uuid()::text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  name text,
+  address text,
+  zip text,
+  email text unique, -- Ensure email is unique for upsert
+  phone text,
+  role text,
+  "orgName" text,
+  "orgNr" text,
+  pin text,
+  "memberId" text,
+  user_id uuid default auth.uid()
+);
 
+-- If table exists but email is not unique, add constraint:
+do $$ 
+begin
+  if not exists (select 1 from pg_constraint where conname = 'profiles_email_key') then
+    alter table profiles add constraint profiles_email_key unique (email);
+  end if;
+end $$;
+
+alter table profiles enable row level security;
+create policy "Public Access Profiles" on profiles for all using (true);
+
+-- Eksisterende tabeller (for sikkerhets skyld)
 create table if not exists apiaries (
   id text primary key default gen_random_uuid()::text, 
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,

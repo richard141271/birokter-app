@@ -210,7 +210,7 @@
             }
         });
 
-        function saveRegistration(e) {
+        async function saveRegistration(e) {
             e.preventDefault();
             const form = e.target;
             const data = {
@@ -249,7 +249,14 @@
             data.memberId = lastId + 1;
             localStorage.setItem('last_member_id', data.memberId);
 
-            localStorage.setItem('beekeeper', JSON.stringify(data));
+            // Save using Repository (Syncs to Cloud)
+            if (window.REPO) {
+                await window.REPO.saveProfile(data);
+            } else {
+                // Fallback if REPO not ready
+                localStorage.setItem('beekeeper', JSON.stringify(data));
+            }
+
             localStorage.setItem('auth', 'true');
             window.location.href = 'dashboard.html';
         }

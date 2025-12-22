@@ -33,6 +33,71 @@ const REPO = {
         window.dispatchEvent(new Event('data-synced'));
     },
 
+    // --- PROFILE / AUTH HELPER ---
+    
+    // Attempt to login against Supabase if local data is missing
+    login: async function(email, pin) {
+        if (!this.isConnected) return false;
+
+        try {
+            // 1. Check if user exists in cloud
+            const { data, error } = await this.client
+                .from('profiles')
+                .select('*')
+                .eq('email', email)
+                .eq('pin', pin)
+                .single();
+            
+            if (error || !data) {
+                console.warn('Login failed:', error);
+                return false;
+            }
+
+            // 2. Save user to local storage
+            localStorage.setItem('beekeeper', JSON.stringify(data));
+            console.log('Restored user profile from cloud:', data);
+
+            // 3. Sync all other data (restore apiaries etc.)
+            await this.syncAll();
+            return true;
+
+        } catch (e) {
+            console.error('Login exception:', e);
+            return false;
+        }
+    },
+
+    saveProfile: async function(profile) {
+        // 1. Save Local
+        localStorage.setItem('beekeeper', JSON.stringify(profile));
+
+        // 2. Save Cloud
+        if (this.isConnected) {
+            // Check if profile exists (by email) to avoid duplicates if ID is missing
+            // But if we have ID, upsert is best.
+            // Profile from register.html might not have UUID 'id'.
+            // So we rely on email being unique-ish or just insert.
+            // Better: Upsert on email? Or just insert and let RLS/constraints handle it?
+            // For now: Upsert if we have ID, otherwise insert.
+            
+            // If the profile has no ID, we let Supabase generate it.
+            // But then we need to get it back to update local.
+            
+            const { data, error } = await this.client
+                .from('profiles')
+                .upsert(profile, { onConflict: 'email' }) // Assuming email is unique key? Or just ID.
+                .select()
+                .single();
+                
+            if (error) {
+                console.error('Profile save failed:', error);
+            } else if (data) {
+                // Update local with the server-generated ID
+                localStorage.setItem('beekeeper', JSON.stringify(data));
+            }
+        }
+    },
+
     syncTable: async function(tableName, localKey) {
         try {
             const { data, error } = await this.client.from(tableName).select('*');

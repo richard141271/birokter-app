@@ -56,7 +56,7 @@
     </div>
     <script src="header.js"></script>
     <script>
-        function login(e) {
+        async function login(e) {
             e.preventDefault();
             let data = null;
             try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (err) {}
@@ -65,7 +65,16 @@
             const errEl = document.getElementById('login_error');
             
             if (!data) {
-                // Allow "login" if data is missing but user tries anyway? No, they must register.
+                // Try to recover from Cloud
+                if (window.REPO) {
+                    const success = await window.REPO.login(email, pin);
+                    if (success) {
+                        localStorage.setItem('auth', 'true');
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                }
+
                 if (errEl) { errEl.textContent = 'Ingen registrert bruker. Registrer deg først.'; errEl.classList.remove('hidden'); }
                 return;
             }
