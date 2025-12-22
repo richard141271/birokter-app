@@ -10,6 +10,8 @@
     </style>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50">
 
@@ -189,18 +191,25 @@
     
     <script src="header.js"></script>
     <script>
-        const hobbyRadio = document.querySelector('input[value="hobby"]');
-        const naeringRadio = document.querySelector('input[value="naering"]');
-        const businessFields = document.getElementById('business_fields');
-        function toggleBusinessFields() {
-            if (naeringRadio.checked) {
-                businessFields.classList.remove('hidden');
-            } else {
-                businessFields.classList.add('hidden');
+        document.addEventListener('DOMContentLoaded', function() {
+            const hobbyRadio = document.querySelector('input[value="hobby"]');
+            const naeringRadio = document.querySelector('input[value="naering"]');
+            const businessFields = document.getElementById('business_fields');
+            
+            function toggleBusinessFields() {
+                if (naeringRadio.checked) {
+                    businessFields.classList.remove('hidden');
+                } else {
+                    businessFields.classList.add('hidden');
+                }
             }
-        }
-        hobbyRadio.addEventListener('change', toggleBusinessFields);
-        naeringRadio.addEventListener('change', toggleBusinessFields);
+            
+            if (hobbyRadio && naeringRadio) {
+                hobbyRadio.addEventListener('change', toggleBusinessFields);
+                naeringRadio.addEventListener('change', toggleBusinessFields);
+            }
+        });
+
         function saveRegistration(e) {
             e.preventDefault();
             const form = e.target;
@@ -245,8 +254,5 @@
             window.location.href = 'dashboard.html';
         }
     </script>
-
-    <script src="header.js"></script>
 </body>
 </html>
-<link rel="manifest" href="manifest.json">
