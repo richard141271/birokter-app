@@ -124,7 +124,7 @@
       }
     }
 
-    function saveProfile(e) {
+    async function saveProfile(e) {
       e.preventDefault();
       let data = null;
       try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
@@ -136,7 +136,8 @@
       });
 
       // Radio
-      data.rokt_type = document.querySelector('input[name="rokt_type"]:checked').value;
+      const roktTypeEl = document.querySelector('input[name="rokt_type"]:checked');
+      if (roktTypeEl) data.rokt_type = roktTypeEl.value;
 
       // Checkboxes
       ['is_nbl_member', 'is_lek_member', 'is_hc_supplier'].forEach(k => {
@@ -150,7 +151,14 @@
           if (el) data.interests[k] = el.checked;
       });
 
-      try { localStorage.setItem('beekeeper', JSON.stringify(data)); } catch (e) {}
+      // Save via Repository if available
+      if (window.REPO) {
+          await window.REPO.saveProfile(data);
+      } else {
+          // Fallback
+          try { localStorage.setItem('beekeeper', JSON.stringify(data)); } catch (e) {}
+      }
+      
       window.location.href = 'profil.html';
     }
     loadProfile();

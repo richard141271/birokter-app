@@ -80,6 +80,18 @@
 <script src="header.js"></script>
 <link rel="manifest" href="manifest.json">
 <script>
+  function getNextId(hives) {
+      if (!hives || hives.length === 0) return 'KUBE-001';
+      let maxNum = 0;
+      hives.forEach(h => {
+          if (h.id && h.id.startsWith('KUBE-')) {
+              const numPart = parseInt(h.id.replace('KUBE-', ''), 10);
+              if (!isNaN(numPart) && numPart > maxNum) maxNum = numPart;
+          }
+      });
+      return `KUBE-${String(maxNum + 1).padStart(3, '0')}`;
+  }
+
   function init() {
     const params = new URLSearchParams(window.location.search);
     const apiaryIdParam = params.get('apiaryId');
@@ -87,7 +99,7 @@
     // Calculate next ID
     let hives = [];
     try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
-    const nextId = `KUBE-${String(hives.length + 1).padStart(3, '0')}`;
+    const nextId = getNextId(hives);
     document.getElementById('next_hive_id').textContent = nextId;
 
     // Load Apiaries
@@ -151,7 +163,7 @@
       });
   }
 
-  function saveHive(e) {
+  async function saveHive(e) {
     e.preventDefault();
     
     const selectDisplay = document.getElementById('apiary_select');
@@ -184,7 +196,11 @@
 
     const queenYear = document.getElementById('queen_year').value;
     const type = document.getElementById('type').value;
-    const id = document.getElementById('next_hive_id').textContent;
+    
+    // Recalculate ID just in case
+    let hives = [];
+    try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+    const id = getNextId(hives);
 
     const newHive = {
       id,
@@ -197,10 +213,8 @@
     };
 
     if (window.REPO) {
-        window.REPO.addHive(newHive);
+        await window.REPO.addHive(newHive);
     } else {
-        let hives = [];
-        try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
         hives.push(newHive);
         localStorage.setItem('hives', JSON.stringify(hives));
     }
