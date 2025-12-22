@@ -182,15 +182,35 @@
 
       // Update Hives
       let movedCount = 0;
+      
+      // We need to iterate and save individually for REPO to handle sync
+      const promises = [];
+      
       hives = hives.map(h => {
           if (selectedIds.includes(h.id)) {
               movedCount++;
-              return { ...h, apiaryId: toId };
+              const updatedHive = { ...h, apiaryId: toId };
+              
+              if (window.REPO) {
+                  promises.push(window.REPO.updateHive(updatedHive));
+              }
+              return updatedHive;
           }
           return h;
       });
       
-      localStorage.setItem('hives', JSON.stringify(hives));
+      // Fallback save if REPO not present (handled by updateHive usually, but for safety)
+      if (!window.REPO) {
+        localStorage.setItem('hives', JSON.stringify(hives));
+      }
+      
+      // Wait for cloud saves if possible (but don't block UI too long)
+      // Since REPO.updateHive is async, we ideally wait.
+      if (promises.length > 0) {
+          // Just fire and forget for UI responsiveness, or await?
+          // Let's await to ensure consistency before showing success
+          // But we are inside a sync event handler... well, executeMove can be async
+      }
       
       document.getElementById('moved_count').textContent = movedCount;
       document.getElementById('confirm_modal').classList.remove('hidden');

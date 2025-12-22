@@ -138,18 +138,41 @@
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
 
-    const finishSave = (imgData) => {
+    const finishSave = async (imgData) => {
         let inspections = [];
         try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
-        const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
-        // Store image if provided
-        inspections.push({ id, hiveId, status, temp, weather, note, image: imgData, ts: Date.now() });
         
-        try { 
-            localStorage.setItem('inspections', JSON.stringify(inspections)); 
+        // Generate ID (Simpler logic for now, or let REPO handle if we move fully to UUID)
+        // We keep the old ID format for consistency in UI
+        const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
+        
+        const newInspection = { 
+            id, 
+            hiveId, 
+            status, 
+            temp, 
+            weather, 
+            note, 
+            image: imgData, 
+            ts: Date.now() 
+        };
+        
+        if (window.REPO) {
+            // Note: If image is large, Supabase insert might fail if we don't use Storage Buckets.
+            // For now we try to insert. If it fails, we might want to strip the image.
+            await window.REPO.addInspection(newInspection);
+            
+            // Redirect
             window.location.href = 'bikuber.html';
-        } catch (e) {
-            alert('Lagring feilet! Bildet er for stort for nettleserens lagring. Prøv et mindre bilde eller ingen bilde.');
+        } else {
+            // Fallback
+            inspections.push(newInspection);
+            try { 
+                localStorage.setItem('inspections', JSON.stringify(inspections)); 
+                window.location.href = 'bikuber.html';
+            } catch (e) {
+                alert('Lagring feilet! Bildet er for stort for nettleserens lagring. Prøv et mindre bilde eller ingen bilde.');
+            }
         }
     };
 

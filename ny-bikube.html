@@ -196,10 +196,14 @@
       created_at: new Date().toISOString()
     };
 
-    let hives = [];
-    try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
-    hives.push(newHive);
-    localStorage.setItem('hives', JSON.stringify(hives));
+    if (window.REPO) {
+        window.REPO.addHive(newHive);
+    } else {
+        let hives = [];
+        try { hives = JSON.parse(localStorage.getItem('hives') || '[]'); } catch (e) {}
+        hives.push(newHive);
+        localStorage.setItem('hives', JSON.stringify(hives));
+    }
 
     window.location.href = 'bikuber.html?apiaryId=' + encodeURIComponent(apiaryId);
   }

@@ -475,7 +475,7 @@
       }
   }
   
-  function processWizardStep() {
+  async function processWizardStep() {
       const hive = wizardHivesQueue[0];
       const action = document.getElementById('wizard_action').value;
       
@@ -491,13 +491,19 @@
               type: 'DESTRUCTION',
               note: 'Destruert/brent grunnet sykdom under sletting av bigård.'
           };
-          inspections.push(logEntry);
-          localStorage.setItem('inspections', JSON.stringify(inspections));
+          
+          if (window.REPO) {
+              await window.REPO.addInspection(logEntry);
+              await window.REPO.deleteHive(hive.id);
+          } else {
+              inspections.push(logEntry);
+              localStorage.setItem('inspections', JSON.stringify(inspections));
+              hives = hives.filter(h => h.id !== hive.id);
+              localStorage.setItem('hives', JSON.stringify(hives));
+          }
           
           // Soft Delete Hive
           softDelete('hive', hive);
-          hives = hives.filter(h => h.id !== hive.id);
-          localStorage.setItem('hives', JSON.stringify(hives));
           
       } else if (action === 'sell') {
            const logEntry = {
@@ -506,13 +512,19 @@
               type: 'SALE',
               note: 'Solgt.'
           };
-          inspections.push(logEntry);
-          localStorage.setItem('inspections', JSON.stringify(inspections));
+          
+          if (window.REPO) {
+              await window.REPO.addInspection(logEntry);
+              await window.REPO.deleteHive(hive.id);
+          } else {
+              inspections.push(logEntry);
+              localStorage.setItem('inspections', JSON.stringify(inspections));
+              hives = hives.filter(h => h.id !== hive.id);
+              localStorage.setItem('hives', JSON.stringify(hives));
+          }
           
           // Soft Delete Hive (Sold)
           softDelete('hive', { ...hive, sold: true });
-          hives = hives.filter(h => h.id !== hive.id);
-          localStorage.setItem('hives', JSON.stringify(hives));
           
       } else if (action === 'move' || action === 'heather' || action === 'storage') {
           let targetId = document.getElementById('wizard_destination').value;
@@ -525,8 +537,13 @@
                   type: 'Lager',
                   address: 'Automatisk opprettet'
               };
-              apiaries.push(newLoc);
-              localStorage.setItem('apiaries', JSON.stringify(apiaries));
+              
+              if (window.REPO) {
+                  await window.REPO.addApiary(newLoc);
+              } else {
+                  apiaries.push(newLoc);
+                  localStorage.setItem('apiaries', JSON.stringify(apiaries));
+              }
               targetId = newId;
           }
           
@@ -535,12 +552,20 @@
               return;
           }
           
-          const hiveIndex = hives.findIndex(h => h.id === hive.id);
-          if (hiveIndex > -1) {
-              hives[hiveIndex].apiaryId = targetId;
-              localStorage.setItem('hives', JSON.stringify(hives));
+          if (window.REPO) {
+              const updatedHive = { ...hive, apiaryId: targetId };
+              await window.REPO.updateHive(updatedHive);
+          } else {
+              const hiveIndex = hives.findIndex(h => h.id === hive.id);
+              if (hiveIndex > -1) {
+                  hives[hiveIndex].apiaryId = targetId;
+                  localStorage.setItem('hives', JSON.stringify(hives));
+              }
           }
       }
+      
+      // Reload local state to reflect changes made by REPO (which updates localStorage)
+      loadData();
       
       wizardHivesQueue.shift();
       showNextHiveInWizard();

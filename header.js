@@ -48,10 +48,22 @@ function injectHeader() {
             const { createClient } = window.supabase;
             window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log("Supabase connected");
+            
+            // Initialize Repository after Supabase is ready
+            if (window.REPO) {
+                window.REPO.init();
+            }
           } catch(e) {
               console.log("Supabase init pending/failed", e);
           }
       };
+      document.head.appendChild(script);
+  }
+
+  // 2b. Inject Repository
+  if (!document.querySelector('script[src="repository.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'repository.js';
       document.head.appendChild(script);
   }
 
