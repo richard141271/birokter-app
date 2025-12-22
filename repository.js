@@ -78,28 +78,34 @@ const REPO = {
 
         // 2. Save Cloud
         if (this.isConnected) {
-            // Check if profile exists (by email) to avoid duplicates if ID is missing
-            // But if we have ID, upsert is best.
-            // Profile from register.html might not have UUID 'id'.
-            // So we rely on email being unique-ish or just insert.
-            // Better: Upsert on email? Or just insert and let RLS/constraints handle it?
-            // For now: Upsert if we have ID, otherwise insert.
-            
-            // If the profile has no ID, we let Supabase generate it.
-            // But then we need to get it back to update local.
-            
-            const { data, error } = await this.client
-                .from('profiles')
-                .upsert(profile, { onConflict: 'email' }) // Assuming email is unique key? Or just ID.
-                .select()
-                .single();
+            try {
+                // Check if profile exists (by email) to avoid duplicates if ID is missing
+                // But if we have ID, upsert is best.
+                // Profile from register.html might not have UUID 'id'.
+                // So we rely on email being unique-ish or just insert.
+                // Better: Upsert on email? Or just insert and let RLS/constraints handle it?
+                // For now: Upsert if we have ID, otherwise insert.
                 
-            if (error) {
-                console.error('Profile save failed:', error);
-                alert('Kunne ikke lagre til skyen: ' + error.message + '\n\nDataene er lagret lokalt.');
-            } else if (data) {
-                // Update local with the server-generated ID
-                localStorage.setItem('beekeeper', JSON.stringify(data));
+                // If the profile has no ID, we let Supabase generate it.
+                // But then we need to get it back to update local.
+                
+                const { data, error } = await this.client
+                    .from('profiles')
+                    .upsert(profile, { onConflict: 'email' }) // Assuming email is unique key? Or just ID.
+                    .select()
+                    .single();
+                    
+                if (error) {
+                    console.error('Profile save failed:', error);
+                    alert('Kunne ikke lagre til skyen: ' + error.message + '\n\nDataene er lagret lokalt.');
+                    // We do NOT throw here, we allow the local save to be "enough"
+                } else if (data) {
+                    // Update local with the server-generated ID
+                    localStorage.setItem('beekeeper', JSON.stringify(data));
+                }
+            } catch (e) {
+                console.error("Unexpected error in saveProfile:", e);
+                alert("En uventet feil oppstod under lagring til skyen. Data er lagret lokalt.");
             }
         }
     },

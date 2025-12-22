@@ -244,21 +244,33 @@
                 return;
             }
 
-            // Generate Member ID (simulated auto-increment)
-            let lastId = parseInt(localStorage.getItem('last_member_id') || '1000');
-            data.memberId = lastId + 1;
-            localStorage.setItem('last_member_id', data.memberId);
+            // Disable button and show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Lagrer...';
 
-            // Save using Repository (Syncs to Cloud)
-            if (window.REPO) {
-                await window.REPO.saveProfile(data);
-            } else {
-                // Fallback if REPO not ready
-                localStorage.setItem('beekeeper', JSON.stringify(data));
+            try {
+                // Generate Member ID (simulated auto-increment)
+                let lastId = parseInt(localStorage.getItem('last_member_id') || '1000');
+                data.memberId = lastId + 1;
+                localStorage.setItem('last_member_id', data.memberId);
+
+                // Save using Repository (Syncs to Cloud)
+                if (window.REPO) {
+                    await window.REPO.saveProfile(data);
+                } else {
+                    localStorage.setItem('beekeeper', JSON.stringify(data));
+                }
+
+                // Redirect
+                window.location.href = 'index.html';
+            } catch (err) {
+                console.error("Registration error:", err);
+                alert('Noe gikk galt under registrering: ' + err.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
             }
-
-            localStorage.setItem('auth', 'true');
-            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
