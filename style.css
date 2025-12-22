@@ -76,8 +76,8 @@ body {
     border-top: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-around;
-    padding: 1rem 0; /* Increased top/bottom padding */
-    padding-bottom: max(3.5rem, env(safe-area-inset-bottom, 3.5rem)); /* Even larger for safer clicking */
+    padding: 0.75rem 0;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
     z-index: 9999; /* Max z-index to ensure it's on top */
     box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
     position: relative; /* Ensure z-index works */
