@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Administrer Lokasjoner - Birøkter App</title>
-    <script src="https://cdn.tailwindcss.com">  // Initialize
-  document.addEventListener('DOMContentLoaded', renderSettingsLocations);
-</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Initialize if needed, but main logic is at bottom
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
@@ -47,8 +48,8 @@
     </div>
 
     <!-- Trash Modal -->
-    <div id="trash_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+    <div id="trash_modal" class="hidden fixed inset-0 bg-black/50 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto relative z-[10001]">
             <h3 class="text-xl font-bold mb-4 flex justify-between items-center">
                 <span>Slettede elementer</span>
                 <button onclick="closeTrashModal()" class="text-gray-500 hover:text-black">✕</button>
@@ -62,8 +63,8 @@
 
 
     <!-- PIN Modal -->
-    <div id="pin_modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xs p-6 text-center">
+    <div id="pin_modal" class="hidden fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xs p-6 text-center relative z-[10001]">
             <h3 class="text-lg font-bold mb-4 text-gray-900">Bekreft gjenoppretting</h3>
             <p class="text-sm text-gray-500 mb-4">Angi PIN-kode for å gjenopprette elementet.</p>
             
@@ -148,8 +149,8 @@
     </div>
 
     <!-- Destination Modal (Post-Car) -->
-    <div id="post_car_modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center">
+    <div id="post_car_modal" class="hidden fixed inset-0 bg-black/50 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center relative z-[10001]">
             <h3 class="text-lg font-bold mb-2">Videre flytting?</h3>
             <p class="text-sm text-gray-600 mb-6">Kubene er nå i bilen. Vil du registrere hvor de flyttes videre nå?</p>
             
