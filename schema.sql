@@ -1,5 +1,13 @@
 -- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å fikse ID-problemet.
--- Dette scriptet er nå oppdatert for å fikse "type mismatch" feilen (UUID vs Text).
+-- Dette scriptet er nå oppdatert for å fikse "policy dependency" feilen.
+
+-- 0. Slett policies som hindrer oss i å endre ID-typen
+-- Vi må fjerne disse FØR vi kan endre kolonne-typen.
+drop policy if exists "Users can view own profile" on profiles;
+drop policy if exists "Public Access Profiles" on profiles;
+drop policy if exists "Public Access Apiaries" on apiaries;
+drop policy if exists "Public Access Hives" on hives;
+drop policy if exists "Public Access Inspections" on inspections;
 
 -- 1. Endre ID-kolonnen til å være TEKST (slik at den støtter både BG-001 og UUID)
 -- Vi må gjøre dette FØR vi setter standardverdien.
