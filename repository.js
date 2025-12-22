@@ -49,15 +49,11 @@ const REPO = {
                 const localData = JSON.parse(localStorage.getItem(localKey) || '[]');
                 if (localData.length > 0) {
                     console.log(`Pushing local ${tableName} to cloud...`);
-                    await this.client.from(tableName).insert(localData.map(item => {
-                        // Ensure no internal local IDs conflict with UUIDs if possible, 
-                        // or just let Supabase generate IDs if missing
-                        const { id, ...rest } = item; 
-                        // If ID is numeric (local), remove it to let Supabase gen UUID
-                        // If ID is UUID, keep it.
-                        if (typeof id === 'number') return rest;
-                        return item;
-                    }));
+                    // We simply map items. We MUST include the ID.
+                    // If local ID is "L-001", we send it.
+                    // If Supabase has default gen_random_uuid(), it will only be used if we omit ID.
+                    // But we WANT to keep our local IDs.
+                    await this.client.from(tableName).insert(localData);
                 }
             }
         } catch (e) {

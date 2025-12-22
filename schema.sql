@@ -1,24 +1,38 @@
--- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å sette opp databasen riktig.
--- Hvis du allerede har tabeller, kan det være lurt å slette dem først (DROP TABLE apiaries, hives, inspections;)
+-- VIKTIG: Kjør dette scriptet i Supabase SQL Editor for å fikse ID-problemet.
+-- Vi legger til en "default" verdi for ID, slik at det ikke kræsjer hvis ID mangler.
 
--- 1. Tabell for Bigårder (Apiaries)
+-- 1. Endre ID-kolonnen til å ha en standardverdi (tilfeldig ID) hvis den mangler
+-- Dette gjør at manuelle tester i Supabase virker, og at appen er mer robust.
+
+alter table apiaries 
+  alter column id set default gen_random_uuid()::text;
+
+alter table hives 
+  alter column id set default gen_random_uuid()::text;
+
+alter table inspections 
+  alter column id set default gen_random_uuid()::text;
+
+-- Hvis tabellene ikke finnes fra før (f.eks. hvis forrige script feilet helt), 
+-- kjører vi hele oppsettet på nytt under (med defaults inkludert).
+-- Du kan trygt kjøre dette selv om tabellene finnes (IF NOT EXISTS).
+
 create table if not exists apiaries (
-  id text primary key, -- Vi bruker TEXT for ID (f.eks "L-001")
+  id text primary key default gen_random_uuid()::text, 
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   name text,
   type text,
   address text,
-  "regNr" text, -- Matches JSON: regNr
+  "regNr" text, 
   deleted_at timestamp with time zone,
   user_id uuid default auth.uid()
 );
 
--- 2. Tabell for Bikuber (Hives)
 create table if not exists hives (
-  id text primary key, -- f.eks "B-001"
+  id text primary key default gen_random_uuid()::text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  "apiaryId" text, -- Matches JSON: apiaryId
-  "queenYear" text, -- Matches JSON: queenYear
+  "apiaryId" text, 
+  "queenYear" text,
   type text,
   strength text,
   status text,
@@ -26,30 +40,23 @@ create table if not exists hives (
   user_id uuid default auth.uid()
 );
 
--- 3. Tabell for Inspeksjoner (Inspections)
 create table if not exists inspections (
-  id text primary key, -- f.eks "INSPEKSJON-001"
+  id text primary key default gen_random_uuid()::text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  "hiveId" text, -- Matches JSON: hiveId
+  "hiveId" text,
   status text,
   temp text,
   weather text,
   note text,
-  image text, -- Base64 streng
+  image text,
   ts bigint,
   user_id uuid default auth.uid()
 );
 
--- 4. Slå på sikkerhet (RLS)
+-- Sikre at policies er på plass
 alter table apiaries enable row level security;
 alter table hives enable row level security;
 alter table inspections enable row level security;
-
--- 5. Lagre regler (Policies) - Åpent for alle (enkelt oppsett)
--- Drop existing policies first to avoid errors if re-running
-drop policy if exists "Public Access Apiaries" on apiaries;
-drop policy if exists "Public Access Hives" on hives;
-drop policy if exists "Public Access Inspections" on inspections;
 
 create policy "Public Access Apiaries" on apiaries for all using (true);
 create policy "Public Access Hives" on hives for all using (true);
