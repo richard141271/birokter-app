@@ -11,6 +11,9 @@ alter table hives
 alter table inspections 
   alter column id set default gen_random_uuid()::text;
 
+alter table profiles 
+  alter column id set default gen_random_uuid()::text;
+
 -- 2. Profil-tabell (Beekeeper)
 create table if not exists profiles (
   id text primary key default gen_random_uuid()::text,
