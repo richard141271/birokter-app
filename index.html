@@ -35,9 +35,28 @@
                 <button id="registerBtn" onclick="window.location.href='register.html'" class="btn-primary">
                     Registrer deg
                 </button>
-                <button id="loginBtn" onclick="window.location.href='login.html'" class="btn-primary">
+                <button id="loginToggleBtn" onclick="toggleLogin()" class="btn-primary">
                     Logg inn
                 </button>
+                
+                <!-- Inline Login Form -->
+                <div id="login_container" class="w-full hidden bg-white p-4 rounded border border-gray-200 shadow-sm mt-2">
+                    <form onsubmit="login(event)" class="w-full space-y-4">
+                        <div>
+                            <label for="login_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
+                            <input type="email" id="login_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
+                        </div>
+                        <div>
+                            <label for="login_pin" class="block text-sm font-bold text-gray-900 mb-1">PIN-kode</label>
+                            <input type="password" id="login_pin" maxlength="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
+                        </div>
+                        <p id="login_error" class="text-sm text-red-600 hidden">Feil e-post eller PIN-kode</p>
+                        <div class="pt-2 space-y-3">
+                            <button type="submit" class="btn-primary">Logg inn</button>
+                            <a href="reset.html" class="block w-full text-center text-black font-medium text-sm hover:underline">Glemt PIN?</a>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- Links -->
@@ -63,6 +82,59 @@
     </div>
 <script src="header.js"></script>
 <script>
+  function toggleLogin() {
+      const container = document.getElementById('login_container');
+      container.classList.toggle('hidden');
+      if (!container.classList.contains('hidden')) {
+          // Auto-focus email if empty, or pin if email filled
+          const email = document.getElementById('login_email');
+          const pin = document.getElementById('login_pin');
+          if (email.value) pin.focus(); else email.focus();
+      }
+  }
+
+  async function login(e) {
+      e.preventDefault();
+      let data = null;
+      try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (err) {}
+      const email = document.getElementById('login_email')?.value || '';
+      const pin = document.getElementById('login_pin')?.value || '';
+      const errEl = document.getElementById('login_error');
+      
+      if (!data) {
+          // Try to recover from Cloud
+          if (window.REPO) {
+              const success = await window.REPO.login(email, pin);
+              if (success) {
+                  localStorage.setItem('auth', 'true');
+                  window.location.href = 'dashboard.html';
+                  return;
+              }
+          }
+
+          if (errEl) { errEl.textContent = 'Ingen registrert bruker. Registrer deg først.'; errEl.classList.remove('hidden'); }
+          return;
+      }
+      if (data.email === email && data.pin === pin) {
+          localStorage.setItem('auth', 'true');
+          window.location.href = 'dashboard.html';
+      } else {
+          if (errEl) {
+              errEl.textContent = 'Feil e-post eller PIN-kode';
+              errEl.classList.remove('hidden');
+          }
+      }
+  }
+  
+  function useSavedEmail() {
+      let data = null;
+      try { data = JSON.parse(localStorage.getItem('beekeeper') || 'null'); } catch (e) {}
+      if (data?.email) { const el = document.getElementById('login_email'); if (el) el.value = data.email; }
+  }
+
+  // Auto-fill email if available
+  document.addEventListener('DOMContentLoaded', useSavedEmail);
+
   try {
     const dataStr = localStorage.getItem('beekeeper');
     if (dataStr) {
