@@ -249,6 +249,12 @@ function renderFooter(container) {
         link.innerHTML = `${item.icon}<span>${item.name}</span>`;
         container.appendChild(link);
     });
+
+    // Copyright
+    const copyright = document.createElement('div');
+    copyright.className = 'w-full text-center text-[10px] text-gray-400 mt-2 pb-20'; // Extra padding for scroll
+    copyright.textContent = '© 2025 - LEK-Honning™️';
+    container.appendChild(copyright);
 }
 
 // Global App Reset Utility
