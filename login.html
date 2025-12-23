@@ -27,9 +27,17 @@
         <div class="app-content p-6 flex flex-col items-center w-full">
             
             <!-- Logo -->
-            <img src="assets/logo.png" alt="Logo" class="h-20 w-auto mb-4 object-contain">
+            <img src="assets/logo.png" alt="Logo" class="h-20 w-auto mb-8 object-contain">
 
-            <form onsubmit="login(event)" class="w-full space-y-4 mt-2">
+            <!-- Initial View -->
+            <div id="initial_view" class="w-full flex flex-col items-center">
+                <button onclick="showLoginFields()" class="btn-primary w-full">
+                    Logg inn
+                </button>
+            </div>
+
+            <!-- Login Form (Hidden initially) -->
+            <form id="login_form" onsubmit="login(event)" class="w-full space-y-4 mt-2 hidden">
             <div>
                 <label for="login_email" class="block text-sm font-bold text-gray-900 mb-1">E-post</label>
                 <input type="email" id="login_email" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-yellow-500">
@@ -49,6 +57,11 @@
     </div>
     <script src="header.js"></script>
     <script>
+        function showLoginFields() {
+            document.getElementById('initial_view').classList.add('hidden');
+            document.getElementById('login_form').classList.remove('hidden');
+        }
+
         async function login(e) {
             e.preventDefault();
             let data = null;
