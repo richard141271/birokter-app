@@ -108,6 +108,9 @@ function injectHeader() {
           }
       }
   }
+
+  // 5. Render Copyright (in content flow)
+  renderCopyright();
 }
 
 function renderHeader(container) {
@@ -250,11 +253,26 @@ function renderFooter(container) {
         container.appendChild(link);
     });
 
-    // Copyright
-    const copyright = document.createElement('div');
-    copyright.className = 'w-full text-center text-[10px] text-gray-400 mt-2 pb-20'; // Extra padding for scroll
-    copyright.textContent = '© 2025 - LEK-Honning™️';
-    container.appendChild(copyright);
+    // Copyright - Moved to separate function to place in content flow
+}
+
+function renderCopyright() {
+    const path = window.location.pathname;
+    const page = path.split('/').pop() || 'index.html';
+    
+    // Don't render on login/index
+    if (page === 'index.html' || page === 'login.html' || page === 'reset.html') return;
+
+    const content = document.querySelector('.app-content');
+    if (content) {
+        // Check if already exists
+        if (content.querySelector('.app-copyright')) return;
+
+        const copyright = document.createElement('div');
+        copyright.className = 'app-copyright w-full text-center text-[10px] text-gray-400 mt-4 mb-2'; 
+        copyright.textContent = '© 2025 - LEK-Honning™️';
+        content.appendChild(copyright);
+    }
 }
 
 // Global App Reset Utility
