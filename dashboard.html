@@ -31,7 +31,11 @@
         <!-- Profile Summary -->
         <div class="w-full bg-yellow-50 border border-yellow-200 rounded p-4 text-center">
             <h3 id="user_name" class="font-bold text-lg text-black"></h3>
-            <p class="text-gray-600 text-sm">Velkommen tilbake!</p>
+            <div id="user_memberships" class="text-xs text-gray-600 mt-1 space-y-1"></div>
+            <div class="mt-3 pt-3 border-t border-yellow-200">
+                 <p class="text-xs text-gray-500 uppercase tracking-wide">Medlemsnummer</p>
+                 <p id="member_id_display" class="text-xl font-bold text-black font-mono">---</p>
+            </div>
         </div>
 
         <!-- Honey Status -->
@@ -95,13 +99,23 @@
     const nameEl = document.getElementById('user_name');
     const memEl = document.getElementById('user_memberships');
     if (nameEl) nameEl.textContent = (data.name || '').toUpperCase();
+    
+    // Member ID
+    const memIdEl = document.getElementById('member_id_display');
+    if (memIdEl) {
+        memIdEl.textContent = data.memberId || 'Ikke satt';
+    }
+
     if (memEl) {
       memEl.innerHTML = '';
       if (data.is_nbl_member) {
-        const p = document.createElement('p'); p.textContent = 'med Norges Birøkterlag'; memEl.appendChild(p);
+        const p = document.createElement('p'); p.textContent = 'Medlem av Norges Birøkterlag'; memEl.appendChild(p);
       }
       if (data.is_lek_member) {
-        const p = document.createElement('p'); p.textContent = 'med LEK-Honning Norge'; memEl.appendChild(p);
+        const p = document.createElement('p'); p.textContent = 'Medlem av LEK-Honning Norge'; memEl.appendChild(p);
+      }
+      if (!data.is_nbl_member && !data.is_lek_member) {
+          memEl.textContent = 'Velkommen tilbake!';
       }
     }
     const badge = document.getElementById('honey_status_badge');

@@ -135,6 +135,12 @@
         const el = document.getElementById(k); if (el) data[k] = el.value || '';
       });
 
+      // Generate Member ID if missing
+      if (!data.memberId) {
+          // Generate a random 6-digit number
+          data.memberId = String(Math.floor(100000 + Math.random() * 900000));
+      }
+
       // Radio
       const roktTypeEl = document.querySelector('input[name="rokt_type"]:checked');
       if (roktTypeEl) data.rokt_type = roktTypeEl.value;
