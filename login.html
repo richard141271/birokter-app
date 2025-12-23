@@ -94,13 +94,6 @@
             if (data?.email) { const el = document.getElementById('login_email'); if (el) el.value = data.email; }
         }
         
-        function resetApp() {
-            if (confirm('Er du sikker? Dette sletter ALL lokal data (bigårder, bikuber, inspeksjoner).')) {
-                localStorage.clear();
-                window.location.reload();
-            }
-        }
-        
         // Auto-fill email if available
         document.addEventListener('DOMContentLoaded', useSavedEmail);
     </script>

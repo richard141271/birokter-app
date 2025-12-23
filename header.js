@@ -250,5 +250,14 @@ function renderFooter(container) {
     });
 }
 
+// Global App Reset Utility
+function resetApp() {
+    if (confirm('Er du sikker? Dette sletter ALL lokal data (bigårder, bikuber, inspeksjoner).')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
+window.resetApp = resetApp;
+
 // Auto-inject on load
 document.addEventListener('DOMContentLoaded', injectHeader);

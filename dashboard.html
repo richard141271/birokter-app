@@ -58,6 +58,20 @@
             <button onclick="window.location.href='innstillinger.html'" class="btn-primary">
                 Innstillinger
             </button>
+
+            <!-- Extra Utilities (from Login) -->
+            <div class="pt-6 border-t border-gray-200 mt-6 w-full space-y-4">
+                 <button onclick="window.location.href='reset.html'" class="w-full text-center text-black font-medium text-sm hover:underline">
+                    Glemt PIN?
+                </button>
+                
+                <div class="w-full">
+                    <button type="button" onclick="resetApp()" class="w-full border-2 border-red-600 text-red-600 font-bold py-2 rounded hover:bg-red-50 transition-colors uppercase text-xs tracking-wide">
+                        NULLSTILL APP (START PÅ NYTT)
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-1">Sletter all lokal data</p>
+                </div>
+            </div>
         </div>
         
     </div>
@@ -129,7 +143,7 @@
         dueInspection ? 'Inspeksjon anbefales' : '',
         needsFeedSoon ? 'Matkontroll om 7 dager' : ''
       ].filter(Boolean).join(' • ');
-      document.querySelector('.p-8')?.appendChild(box);
+      document.querySelector('.app-content')?.appendChild(box);
       if ('Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker?.controller) {
         navigator.serviceWorker.getRegistration().then(reg => reg?.showNotification('Birøkter: påminnelse', { body: 'Inspeksjon / matkontroll anbefales', icon: 'logo.png' }));
       }
