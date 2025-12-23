@@ -145,7 +145,7 @@
   // Initialize
   updateLabels();
 
-  function saveApiary(e) {
+  async function saveApiary(e) {
     e.preventDefault();
     const type = document.getElementById('location_type').value;
     const nameInput = document.getElementById('apiary_name');
@@ -163,21 +163,23 @@
         }
     }
 
-    const id = document.getElementById('next_id_display').textContent;
+    // Recalculate ID to be safe
+    // Reload apiaries from local storage to get latest state
+    try { apiaries = JSON.parse(localStorage.getItem('apiaries') || '[]'); } catch (err) {}
+    const id = generateId(type);
+
     const apiary = { id, name, address, type, regNr }; // Added regNr
     
     // Use Repository if available, fallback to local logic handled inside REPO or here?
     // REPO handles both local and cloud
     if (window.REPO) {
-        window.REPO.addApiary(apiary);
+        await window.REPO.addApiary(apiary);
     } else {
         // Fallback if REPO failed to load
         apiaries.push(apiary);
         try { localStorage.setItem('apiaries', JSON.stringify(apiaries)); } catch (err) {}
     }
     
-    // Allow a small delay for async ops if needed, but for now we redirect immediately 
-    // because REPO writes to localStorage synchronously first.
     window.location.href = 'bigard.html';
   }
 </script>

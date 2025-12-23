@@ -142,9 +142,15 @@
         let inspections = [];
         try { inspections = JSON.parse(localStorage.getItem('inspections') || '[]'); } catch (e) {}
         
-        // Generate ID (Simpler logic for now, or let REPO handle if we move fully to UUID)
-        // We keep the old ID format for consistency in UI
-        const id = `INSPEKSJON-${String(inspections.length + 1).padStart(3, '0')}`;
+        // Generate ID (Max + 1)
+        let maxNum = 0;
+        inspections.forEach(i => {
+            if (i.id && i.id.startsWith('INSPEKSJON-')) {
+                const numPart = parseInt(i.id.replace('INSPEKSJON-', ''), 10);
+                if (!isNaN(numPart) && numPart > maxNum) maxNum = numPart;
+            }
+        });
+        const id = `INSPEKSJON-${String(maxNum + 1).padStart(3, '0')}`;
         
         const newInspection = { 
             id, 
