@@ -27,7 +27,7 @@ body {
     background-color: white;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     position: relative;
-    padding-bottom: 120px; /* Increased from 90px to ensure content clears footer on all devices */
+    padding-bottom: 160px; /* Increased to ensure content clears footer on all devices */
 }
 
 /* Prevent iOS Zoom on inputs */
@@ -72,6 +72,8 @@ input, select, textarea {
 .app-nav-footer, #app-footer {
     position: fixed;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
     max-width: 28rem; /* Match viewport max-width */
     background-color: white;
