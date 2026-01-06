@@ -106,6 +106,24 @@ create policy "Public Access Hives" on hives for all using (true);
 create policy "Public Access Inspections" on inspections for all using (true);
 create policy "Public Access Profiles" on profiles for all using (true);
 
+-- Products
+create table if not exists products (
+  id text default gen_random_uuid()::text primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table products add column if not exists name text;
+alter table products add column if not exists description text;
+alter table products add column if not exists price numeric;
+alter table products add column if not exists image text;
+alter table products add column if not exists stock integer;
+alter table products add column if not exists unit text;
+alter table products add column if not exists category text;
+alter table products add column if not exists deleted_at timestamp with time zone;
+
+create policy "Public Access Products" on products for all using (true);
+alter table products enable row level security;
+
 -- 7. Aktiver RLS
 alter table apiaries enable row level security;
 alter table hives enable row level security;

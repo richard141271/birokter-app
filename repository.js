@@ -34,6 +34,7 @@ const REPO = {
         await this.syncTable('apiaries', 'apiaries');
         await this.syncTable('hives', 'hives');
         await this.syncTable('inspections', 'inspections');
+        await this.syncTable('products', 'products');
         
         // Dispatch event so UI can update
         window.dispatchEvent(new Event('data-synced'));

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Administrer Butikk - Birøkter App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; }
+    </style>
+    <link rel="icon" type="image/png" href="assets/icon_square.png">
+    <link rel="apple-touch-icon" href="assets/icon_square.png">
+</head>
+<body class="bg-gray-50">
+
+    <div class="app-viewport">
+        <div id="app-header"></div>
+
+        <div class="app-content p-4 flex flex-col items-center w-full">
+            <h1 class="text-xl font-bold text-black mb-3">Administrer Butikk</h1>
+            <p class="text-xs text-gray-500 mb-4 text-center">Legg til eller endre produkter i butikken.</p>
+            
+            <button onclick="openProductModal()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded shadow-md transition-colors mb-6">
+                + Legg til nytt produkt
+            </button>
+
+            <div id="product_list" class="w-full space-y-3 mb-6"></div>
+            
+            <button onclick="window.location.href='innstillinger.html'" class="mt-4 text-sm text-gray-500 underline">
+                Tilbake til innstillinger
+            </button>
+        </div>
+        
+        <div id="app-footer"></div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product_modal" class="hidden fixed inset-0 bg-black/50 z-[10000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto relative z-[10001]">
+            <h3 class="text-xl font-bold mb-4" id="modal_title">Nytt Produkt</h3>
+            
+            <input type="hidden" id="prod_id">
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold mb-1">Produktnavn</label>
+                    <input type="text" id="prod_name" class="w-full border p-2 rounded">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold mb-1">Beskrivelse</label>
+                    <textarea id="prod_desc" rows="2" class="w-full border p-2 rounded"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Pris (kr)</label>
+                        <input type="number" id="prod_price" class="w-full border p-2 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Enhet (f.eks. stk, glass)</label>
+                        <input type="text" id="prod_unit" class="w-full border p-2 rounded" value="stk">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">Kategori</label>
+                    <select id="prod_cat" class="w-full border p-2 rounded">
+                        <option value="Honning">Honning</option>
+                        <option value="Voks">Voks / Lys</option>
+                        <option value="Utstyr">Utstyr</option>
+                        <option value="Annet">Annet</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold mb-1">Bilde</label>
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=200&q=80" onclick="selectImage(this.src)" class="h-16 w-full object-cover rounded cursor-pointer border-2 border-transparent hover:border-[#FFD700]">
+                        <img src="https://images.unsplash.com/photo-1603534603378-43d7890c2921?auto=format&fit=crop&w=200&q=80" onclick="selectImage(this.src)" class="h-16 w-full object-cover rounded cursor-pointer border-2 border-transparent hover:border-[#FFD700]">
+                        <img src="https://images.unsplash.com/photo-1595977436692-72064c58e807?auto=format&fit=crop&w=200&q=80" onclick="selectImage(this.src)" class="h-16 w-full object-cover rounded cursor-pointer border-2 border-transparent hover:border-[#FFD700]">
+                    </div>
+                    <input type="text" id="prod_image" class="w-full border p-2 rounded text-xs" placeholder="Eller lim inn URL...">
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="saveProduct()" class="flex-1 bg-black text-[#FFD700] font-bold py-2 rounded">Lagre</button>
+                <button onclick="closeProductModal()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-2 rounded">Avbryt</button>
+            </div>
+            
+            <button id="btn_delete" onclick="deleteCurrentProduct()" class="w-full mt-3 text-red-500 text-sm underline hidden">Slett produkt</button>
+        </div>
+    </div>
+
+</body>
+<script src="header.js"></script>
+<script>
+    let products = [];
+
+    function loadData() {
+        try { products = JSON.parse(localStorage.getItem('products') || '[]'); } catch (e) {}
+        renderList();
+    }
+
+    function renderList() {
+        const list = document.getElementById('product_list');
+        list.innerHTML = '';
+        
+        if (products.length === 0) {
+            list.innerHTML = `
+                <div class="text-center p-6 bg-white rounded-lg border border-dashed border-gray-300">
+                    <p class="text-gray-400 italic mb-2">Ingen produkter.</p>
+                    <button onclick="addDefaultProducts()" class="text-sm text-blue-600 underline">Legg til standardvarer</button>
+                </div>`;
+            return;
+        }
+
+        products.forEach(p => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100 gap-3';
+            row.onclick = () => openProductModal(p.id);
+            
+            row.innerHTML = `
+                <img src="${p.image || 'assets/icon_square.png'}" class="w-12 h-12 rounded object-cover bg-gray-100">
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm">${p.name}</h4>
+                    <p class="text-xs text-gray-500">${p.price},- kr / ${p.unit}</p>
+                </div>
+                <div class="text-gray-400">✏️</div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function openProductModal(id = null) {
+        document.getElementById('product_modal').classList.remove('hidden');
+        const isEdit = !!id;
+        document.getElementById('modal_title').textContent = isEdit ? 'Rediger Produkt' : 'Nytt Produkt';
+        document.getElementById('btn_delete').classList.toggle('hidden', !isEdit);
+
+        if (isEdit) {
+            const p = products.find(x => x.id === id);
+            document.getElementById('prod_id').value = p.id;
+            document.getElementById('prod_name').value = p.name;
+            document.getElementById('prod_desc').value = p.description || '';
+            document.getElementById('prod_price').value = p.price;
+            document.getElementById('prod_unit').value = p.unit || 'stk';
+            document.getElementById('prod_cat').value = p.category || 'Honning';
+            document.getElementById('prod_image').value = p.image || '';
+        } else {
+            document.getElementById('prod_id').value = '';
+            document.getElementById('prod_name').value = '';
+            document.getElementById('prod_desc').value = '';
+            document.getElementById('prod_price').value = '';
+            document.getElementById('prod_unit').value = 'stk';
+            document.getElementById('prod_image').value = '';
+        }
+    }
+
+    function closeProductModal() {
+        document.getElementById('product_modal').classList.add('hidden');
+    }
+
+    function selectImage(url) {
+        document.getElementById('prod_image').value = url;
+    }
+
+    async function saveProduct() {
+        const id = document.getElementById('prod_id').value;
+        const product = {
+            id: id || crypto.randomUUID(),
+            name: document.getElementById('prod_name').value,
+            description: document.getElementById('prod_desc').value,
+            price: document.getElementById('prod_price').value,
+            unit: document.getElementById('prod_unit').value,
+            category: document.getElementById('prod_cat').value,
+            image: document.getElementById('prod_image').value,
+            updated_at: new Date().toISOString()
+        };
+
+        if (id) {
+            if (window.REPO) await window.REPO.updateProduct(product);
+        } else {
+            if (window.REPO) await window.REPO.addProduct(product);
+        }
+        
+        // Reload local if repo didn't auto-update local (it usually does via sync or manual logic)
+        // Our Repo logic updates local storage directly in add/updateProduct
+        loadData();
+        closeProductModal();
+    }
+
+    async function deleteCurrentProduct() {
+        const id = document.getElementById('prod_id').value;
+        if (confirm('Slett dette produktet?')) {
+            if (window.REPO) await window.REPO.deleteProduct(id);
+            loadData();
+            closeProductModal();
+        }
+    }
+
+    async function addDefaultProducts() {
+        const defaults = [
+            {
+                name: "Sommerhonning",
+                description: "Deilig lys sommerhonning fra lokale bigårder.",
+                price: 150,
+                unit: "glass",
+                category: "Honning",
+                image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                name: "Lynghonning",
+                description: "Kraftig og aromatisk lynghonning.",
+                price: 200,
+                unit: "glass",
+                category: "Honning",
+                image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                name: "Bivokslys",
+                description: "Håndlagede lys av ren bivoks.",
+                price: 80,
+                unit: "stk",
+                category: "Voks",
+                image: "https://images.unsplash.com/photo-1603534603378-43d7890c2921?auto=format&fit=crop&w=800&q=80"
+            }
+        ];
+
+        for (const p of defaults) {
+            p.id = crypto.randomUUID();
+            if (window.REPO) await window.REPO.addProduct(p);
+        }
+        loadData();
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadData);
+    window.addEventListener('data-synced', loadData);
+</script>
+</html>
