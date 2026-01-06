@@ -1,4 +1,4 @@
-const CACHE_NAME = 'birokter-v3';
+const CACHE_NAME = 'birokter-v4';
 const ASSETS = [
   '/', 
   'index.html', 
@@ -10,6 +10,7 @@ const ASSETS = [
   'ny-bikube.html',
   'flytt-bikuber.html',
   'admin-lokasjoner.html',
+  'admin-butikk.html',
   'bikuber.html', 
   'inspeksjon.html', 
   'inspeksjoner.html',
@@ -18,6 +19,7 @@ const ASSETS = [
   'profil-rediger.html',
   'kjop-honning.html', 
   'selg-honning.html',
+  'reset.html',
   'assets/logo.png', 
   'manifest.json', 
   'header.js',
